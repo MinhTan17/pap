@@ -1,0 +1,8 @@
+export { default as Header } from './Header'
+export { default as Hero } from './Hero'
+export { default as ServicesSection } from './ServicesSection'
+export { default as HotlineSection } from './HotlineSection'
+export { default as ProductsSection } from './ProductsSection'
+export { default as NewsSection } from './NewsSection'
+export { default as Partners } from './Partners'
+export { default as Footer } from './Footer'
