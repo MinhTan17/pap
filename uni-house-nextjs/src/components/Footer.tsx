@@ -21,50 +21,55 @@ export default function Footer() {
             <h3 className="text-xl font-bold mb-4">DỊCH VỤ CHÚNG TÔI</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/construction" className="text-gray-300 hover:text-white transition-colors">
-                  THI CÔNG XÂY DỰNG
+                <Link href="/services" className="text-gray-300 hover:text-white transition-colors">
+                  GIA CÔNG CẮT LASER CNC
                 </Link>
               </li>
               <li>
-                <Link href="/interior" className="text-gray-300 hover:text-white transition-colors">
-                  THI CÔNG NỘI THẤT
+                <Link href="/services" className="text-gray-300 hover:text-white transition-colors">
+                  GIA CÔNG PHAY VÀ MÀI 6 MẶT
                 </Link>
               </li>
               <li>
-                <Link href="/design" className="text-gray-300 hover:text-white transition-colors">
-                  THIẾT KẾ KIẾN TRÚC
+                <Link href="/services" className="text-gray-300 hover:text-white transition-colors">
+                  GIA CÔNG KHUÔN MẪU, CƠ KHÍ CHÍNH XÁC
                 </Link>
               </li>
               <li>
-                <Link href="/consulting" className="text-gray-300 hover:text-white transition-colors">
-                  TƯ VẤN DỰ ÁN
+                <Link href="/services" className="text-gray-300 hover:text-white transition-colors">
+                  XỬ LÝ NHIỆT - NHIỆT LUYỆN
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Chính sách hỗ trợ */}
+          {/* Sản phẩm */}
           <div>
-            <h3 className="text-xl font-bold mb-4">CHÍNH SÁCH HỖ TRỢ</h3>
+            <h3 className="text-xl font-bold mb-4">SẢN PHẨM</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/support" className="text-gray-300 hover:text-white transition-colors">
-                  Về chúng tôi
+                <Link href="/products" className="text-gray-300 hover:text-white transition-colors">
+                  HỢP KIM
                 </Link>
               </li>
               <li>
-                <Link href="/policy" className="text-gray-300 hover:text-white transition-colors">
-                  Chính sách
+                <Link href="/products" className="text-gray-300 hover:text-white transition-colors">
+                  THÉP LÀM KHUÔN
                 </Link>
               </li>
               <li>
-                <Link href="/warranty" className="text-gray-300 hover:text-white transition-colors">
-                  Bảo hành
+                <Link href="/products" className="text-gray-300 hover:text-white transition-colors">
+                  THÉP CHẾ TẠO MÁY
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="text-gray-300 hover:text-white transition-colors">
-                  Bảo mật
+                <Link href="/products" className="text-gray-300 hover:text-white transition-colors">
+                  THÉP CARBON
+                </Link>
+              </li>
+              <li>
+                <Link href="/products" className="text-gray-300 hover:text-white transition-colors">
+                  THÉP KHÔNG RỈ
                 </Link>
               </li>
             </ul>
@@ -76,24 +81,28 @@ export default function Footer() {
             <div className="space-y-3 text-gray-300">
               <p>
                 <span className="font-semibold">Địa chỉ:</span><br />
-                88/10 Đường số 10, P.Tăng Nhơn Phú B,<br />
-                TP.Thủ Đức, TP.HCM
+                Đường số 9, KCN Tam Phước,<br />
+                Phường Tam Phước, Tp. Biên Hòa, Đồng Nai
               </p>
               <p>
                 <span className="font-semibold">Điện thoại:</span><br />
-                0902 300 466
+                (02513) 937 964 - (02513) 937 974
+              </p>
+              <p>
+                <span className="font-semibold">Fax:</span><br />
+                (02513) 937 984
               </p>
               <p>
                 <span className="font-semibold">Email:</span><br />
-                xaydungphuanphat@gmail.com
+                Sales.phuanphat@gmail.com
+              </p>
+              <p>
+                <span className="font-semibold">Hotline:</span><br />
+                0909 926 618 – 0907 353 348
               </p>
               <p>
                 <span className="font-semibold">Website:</span><br />
                 www.phuanphat.com.vn
-              </p>
-              <p>
-                <span className="font-semibold">Mã số thuế:</span><br />
-                0123456789
               </p>
             </div>
 
@@ -125,7 +134,7 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="mt-12 pt-8 border-t border-gray-700 text-center text-gray-400">
-          <p>Copyright © 2024 PHÚ AN PHÁT. All rights reserved.</p>
+          <p>© 2019 Phú An Phát</p>
         </div>
       </div>
     </footer>

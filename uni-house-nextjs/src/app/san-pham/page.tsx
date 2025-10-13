@@ -9,31 +9,78 @@ export default function ProductsPage() {
 
   const categories = [
     { id: 'all', name: 'Tất cả sản phẩm' },
-    { id: 'cement', name: 'Xi măng' },
-    { id: 'brick', name: 'Gạch' },
-    { id: 'stone', name: 'Đá' },
-    { id: 'interior', name: 'Nội thất' },
-    { id: 'material', name: 'Vật liệu xây dựng' }
+    { id: 'alloy', name: 'Hợp kim' },
+    { id: 'mold-steel', name: 'Thép làm khuôn' },
+    { id: 'machine-steel', name: 'Thép chế tạo máy' },
+    { id: 'carbon-steel', name: 'Thép Carbon' },
+    { id: 'stainless-steel', name: 'Thép không rỉ' }
   ]
 
   const products = [
-    { id: 1, name: "Xi măng Lapilla Extra", category: "cement", price: "Liên hệ", image: "/api/placeholder/300/200" },
-    { id: 2, name: "Gạch tàu 30x30", category: "brick", price: "Liên hệ", image: "/api/placeholder/300/200" },
-    { id: 3, name: "Gạch rỗng", category: "brick", price: "Liên hệ", image: "/api/placeholder/300/200" },
-    { id: 4, name: "Đá dăm 1x2", category: "stone", price: "Liên hệ", image: "/api/placeholder/300/200" },
-    { id: 5, name: "Đá hoa cương", category: "stone", price: "Liên hệ", image: "/api/placeholder/300/200" },
-    { id: 6, name: "Sàn gỗ công nghiệp", category: "interior", price: "Liên hệ", image: "/api/placeholder/300/200" },
-    { id: 7, name: "Gạch ốp lát", category: "brick", price: "Liên hệ", image: "/api/placeholder/300/200" },
-    { id: 8, name: "Thảm văn phòng", category: "interior", price: "Liên hệ", image: "/api/placeholder/300/200" },
-    { id: 9, name: "Xi măng Hà Tiên", category: "cement", price: "Liên hệ", image: "/api/placeholder/300/200" },
-    { id: 10, name: "Xi măng INSEE", category: "cement", price: "Liên hệ", image: "/api/placeholder/300/200" },
-    { id: 11, name: "Vật liệu ốp tường", category: "material", price: "Liên hệ", image: "/api/placeholder/300/200" },
-    { id: 12, name: "Nội thất văn phòng", category: "interior", price: "Liên hệ", image: "/api/placeholder/300/200" },
-    { id: 13, name: "Gạch block", category: "brick", price: "Liên hệ", image: "/api/placeholder/300/200" },
-    { id: 14, name: "Cát xây dựng", category: "material", price: "Liên hệ", image: "/api/placeholder/300/200" },
-    { id: 15, name: "Thép xây dựng", category: "material", price: "Liên hệ", image: "/api/placeholder/300/200" },
-    { id: 16, name: "Tôn lợp", category: "material", price: "Liên hệ", image: "/api/placeholder/300/200" }
+    { id: 1, name: "Hợp kim đồng: C3604, C1020, C1100", category: "alloy", price: "Liên hệ", description: "Hợp kim đồng chất lượng cao", icon: "copper", color: "from-orange-500 to-red-600" },
+    { id: 2, name: "Hợp kim nhôm: A1050, A5052, A6061, A7075", category: "alloy", price: "Liên hệ", description: "Hợp kim nhôm đa dạng", icon: "aluminum", color: "from-gray-400 to-gray-600" },
+    { id: 3, name: "Thép làm khuôn dập nóng: SKT4, SKD61, DH2F", category: "mold-steel", price: "Liên hệ", description: "Thép khuôn dập nóng", icon: "hot-die", color: "from-red-600 to-red-800" },
+    { id: 4, name: "Thép không gỉ: SUS201, SUS304, SUS316", category: "stainless-steel", price: "Liên hệ", description: "Thép không gỉ chất lượng", icon: "stainless", color: "from-blue-400 to-blue-600" },
+    { id: 5, name: "Thép làm khuôn dập nguội: SK3, SKS3, SKD11, DC53, SLD", category: "mold-steel", price: "Liên hệ", description: "Thép khuôn dập nguội", icon: "cold-die", color: "from-blue-600 to-blue-800" },
+    { id: 6, name: "Thép làm khuôn nhựa: P20, 2311, 2083, SUS420J2, NAK55, NAK80", category: "mold-steel", price: "Liên hệ", description: "Thép khuôn nhựa chuyên dụng", icon: "plastic-mold", color: "from-green-500 to-green-700" },
+    { id: 7, name: "Thép chế tạo máy: SCR420, SCR440, SCM415, SCM420, SCM440, SNCM439, 65Mn, 5XM", category: "machine-steel", price: "Liên hệ", description: "Thép chế tạo máy", icon: "machine", color: "from-purple-500 to-purple-700" },
+    { id: 8, name: "Thép Carbon: S20C, SS400, S45C, S50C, S55C", category: "carbon-steel", price: "Liên hệ", description: "Thép Carbon đa dạng", icon: "carbon", color: "from-gray-600 to-gray-800" }
   ]
+
+  const getIcon = (iconType: string) => {
+    switch (iconType) {
+      case 'copper':
+        return (
+          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+          </svg>
+        )
+      case 'aluminum':
+        return (
+          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        )
+      case 'hot-die':
+        return (
+          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        )
+      case 'stainless':
+        return (
+          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        )
+      case 'cold-die':
+        return (
+          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+        )
+      case 'plastic-mold':
+        return (
+          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+        )
+      case 'machine':
+        return (
+          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+          </svg>
+        )
+      case 'carbon':
+        return (
+          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          </svg>
+        )
+      default:
+        return null
+    }
+  }
 
   const filteredProducts = selectedCategory === 'all' 
     ? products 
@@ -44,14 +91,20 @@ export default function ProductsPage() {
       <Header />
       
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-blue-50 to-blue-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
+        {/* Industrial Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="metal-texture w-full h-full"></div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center">
-            <h1 className="text-5xl font-bold text-gray-800 mb-6">
-              SẢN PHẨM
+            <h1 className="text-5xl font-bold text-gray-800 mb-6 relative">
+              <span className="gradient-primary bg-clip-text text-transparent">SẢN PHẨM</span>
+              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-blue-600 to-orange-500 rounded-full"></div>
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Cung cấp đầy đủ các loại vật liệu xây dựng và nội thất chất lượng cao
+              Cung cấp đầy đủ các loại sắt thép, hợp kim chất lượng cao nhập khẩu từ các nước tiên tiến
             </p>
           </div>
         </div>
@@ -79,35 +132,61 @@ export default function ProductsPage() {
       </section>
 
       {/* Products Grid */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => (
-              <div key={product.id} className="group cursor-pointer">
-                <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200 overflow-hidden">
-                  <div className="aspect-square bg-gray-200 flex items-center justify-center">
-                    <div className="text-center text-gray-600">
-                      <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                        </svg>
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
+        {/* Industrial Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="metal-texture w-full h-full"></div>
                       </div>
-                      <p className="text-xs">Hình ảnh</p>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredProducts.map((product, index) => (
+              <div key={product.id} className="group cursor-pointer precision-cut" style={{ animationDelay: `${index * 0.1}s` }}>
+                <Link href={`/san-pham/${product.id}`} className="block">
+                <div className="relative bg-white rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 steel-glow border border-gray-200">
+                  {/* Product Header */}
+                  <div className={`relative h-24 bg-gradient-to-r ${product.color} flex items-center justify-center overflow-hidden`}>
+                    {/* Metal shine effect */}
+                    <div className="metal-shine absolute inset-0"></div>
+                    
+                    {/* Welding spark effect for hot-die steel */}
+                    {product.icon === 'hot-die' && (
+                      <div className="welding-spark"></div>
+                    )}
+                    
+                    {/* Icon */}
+                    <div className="relative z-10">
+                      {getIcon(product.icon)}
+                    </div>
+                    
+                    {/* Industrial corner accent */}
+                    <div className="absolute top-0 right-0 w-0 h-0 border-l-[20px] border-l-transparent border-t-[20px] border-t-black opacity-20"></div>
+                  </div>
+                  
+                  <div className="p-6">
+                    <h3 className="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition-colors mb-2 leading-tight">
+                      {product.name}
+                    </h3>
+                    <p className="text-xs text-gray-600 mb-4 leading-relaxed">
+                      {product.description}
+                    </p>
+                    
+                    {/* Industrial bottom border */}
+                    <div className="pt-3 border-t border-gray-200">
+                      <div className="flex items-center justify-between text-xs">
+                        <div className="flex items-center text-gray-500">
+                          <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                          <span>Có sẵn</span>
+                        </div>
+                        <span className="text-blue-600 font-medium">Chi tiết</span>
+                      </div>
                     </div>
                   </div>
                   
-                  <div className="p-4">
-                    <h3 className="font-semibold text-gray-800 group-hover:text-blue-600 transition-colors text-sm mb-2">
-                      {product.name}
-                    </h3>
-                    <div className="flex justify-between items-center">
-                      <span className="text-blue-600 font-medium text-sm">{product.price}</span>
-                      <Link href={`/san-pham/${product.id}`} className="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700 transition-colors inline-block">
-                        Chi tiết
-                      </Link>
-                    </div>
-                  </div>
+                  {/* Hover effect overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-orange-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
+                </Link>
               </div>
             ))}
           </div>
@@ -121,66 +200,141 @@ export default function ProductsPage() {
       </section>
 
       {/* Product Categories Info */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 bg-white relative overflow-hidden">
+        {/* Industrial Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="metal-texture w-full h-full"></div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">
-              DANH MỤC SẢN PHẨM
+            <h2 className="text-4xl font-bold text-gray-800 mb-4 relative">
+              <span className="gradient-primary bg-clip-text text-transparent">DANH MỤC SẢN PHẨM</span>
+              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-blue-600 to-orange-500 rounded-full"></div>
             </h2>
             <p className="text-xl text-gray-600">
-              Chúng tôi cung cấp đầy đủ các loại vật liệu xây dựng chất lượng cao
+              Chúng tôi cung cấp đầy đủ các loại sắt thép, hợp kim chất lượng cao nhập khẩu
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-lg shadow-md">
-              <div className="text-4xl mb-4">🧱</div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">Vật Liệu Xây Dựng</h3>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="bg-white p-8 rounded-lg shadow-xl steel-glow border border-gray-200 relative overflow-hidden">
+              {/* Metal shine effect */}
+              <div className="metal-shine absolute inset-0"></div>
+              <div className="relative z-10">
+                <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-4">Hợp Kim</h3>
+                <ul className="space-y-2 text-gray-600">
+                  <li>• Hợp kim đồng: C3604, C1020, C1100</li>
+                  <li>• Hợp kim nhôm: A1050, A5052, A6061, A7075</li>
+                  <li>• Chất lượng cao</li>
+                  <li>• Nhập khẩu chính hãng</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="bg-white p-8 rounded-lg shadow-xl steel-glow border border-gray-200 relative overflow-hidden">
+              {/* Metal shine effect */}
+              <div className="metal-shine absolute inset-0"></div>
+              <div className="relative z-10">
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-4">Thép Làm Khuôn</h3>
+                <ul className="space-y-2 text-gray-600">
+                  <li>• Khuôn dập nóng: SKT4, SKD61, DH2F</li>
+                  <li>• Khuôn dập nguội: SK3, SKS3, SKD11</li>
+                  <li>• Khuôn nhựa: P20, 2311, 2083</li>
+                  <li>• Chuyên dụng, bền bỉ</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="bg-white p-8 rounded-lg shadow-xl steel-glow border border-gray-200 relative overflow-hidden">
+              {/* Metal shine effect */}
+              <div className="metal-shine absolute inset-0"></div>
+              <div className="relative z-10">
+                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-700 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-4">Thép Chế Tạo Máy</h3>
               <ul className="space-y-2 text-gray-600">
-                <li>• Xi măng các loại</li>
-                <li>• Cát, đá, sỏi</li>
-                <li>• Thép xây dựng</li>
-                <li>• Tôn lợp</li>
+                  <li>• SCR420, SCR440, SCM415</li>
+                  <li>• SCM420, SCM440, SNCM439</li>
+                  <li>• 65Mn, 5XM</li>
+                  <li>• Độ chính xác cao</li>
               </ul>
             </div>
-            <div className="bg-white p-8 rounded-lg shadow-md">
-              <div className="text-4xl mb-4">🏠</div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">Gạch & Ngói</h3>
+            </div>
+            
+            <div className="bg-white p-8 rounded-lg shadow-xl steel-glow border border-gray-200 relative overflow-hidden">
+              {/* Metal shine effect */}
+              <div className="metal-shine absolute inset-0"></div>
+              <div className="relative z-10">
+                <div className="w-16 h-16 bg-gradient-to-r from-gray-600 to-gray-800 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-4">Thép Carbon</h3>
               <ul className="space-y-2 text-gray-600">
-                <li>• Gạch đất nung</li>
-                <li>• Gạch block</li>
-                <li>• Gạch ốp lát</li>
-                <li>• Ngói lợp</li>
+                  <li>• S20C, SS400, S45C</li>
+                  <li>• S50C, S55C</li>
+                  <li>• Ứng dụng đa dạng</li>
+                  <li>• Giá cả hợp lý</li>
               </ul>
             </div>
-            <div className="bg-white p-8 rounded-lg shadow-md">
-              <div className="text-4xl mb-4">🪑</div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">Nội Thất</h3>
+            </div>
+            
+            <div className="bg-white p-8 rounded-lg shadow-xl steel-glow border border-gray-200 relative overflow-hidden">
+              {/* Metal shine effect */}
+              <div className="metal-shine absolute inset-0"></div>
+              <div className="relative z-10">
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-4">Thép Không Rỉ</h3>
               <ul className="space-y-2 text-gray-600">
-                <li>• Sàn gỗ</li>
-                <li>• Thảm văn phòng</li>
-                <li>• Nội thất văn phòng</li>
-                <li>• Vật liệu ốp tường</li>
+                  <li>• SUS201, SUS304, SUS316</li>
+                  <li>• Chống ăn mòn tốt</li>
+                  <li>• Bền đẹp theo thời gian</li>
+                  <li>• Ứng dụng rộng rãi</li>
               </ul>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-blue-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section className="py-20 bg-gradient-to-br from-blue-600 to-orange-600 relative overflow-hidden">
+        {/* Industrial Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="metal-texture w-full h-full"></div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
           <h2 className="text-4xl font-bold text-white mb-6">
             Cần Tư Vấn Sản Phẩm?
           </h2>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Liên hệ ngay để được tư vấn và báo giá chi tiết về các sản phẩm
+            Liên hệ ngay để được tư vấn và báo giá chi tiết về các sản phẩm sắt thép, hợp kim chất lượng cao
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+            <button className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all steel-glow">
               Yêu cầu báo giá
             </button>
-            <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
+            <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-all steel-glow">
               Liên hệ tư vấn
             </button>
           </div>

@@ -57,21 +57,23 @@ export default function ContactPage() {
               <h3 className="text-2xl font-bold text-gray-800 mb-6">TRỤ SỞ CHÍNH</h3>
               
               <div className="space-y-4 text-gray-700">
-                <p><strong>Địa chỉ:</strong> 88/10 Đường số 10, P.Tăng Nhơn Phú B, TP.Thủ Đức, TP.HCM</p>
-                <p><strong>Điện thoại:</strong> 0902 300 466</p>
-                <p><strong>Email:</strong> xaydungphuanphat@gmail.com</p>
+                <p><strong>Địa chỉ:</strong> Đường số 9, KCN Tam Phước, Phường Tam Phước, Tp. Biên Hòa, Đồng Nai</p>
+                <p><strong>Điện thoại:</strong> (02513) 937 964 hoặc (02513) 937 974</p>
+                <p><strong>Fax:</strong> (02513) 937 984</p>
+                <p><strong>Email:</strong> Sales.phuanphat@gmail.com - Sales@phuanphat.com.vn</p>
+                <p><strong>Hotline:</strong> 0909 926 618 – 0907 353 348 - (Mr.) Toàn</p>
                 <p><strong>Website:</strong> www.phuanphat.com.vn</p>
-                <p><strong>Giờ làm việc:</strong> 8h00 - 17h00 (Thứ 2 - Thứ 7)</p>
               </div>
 
               <div className="mt-8">
-                <h4 className="text-lg font-semibold text-gray-800 mb-4">KHO HÀNG</h4>
+                <h4 className="text-lg font-semibold text-gray-800 mb-4">CHI NHÁNH HÀ NỘI</h4>
                 <div className="space-y-4 text-gray-700">
-                  <p><strong>Địa chỉ:</strong> 88/10 Đường số 10, P.Tăng Nhơn Phú B, TP.Thủ Đức, TP.HCM</p>
-                  <p><strong>Điện thoại:</strong> 0902 300 466</p>
-                  <p><strong>Email:</strong> xaydungphuanphat@gmail.com</p>
-                  <p><strong>Website:</strong> www.phuanphat.com.vn</p>
-                  <p><strong>Giờ làm việc:</strong> 8h00 - 17h00 (Thứ 2 - Thứ 7)</p>
+                  <p><strong>Công ty:</strong> CÔNG TY TNHH SX-TM-DV HẢO AN PHÁT</p>
+                  <p><strong>Địa chỉ:</strong> Thôn Phù Trì, Xã Kim Hoa, Huyện Mê Linh, Thành phố Hà Nội</p>
+                  <p><strong>Điện thoại:</strong> (02438) 133 037 hoặc (02438) 133 038</p>
+                  <p><strong>Fax:</strong> (02438) 133 039</p>
+                  <p><strong>Email:</strong> Sales.haoanphat@gmail.com</p>
+                  <p><strong>Hotline:</strong> 0909926618 - Anh Toàn - 0868586911 - Anh Thịnh</p>
                 </div>
               </div>
 
@@ -191,14 +193,14 @@ export default function ContactPage() {
                 </svg>
               </div>
               <p className="text-lg font-medium">PHÚ AN PHÁT</p>
-              <p className="text-sm">88/10 Đường số 10, P.Tăng Nhơn Phú B, TP.Thủ Đức, TP.HCM</p>
+              <p className="text-sm">Đường số 9, KCN Tam Phước, Phường Tam Phước, Tp. Biên Hòa, Đồng Nai</p>
             </div>
             
             {/* Map overlay info */}
             <div className="absolute top-4 left-4 bg-white p-4 rounded-lg shadow-lg">
               <h4 className="font-bold text-gray-800">PHÚ AN PHÁT</h4>
-              <p className="text-sm text-gray-600">88/10 Đường số 10, P.Tăng Nhơn Phú B</p>
-              <p className="text-sm text-gray-600">TP.Thủ Đức, TP.HCM</p>
+              <p className="text-sm text-gray-600">Đường số 9, KCN Tam Phước</p>
+              <p className="text-sm text-gray-600">Phường Tam Phước, Tp. Biên Hòa, Đồng Nai</p>
               <button className="mt-2 text-blue-600 text-sm hover:underline">
                 View larger map
               </button>

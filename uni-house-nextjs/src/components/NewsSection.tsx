@@ -2,78 +2,115 @@ export default function NewsSection() {
   const newsItems = [
     {
       id: 1,
-      title: "TIN TỨC 1",
-      description: "Thông tin về các dự án mới nhất của công ty",
-      image: "/api/placeholder/200/200"
+      title: "Gia công cắt Laser uy tín giá rẻ ở đâu?",
+      description: "Hiện nay, với thời buổi công nghệ 4.0 thì gia công cắt laser có vai trò và vị trí không nhỏ trong cách ngành thiết kế nội thất, trang trí,...giúp đây mạnh sự phát triển vượt bậc của nền kinh tế nước nhà.",
+      icon: "laser",
+      color: "from-red-500 to-orange-500"
     },
     {
       id: 2,
-      title: "TIN TỨC 2",
-      description: "Cập nhật về công nghệ và kỹ thuật thi công",
-      image: "/api/placeholder/200/200"
+      title: "Giá thép tại Trung Quốc tăng thêm 2%, lập đỉnh mới",
+      description: "Giá thép xây dựng và thép cuộn cán nóng tại Trung Quốc tăng phiên thứ 5 liên tiếp, tính đến ngày 25/6.",
+      icon: "steel",
+      color: "from-blue-500 to-blue-700"
     },
     {
       id: 3,
-      title: "TIN TỨC 3",
-      description: "Thông báo về các chính sách và quy định mới",
-      image: "/api/placeholder/200/200"
+      title: "Ưu và nhược điểm của máy cắt Laser và máy cắt Plasma",
+      description: "Sự hiện đại của ngành công nghiệp trên thế giới dẫn đến nhu cầu gia công vật liệu càng phổ biến...",
+      icon: "plasma",
+      color: "from-purple-500 to-blue-500"
     }
   ]
 
+  const getIcon = (iconType: string) => {
+    switch (iconType) {
+      case 'laser':
+        return (
+          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        )
+      case 'steel':
+        return (
+          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          </svg>
+        )
+      case 'plasma':
+        return (
+          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+        )
+      default:
+        return null
+    }
+  }
+
   return (
-    <section className="py-20 bg-gray-800 relative">
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `repeating-linear-gradient(
-            45deg,
-            transparent,
-            transparent 10px,
-            rgba(255,255,255,0.1) 10px,
-            rgba(255,255,255,0.1) 20px
-          )`
-        }}></div>
+    <section className="py-20 bg-gradient-to-br from-gray-800 to-gray-900 relative overflow-hidden">
+      {/* Industrial Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="metal-texture w-full h-full"></div>
       </div>
-
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold text-white mb-4 relative">
+            <span className="gradient-primary bg-clip-text text-transparent">TIN TỨC</span>
+            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-blue-500 to-orange-500 rounded-full"></div>
+          </h2>
+        </div>
+
         <div className="grid md:grid-cols-3 gap-8">
-          {newsItems.map((news) => (
-            <div key={news.id} className="bg-white rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow">
-              {/* Circular image */}
-              <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <div className="text-center text-gray-600">
-                  <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                    </svg>
+          {newsItems.map((news, index) => (
+            <div key={news.id} className="group cursor-pointer precision-cut" style={{ animationDelay: `${index * 0.2}s` }}>
+              <div className="relative bg-white rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 steel-glow">
+                {/* News Header */}
+                <div className={`relative h-32 bg-gradient-to-r ${news.color} flex items-center justify-center overflow-hidden`}>
+                  {/* Metal shine effect */}
+                  <div className="metal-shine absolute inset-0"></div>
+                  
+                  {/* Welding spark effect for laser news */}
+                  {news.icon === 'laser' && (
+                    <div className="welding-spark"></div>
+                  )}
+                  
+                  {/* Icon */}
+                  <div className="relative z-10">
+                    {getIcon(news.icon)}
                   </div>
-                  <p className="text-xs">Hình ảnh</p>
+                  
+                  {/* Industrial corner accent */}
+                  <div className="absolute top-0 right-0 w-0 h-0 border-l-[30px] border-l-transparent border-t-[30px] border-t-black opacity-20"></div>
                 </div>
-              </div>
+                
+                <div className="p-6">
+                  <h3 className="text-lg font-bold text-gray-800 group-hover:text-blue-600 transition-colors mb-3 leading-tight">
+                    {news.title}
+                  </h3>
+                  
+                  <p className="text-gray-600 text-sm mb-4 leading-relaxed">
+                    {news.description}
+                  </p>
 
-              <h3 className="text-xl font-bold text-gray-800 mb-3 text-center">
-                {news.title}
-              </h3>
-              
-              <p className="text-gray-600 mb-4 text-center">
-                {news.description}
-              </p>
-
-              {/* Time icon and text */}
-              <div className="flex items-center justify-center space-x-2">
-                <svg className="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span className="text-gray-600 text-sm">Thời gian</span>
-              </div>
-
-              <div className="text-center mt-4">
-                <button className="text-blue-600 hover:text-blue-700 font-medium flex items-center justify-center space-x-1 mx-auto">
-                  <span>Xem Thêm</span>
-                  <svg className="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
+                  {/* Industrial bottom border */}
+                  <div className="pt-4 border-t border-gray-200">
+                    <div className="flex items-center justify-between text-xs">
+                      <div className="flex items-center text-gray-500">
+                        <svg className="w-4 h-4 text-orange-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Mới nhất</span>
+                      </div>
+                      <span className="text-blue-600 font-medium">Xem Thêm</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Hover effect overlay */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-orange-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
             </div>
           ))}
