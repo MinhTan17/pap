@@ -1,9 +1,12 @@
+'use client'
+
 import Link from 'next/link'
 import { Header, Footer } from '@/components'
-import { services } from '@/data/services'
+import { useData } from '@/contexts/DataContext'
 import { processSteps } from '@/data/common'
 
 export default function ServicesPage() {
+  const { services } = useData()
 
   const getIcon = (iconType: string) => {
     switch (iconType) {

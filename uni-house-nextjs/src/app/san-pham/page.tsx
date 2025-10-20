@@ -3,9 +3,10 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Header, Footer } from '@/components'
-import { categories, products } from '@/data/products'
+import { useData } from '@/contexts/DataContext'
 
 export default function ProductsPage() {
+  const { categories, products } = useData()
   const [selectedCategory, setSelectedCategory] = useState('all')
 
   const getIcon = (iconType: string) => {

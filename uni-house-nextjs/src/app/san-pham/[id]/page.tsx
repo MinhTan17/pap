@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Header, Footer } from '@/components'
-import { products } from '@/data/products'
+import { useData } from '@/contexts/DataContext'
 
 interface ProductDetailProps {
   params: {
@@ -12,6 +12,7 @@ interface ProductDetailProps {
 }
 
 export default function ProductDetailPage({ params }: ProductDetailProps) {
+  const { products } = useData()
   const [activeTab, setActiveTab] = useState('info')
 
   const base = products.find(p => String(p.id) === params.id)

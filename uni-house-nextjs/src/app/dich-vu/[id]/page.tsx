@@ -1,13 +1,15 @@
 'use client'
 
 import { Header, Footer } from '@/components'
-import { services } from '@/data/services'
+import { useData } from '@/contexts/DataContext'
 
 interface ServiceDetailProps {
   params: { id: string }
 }
 
-const SERVICES = services.map(s => ({ id: String(s.id), title: s.title, icon: s.icon, color: s.color, description: s.description }))
+export default function ServiceDetailPage({ params }: ServiceDetailProps) {
+  const { services } = useData()
+  const SERVICES = services.map(s => ({ id: String(s.id), title: s.title, icon: s.icon, color: s.color, description: s.description }))
 
 function Icon({ type }: { type: string }) {
   switch (type) {
@@ -40,7 +42,6 @@ function Icon({ type }: { type: string }) {
   }
 }
 
-export default function ServiceDetailPage({ params }: ServiceDetailProps) {
   const service = SERVICES.find(s => s.id === params.id)
 
   return (

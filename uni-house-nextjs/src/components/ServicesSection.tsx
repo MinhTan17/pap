@@ -1,7 +1,10 @@
+'use client'
+
 import Link from 'next/link'
-import { services } from '@/data/services'
+import { useData } from '@/contexts/DataContext'
 
 export default function ServicesSection() {
+  const { services } = useData()
 
   const getIcon = (iconType: string) => {
     switch (iconType) {

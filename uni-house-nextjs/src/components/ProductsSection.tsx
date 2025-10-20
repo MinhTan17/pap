@@ -1,6 +1,9 @@
-import { products } from '@/data/products'
+'use client'
+
+import { useData } from '@/contexts/DataContext'
 
 export default function ProductsSection() {
+  const { products } = useData()
 
   const getIcon = (iconType: string) => {
     switch (iconType) {

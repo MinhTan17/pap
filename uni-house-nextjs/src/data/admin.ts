@@ -9,65 +9,46 @@ export interface AdminMenuItem {
 
 export const adminMenu: AdminMenuItem[] = [
   {
-    id: 'intro',
-    label: 'NHÓM GIỚI THIỆU',
+    id: 'dashboard',
+    label: 'TỔNG QUAN',
     children: [
-      { id: 'fields', label: 'Lĩnh vực hoạt động', href: '/admin/intro/fields' },
-      { id: 'about', label: 'Giới thiệu', href: '/admin/intro/about' },
-      { id: 'about-main', label: 'Giới thiệu Main', href: '/admin/intro/about-main' }
+      { id: 'overview', label: 'Bảng điều khiển', href: '/admin' }
     ]
   },
   {
-    id: 'product',
-    label: 'QUẢN LÝ SẢN PHẨM',
+    id: 'content',
+    label: 'QUẢN LÝ NỘI DUNG',
     children: [
-      { id: 'factory-620', label: 'Nhà máy 620', href: '/admin/products/factory-620' },
-      { id: 'equipment', label: 'Trang thiết bị', href: '/admin/products/equipment' }
+      { id: 'banners', label: 'Banner/Slideshow', href: '/admin/banners' },
+      { id: 'services', label: 'Dịch vụ', href: '/admin/services' },
+      { id: 'products', label: 'Sản phẩm', href: '/admin/products' },
+      { id: 'news', label: 'Tin tức', href: '/admin/news' },
+      { id: 'categories', label: 'Danh mục sản phẩm', href: '/admin/categories' }
     ]
   },
   {
-    id: 'posts',
-    label: 'QUẢN LÝ BÀI VIẾT',
+    id: 'pages',
+    label: 'QUẢN LÝ TRANG',
     children: [
-      { id: 'projects', label: 'Dự án', href: '/admin/posts/projects' },
-      { id: 'construction', label: 'Thiết bị thi công', href: '/admin/posts/construction' },
-      { id: 'advantages', label: 'Ưu điểm', href: '/admin/posts/advantages' },
-      { id: 'factory', label: 'Nhà máy sản xuất', href: '/admin/posts/factory' },
-      { id: 'news', label: 'Tin tức', href: '/admin/posts/news' },
-      { id: 'careers', label: 'Tuyển dụng', href: '/admin/posts/careers' },
-      { id: 'services', label: 'Dịch vụ', href: '/admin/posts/services' }
-    ]
-  },
-  {
-    id: 'static',
-    label: 'QUẢN LÝ TRANG TĨNH',
-    children: [
-      { id: 'profile', label: 'Hồ sơ năng lực', href: '/admin/static/profile' },
-      { id: 'slogan', label: 'Slogan', href: '/admin/static/slogan' },
-      { id: 'contact', label: 'Liên hệ', href: '/admin/static/contact' },
-      { id: 'footer', label: 'Footer', href: '/admin/static/footer' }
+      { id: 'homepage', label: 'Trang chủ', href: '/admin/pages/homepage' },
+      { id: 'about', label: 'Giới thiệu', href: '/admin/pages/about' },
+      { id: 'contact', label: 'Liên hệ', href: '/admin/pages/contact' }
     ]
   },
   {
     id: 'media',
-    label: 'QUẢN LÝ HÌNH ẢNH - LIÊN KẾT',
+    label: 'QUẢN LÝ MEDIA',
     children: [
-      { id: 'logo', label: 'Logo', href: '/admin/media/logo' },
-      { id: 'banner', label: 'Banner', href: '/admin/media/banner' },
-      { id: 'favicon', label: 'Favicon', href: '/admin/media/favicon' },
-      { id: 'slideshow', label: 'Slideshow', href: '/admin/media/slideshow' },
-      { id: 'partners', label: 'Đối tác', href: '/admin/media/partners' },
-      { id: 'social-header', label: 'Mạng xã hội header', href: '/admin/media/social-header' },
-      { id: 'social-footer', label: 'Mạng xã hội footer', href: '/admin/media/social-footer' },
-      { id: 'social', label: 'Mạng xã hội', href: '/admin/media/social' }
+      { id: 'media', label: 'Hình ảnh & Video', href: '/admin/media' }
     ]
   },
   {
-    id: 'email',
-    label: 'QUẢN LÝ EMAIL',
+    id: 'settings',
+    label: 'CÀI ĐẶT',
     children: [
-      { id: 'contact-mail', label: 'Liên hệ', href: '/admin/email/contact' },
-      { id: 'newsletter', label: 'Đăng ký nhận tin', href: '/admin/email/newsletter' }
+      { id: 'company', label: 'Thông tin công ty', href: '/admin/settings/company' },
+      { id: 'seo', label: 'SEO & Meta', href: '/admin/settings/seo' },
+      { id: 'contact-info', label: 'Thông tin liên hệ', href: '/admin/settings/contact' }
     ]
   }
 ]

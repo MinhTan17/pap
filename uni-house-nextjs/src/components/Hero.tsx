@@ -1,44 +1,21 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useData } from '@/contexts/DataContext'
 
 export default function Hero() {
+  const { banners } = useData()
   const [currentSlide, setCurrentSlide] = useState(0)
-  
-  const slides = [
-    {
-      id: 1,
-      title: "GIA CÔNG CẮT LASER CNC",
-      subtitle: "CÔNG NGHỆ HIỆN ĐẠI",
-      description: "Cung cấp dịch vụ gia công cắt laser CNC chính xác cao với công nghệ tiên tiến",
-      gradient: "from-red-600 via-orange-500 to-yellow-500",
-      icon: "laser"
-    },
-    {
-      id: 2,
-      title: "SẮT THÉP CHẤT LƯỢNG CAO", 
-      subtitle: "NHẬP KHẨU TRỰC TIẾP",
-      description: "Nhập khẩu và phân phối các loại sắt thép chất lượng cao từ các nước tiên tiến",
-      gradient: "from-blue-600 via-blue-700 to-gray-800",
-      icon: "steel"
-    },
-    {
-      id: 3,
-      title: "CƠ KHÍ CHÍNH XÁC",
-      subtitle: "KINH NGHIỆM 20+ NĂM",
-      description: "Đội ngũ kỹ thuật giàu kinh nghiệm, cam kết chất lượng và tiến độ giao hàng",
-      gradient: "from-green-600 via-green-700 to-blue-800",
-      icon: "precision"
-    }
-  ]
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length)
-    }, 5000)
+    if (banners.length > 0) {
+      const timer = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % banners.length)
+      }, 5000)
 
-    return () => clearInterval(timer)
-  }, [slides.length])
+      return () => clearInterval(timer)
+    }
+  }, [banners.length])
 
   const getIcon = (iconType: string) => {
     switch (iconType) {
@@ -60,6 +37,24 @@ export default function Hero() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         )
+      case 'heat':
+        return (
+          <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+          </svg>
+        )
+      case 'plasma':
+        return (
+          <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+        )
+      case 'milling':
+        return (
+          <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        )
       default:
         return null
     }
@@ -74,20 +69,37 @@ export default function Hero() {
       
       {/* Slider Container */}
       <div className="relative h-full">
-        {slides.map((slide, index) => (
+        {banners.map((slide, index) => (
           <div
             key={slide.id}
             className={`absolute inset-0 transition-opacity duration-1000 ${
               index === currentSlide ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            <div className={`h-full bg-gradient-to-br ${slide.gradient} relative overflow-hidden`}>
-              {/* Metal shine effect */}
-              <div className="metal-shine absolute inset-0"></div>
-              
-              {/* Welding spark effect for laser slide */}
-              {slide.icon === 'laser' && (
-                <div className="welding-spark"></div>
+            <div className={`h-full relative overflow-hidden ${
+              slide.useImage && slide.image 
+                ? '' 
+                : `bg-gradient-to-br ${slide.gradient}`
+            }`}>
+              {slide.useImage && slide.image ? (
+                <>
+                  <img 
+                    src={slide.image} 
+                    alt={slide.imageAlt || slide.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+                </>
+              ) : (
+                <>
+                  {/* Metal shine effect */}
+                  <div className="metal-shine absolute inset-0"></div>
+                  
+                  {/* Welding spark effect for laser slide */}
+                  {slide.icon === 'laser' && (
+                    <div className="welding-spark"></div>
+                  )}
+                </>
               )}
               
               {/* Content */}
@@ -125,7 +137,7 @@ export default function Hero() {
 
       {/* Navigation Dots */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3">
-        {slides.map((_, index) => (
+        {banners.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
@@ -138,7 +150,7 @@ export default function Hero() {
 
       {/* Navigation Arrows */}
       <button
-        onClick={() => setCurrentSlide(currentSlide === 0 ? slides.length - 1 : currentSlide - 1)}
+        onClick={() => setCurrentSlide(currentSlide === 0 ? banners.length - 1 : currentSlide - 1)}
         className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-60 text-white p-3 rounded-full hover:bg-opacity-80 transition-all steel-glow"
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -147,7 +159,7 @@ export default function Hero() {
       </button>
       
       <button
-        onClick={() => setCurrentSlide((currentSlide + 1) % slides.length)}
+        onClick={() => setCurrentSlide((currentSlide + 1) % banners.length)}
         className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-60 text-white p-3 rounded-full hover:bg-opacity-80 transition-all steel-glow"
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

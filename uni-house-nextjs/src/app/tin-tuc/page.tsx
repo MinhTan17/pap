@@ -1,8 +1,11 @@
+'use client'
+
 import Link from 'next/link'
 import { Header, Footer } from '@/components'
-import { newsArticles } from '@/data/news'
+import { useData } from '@/contexts/DataContext'
 
 export default function NewsPage() {
+  const { newsArticles } = useData()
   const featuredNews = newsArticles[0]
 
   return (

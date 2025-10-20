@@ -1,6 +1,9 @@
-import { homepageNews as newsItems } from '@/data/news'
+'use client'
+
+import { useData } from '@/contexts/DataContext'
 
 export default function NewsSection() {
+  const { homepageNews: newsItems } = useData()
 
   const getIcon = (iconType: string) => {
     switch (iconType) {
