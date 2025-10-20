@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Header, Footer } from '@/components'
+import { products } from '@/data/products'
 
 interface ProductDetailProps {
   params: {
@@ -13,30 +14,24 @@ interface ProductDetailProps {
 export default function ProductDetailPage({ params }: ProductDetailProps) {
   const [activeTab, setActiveTab] = useState('info')
 
-  // Mock product data - in real app, this would come from API
-  const product = {
-    id: params.id,
-    name: "HỢP KIM NHÔM: A1050, A5052, A6061, A7075",
+  const base = products.find(p => String(p.id) === params.id)
+  const product = base ? {
+    id: base.id,
+    name: base.name.toUpperCase(),
     images: [
-      "/api/placeholder/600/400",
-      "/api/placeholder/300/200",
-      "/api/placeholder/300/200",
-      "/api/placeholder/300/200"
+      '/api/placeholder/600/400',
+      '/api/placeholder/300/200',
+      '/api/placeholder/300/200',
+      '/api/placeholder/300/200'
     ],
-    description: "Hợp kim nhôm chất lượng cao với các loại A1050, A5052, A6061, A7075, phù hợp cho nhiều ứng dụng công nghiệp và xây dựng.",
+    description: base.description,
     specifications: {
-      material: "Hợp kim nhôm",
-      grades: ["A1050", "A5052", "A6061", "A7075"],
-      applications: ["Xây dựng", "Công nghiệp", "Gia công cơ khí", "Hàng không"],
-      features: [
-        "Độ bền cao",
-        "Khả năng chống ăn mòn tốt",
-        "Dễ gia công",
-        "Trọng lượng nhẹ",
-        "Khả năng dẫn nhiệt tốt"
-      ]
+      material: base.category,
+      grades: base.name.match(/: (.*)/)?.[1]?.split(',').map(s => s.trim()) || [],
+      applications: ['Xây dựng', 'Công nghiệp', 'Gia công cơ khí'],
+      features: ['Độ bền cao', 'Chống ăn mòn', 'Dễ gia công']
     }
-  }
+  } : null
 
   const relatedProducts = [
     { id: 1, name: "Thép xây dựng", image: "/api/placeholder/300/200" },
@@ -58,7 +53,7 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
       <section className="py-8 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 text-center">
-            {product.name}
+            {product?.name || 'SẢN PHẨM'}
           </h1>
         </div>
       </section>
@@ -82,7 +77,7 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
 
           {/* Thumbnail Images */}
           <div className="grid grid-cols-4 gap-4">
-            {product.images.slice(1).map((image, index) => (
+            {product?.images.slice(1).map((image, index) => (
               <div key={index} className="aspect-square bg-gray-200 rounded-lg flex items-center justify-center">
                 <div className="text-center text-gray-600">
                   <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
@@ -122,7 +117,7 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
             {activeTab === 'info' && (
               <div className="bg-white p-8 rounded-lg shadow-md">
                 <h3 className="text-2xl font-bold text-gray-800 mb-6">Thông tin chi tiết</h3>
-                <p className="text-gray-600 mb-6">{product.description}</p>
+                <p className="text-gray-600 mb-6">{product?.description}</p>
                 
                 <div className="grid md:grid-cols-2 gap-8">
                   <div>
@@ -130,15 +125,15 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
                     <div className="space-y-3">
                       <div>
                         <span className="font-medium text-gray-700">Vật liệu:</span>
-                        <span className="ml-2 text-gray-600">{product.specifications.material}</span>
+                        <span className="ml-2 text-gray-600">{product?.specifications.material}</span>
                       </div>
                       <div>
                         <span className="font-medium text-gray-700">Các loại:</span>
-                        <span className="ml-2 text-gray-600">{product.specifications.grades.join(', ')}</span>
+                        <span className="ml-2 text-gray-600">{product?.specifications.grades.join(', ')}</span>
                       </div>
                       <div>
                         <span className="font-medium text-gray-700">Ứng dụng:</span>
-                        <span className="ml-2 text-gray-600">{product.specifications.applications.join(', ')}</span>
+                        <span className="ml-2 text-gray-600">{product?.specifications.applications.join(', ')}</span>
                       </div>
                     </div>
                   </div>
@@ -146,7 +141,7 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
                   <div>
                     <h4 className="text-lg font-semibold text-gray-800 mb-4">Đặc điểm nổi bật</h4>
                     <ul className="space-y-2">
-                      {product.specifications.features.map((feature, index) => (
+                      {product?.specifications.features.map((feature, index) => (
                         <li key={index} className="flex items-center text-gray-600">
                           <svg className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -176,7 +171,7 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
               <div className="bg-white p-8 rounded-lg shadow-md">
                 <h3 className="text-2xl font-bold text-gray-800 mb-6">Hình ảnh</h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {product.images.map((image, index) => (
+                  {product?.images.map((image, index) => (
                     <div key={index} className="aspect-square bg-gray-200 rounded-lg flex items-center justify-center">
                       <div className="text-center text-gray-600">
                         <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">

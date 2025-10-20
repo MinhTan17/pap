@@ -1,19 +1,13 @@
 'use client'
 
 import { Header, Footer } from '@/components'
+import { services } from '@/data/services'
 
 interface ServiceDetailProps {
   params: { id: string }
 }
 
-const SERVICES = [
-  { id: '1', title: 'GIA CÔNG CẮT LASER CNC', icon: 'laser', color: 'from-red-600 to-orange-500', description: 'Gia công cắt laser CNC độ chính xác cao, tốc độ nhanh, biên dạng phức tạp.' },
-  { id: '2', title: 'GIA CÔNG PHAY VÀ MÀI 6 MẶT', icon: 'milling', color: 'from-blue-600 to-blue-800', description: 'Gia công phay và mài cho độ phẳng cao, bề mặt đẹp, kích thước chính xác.' },
-  { id: '3', title: 'GIA CÔNG KHUÔN MẪU, CƠ KHÍ CHÍNH XÁC', icon: 'precision', color: 'from-green-600 to-green-800', description: 'Sản phẩm chính xác, dung sai chặt, vật liệu đa dạng.' },
-  { id: '4', title: 'XỬ LÝ NHIỆT - NHIỆT LUYỆN', icon: 'heat', color: 'from-orange-600 to-red-600', description: 'Các quy trình tôi – ram, thấm cacbon, cải thiện cơ tính vật liệu.' },
-  { id: '5', title: 'GIA CÔNG CẮT PLASMA', icon: 'plasma', color: 'from-purple-600 to-blue-600', description: 'Cắt tấm lớn, vật liệu dày, chi phí tối ưu.' },
-  { id: '6', title: 'XUẤT NHẬP KHẨU SẮT THÉP', icon: 'steel', color: 'from-gray-600 to-gray-800', description: 'Nguồn hàng ổn định, chủng loại đa dạng, giao nhanh.' }
-]
+const SERVICES = services.map(s => ({ id: String(s.id), title: s.title, icon: s.icon, color: s.color, description: s.description }))
 
 function Icon({ type }: { type: string }) {
   switch (type) {

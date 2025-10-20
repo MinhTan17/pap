@@ -1,62 +1,6 @@
+import { products } from '@/data/products'
+
 export default function ProductsSection() {
-  const products = [
-    { 
-      id: 1, 
-      name: "HỢP KIM ĐỒNG", 
-      description: "C3604, C1020, C1100",
-      icon: "copper",
-      color: "from-orange-500 to-red-600"
-    },
-    { 
-      id: 2, 
-      name: "HỢP KIM NHÔM", 
-      description: "A1050, A5052, A6061, A7075",
-      icon: "aluminum",
-      color: "from-gray-400 to-gray-600"
-    },
-    { 
-      id: 3, 
-      name: "THÉP LÀM KHUÔN DẬP NÓNG", 
-      description: "SKT4, SKD61, DH2F",
-      icon: "hot-die",
-      color: "from-red-600 to-red-800"
-    },
-    { 
-      id: 4, 
-      name: "THÉP KHÔNG GỈ", 
-      description: "SUS201, SUS304, SUS316",
-      icon: "stainless",
-      color: "from-blue-400 to-blue-600"
-    },
-    { 
-      id: 5, 
-      name: "THÉP LÀM KHUÔN DẬP NGUỘI", 
-      description: "SK3, SKS3, SKD11, DC53, SLD",
-      icon: "cold-die",
-      color: "from-blue-600 to-blue-800"
-    },
-    { 
-      id: 6, 
-      name: "THÉP LÀM KHUÔN NHỰA", 
-      description: "P20, 2311, 2083, SUS420J2, NAK55, NAK80",
-      icon: "plastic-mold",
-      color: "from-green-500 to-green-700"
-    },
-    { 
-      id: 7, 
-      name: "THÉP CHẾ TẠO MÁY", 
-      description: "SCR420, SCR440, SCM415, SCM420, SCM440, SNCM439, 65Mn, 5XM",
-      icon: "machine",
-      color: "from-purple-500 to-purple-700"
-    },
-    { 
-      id: 8, 
-      name: "THÉP CARBON", 
-      description: "S20C, SS400, S45C, S50C, S55C",
-      icon: "carbon",
-      color: "from-gray-600 to-gray-800"
-    }
-  ]
 
   const getIcon = (iconType: string) => {
     switch (iconType) {

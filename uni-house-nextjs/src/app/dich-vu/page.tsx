@@ -1,57 +1,9 @@
 import Link from 'next/link'
 import { Header, Footer } from '@/components'
+import { services } from '@/data/services'
+import { processSteps } from '@/data/common'
 
 export default function ServicesPage() {
-  const services = [
-    {
-      id: 1,
-      title: "GIA CÔNG CẮT LASER CNC",
-      icon: 'laser',
-      description: "Việc nhập về máy gia công cắt laser đã giúp cho Khách hàng có quy trình khép kín từ việc cung cấp phôi thô cho đến gia công.",
-      color: "from-red-600 to-orange-500",
-      features: ["Độ chính xác cao", "Tốc độ nhanh", "Biên dạng phức tạp"]
-    },
-    {
-      id: 2,
-      title: "GIA CÔNG PHAY VÀ MÀI 6 MẶT",
-      icon: 'milling',
-      description: "Gia công phay và mài cho độ phẳng và độ song song cao.",
-      color: "from-blue-600 to-blue-800",
-      features: ["Độ phẳng cao", "Bề mặt đẹp", "Kích thước chính xác"]
-    },
-    {
-      id: 3,
-      title: "GIA CÔNG KHUÔN MẪU, CƠ KHÍ CHÍNH XÁC",
-      icon: 'precision',
-      description: "Đội ngũ kinh nghiệm, sản phẩm chính xác với thiết kế thông minh.",
-      color: "from-green-600 to-green-800",
-      features: ["Dung sai chặt", "Bền bỉ", "Vật liệu đa dạng"]
-    },
-    {
-      id: 4,
-      title: "XỬ LÝ NHIỆT - NHIỆT LUYỆN",
-      icon: 'heat',
-      description: "Tư vấn & hỗ trợ tối đa để sản phẩm đạt chất lượng tốt nhất.",
-      color: "from-orange-600 to-red-600",
-      features: ["Tôi – Ram", "Thấm Cacbon", "Cải thiện cơ tính"]
-    },
-    {
-      id: 5,
-      title: "GIA CÔNG CẮT PLASMA",
-      icon: 'plasma',
-      description: "Cắt chính xác – ưu tiên hàng đầu của chúng tôi.",
-      color: "from-purple-600 to-blue-600",
-      features: ["Tấm lớn", "Dày vật liệu", "Chi phí tối ưu"]
-    },
-    {
-      id: 6,
-      title: "XUẤT NHẬP KHẨU SẮT THÉP",
-      icon: 'steel',
-      description: "Cung cấp sắt thép tốt nhất của các nước tiên tiến với thời gian ngắn.",
-      color: "from-gray-600 to-gray-800",
-      features: ["Nguồn hàng ổn định", "Chủng loại đa dạng", "Giao nhanh"]
-    }
-  ]
 
   const getIcon = (iconType: string) => {
     switch (iconType) {
@@ -160,7 +112,7 @@ export default function ServicesPage() {
                       {service.description}
                     </p>
                     <ul className="space-y-2 text-sm text-gray-600">
-                      {service.features.map((feature, idx) => (
+                      {(service.features || []).map((feature, idx) => (
                         <li key={idx} className="flex items-center">
                           <svg className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -191,12 +143,7 @@ export default function ServicesPage() {
           </div>
 
           <div className="grid md:grid-cols-4 gap-8">
-            {[
-              { step: "1", title: "Tư vấn", description: "Tư vấn và lên phương án thiết kế" },
-              { step: "2", title: "Thiết kế", description: "Thiết kế chi tiết và báo giá" },
-              { step: "3", title: "Thi công", description: "Thi công theo đúng thiết kế" },
-              { step: "4", title: "Hoàn thiện", description: "Kiểm tra và bàn giao công trình" }
-            ].map((item, index) => (
+            {processSteps.map((item, index) => (
               <div key={index} className="text-center">
                 <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
                   {item.step}

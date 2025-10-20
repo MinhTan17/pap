@@ -1,27 +1,6 @@
+import { homepageNews as newsItems } from '@/data/news'
+
 export default function NewsSection() {
-  const newsItems = [
-    {
-      id: 1,
-      title: "Gia công cắt Laser uy tín giá rẻ ở đâu?",
-      description: "Hiện nay, với thời buổi công nghệ 4.0 thì gia công cắt laser có vai trò và vị trí không nhỏ trong cách ngành thiết kế nội thất, trang trí,...giúp đây mạnh sự phát triển vượt bậc của nền kinh tế nước nhà.",
-      icon: "laser",
-      color: "from-red-500 to-orange-500"
-    },
-    {
-      id: 2,
-      title: "Giá thép tại Trung Quốc tăng thêm 2%, lập đỉnh mới",
-      description: "Giá thép xây dựng và thép cuộn cán nóng tại Trung Quốc tăng phiên thứ 5 liên tiếp, tính đến ngày 25/6.",
-      icon: "steel",
-      color: "from-blue-500 to-blue-700"
-    },
-    {
-      id: 3,
-      title: "Ưu và nhược điểm của máy cắt Laser và máy cắt Plasma",
-      description: "Sự hiện đại của ngành công nghiệp trên thế giới dẫn đến nhu cầu gia công vật liệu càng phổ biến...",
-      icon: "plasma",
-      color: "from-purple-500 to-blue-500"
-    }
-  ]
 
   const getIcon = (iconType: string) => {
     switch (iconType) {

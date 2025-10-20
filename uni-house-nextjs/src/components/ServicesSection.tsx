@@ -1,50 +1,7 @@
 import Link from 'next/link'
+import { services } from '@/data/services'
 
 export default function ServicesSection() {
-  const services = [
-    {
-      id: 1,
-      title: "GIA CÔNG CẮT LASER CNC",
-      icon: "laser",
-      description: "Việc nhập về máy gia công cắt laser đã giúp cho Khách hàng có quy trình khép kín từ việc cung cấp phôi thô cho đến gia công.",
-      color: "from-red-600 to-orange-500"
-    },
-    {
-      id: 2,
-      title: "GIA CÔNG PHAY VÀ MÀI 6 MẶT",
-      icon: "milling",
-      description: "Việc nhập về máy gia công cắt laser đã giúp cho Khách hàng có quy trình khép kín từ việc cung cấp phôi thô cho đến gia công.",
-      color: "from-blue-600 to-blue-800"
-    },
-    {
-      id: 3,
-      title: "GIA CÔNG KHUÔN MẪU, CƠ KHÍ CHÍNH XÁC",
-      icon: "precision",
-      description: "Đội ngũ công nhân giàu kinh nghiệm sẽ luôn cho bạn những sản phẩm chính xác với thiết kế thông minh.",
-      color: "from-green-600 to-green-800"
-    },
-    {
-      id: 4,
-      title: "XỬ LÝ NHIỆT - NHIỆT LUYỆN",
-      icon: "heat",
-      description: "Chúng tôi sẵn sàng tư vấn & hỗ trợ khách hàng tối đa có thể để sản phẩm có được chất lượng tốt nhất.",
-      color: "from-orange-600 to-red-600"
-    },
-    {
-      id: 5,
-      title: "GIA CÔNG CẮT PLASMA",
-      icon: "plasma",
-      description: "Cắt chính xác là ưu tiên hàng đầu của công ty chúng tôi, hân hạnh được làm việc với quý khách hàng.",
-      color: "from-purple-600 to-blue-600"
-    },
-    {
-      id: 6,
-      title: "XUẤT NHẬP KHẨU SẮT THÉP",
-      icon: "steel",
-      description: "Chúng tôi cung cấp các sản phẩm sắt thép tốt nhất của các nước tiên tiến với thời gian ngắn nhất có thể.",
-      color: "from-gray-600 to-gray-800"
-    }
-  ]
 
   const getIcon = (iconType: string) => {
     switch (iconType) {
