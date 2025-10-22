@@ -4,29 +4,24 @@
   --background: #ffffff;
   --foreground: #171717;
   
-  /* Industrial Color Palette */
-  --steel-blue: #2c3e50;
-  --industrial-gray: #34495e;
-  --metal-silver: #7f8c8d;
-  --burnished-steel: #95a5a6;
-  --carbon-black: #1a1a1a;
-  --welding-orange: #e67e22;
-  --precision-blue: #3498db;
-  --safety-yellow: #f1c40f;
-  --steel-gradient: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #7f8c8d 100%);
-  --metal-texture: linear-gradient(45deg, #bdc3c7 25%, transparent 25%), 
-                   linear-gradient(-45deg, #bdc3c7 25%, transparent 25%), 
-                   linear-gradient(45deg, transparent 75%, #bdc3c7 75%), 
-                   linear-gradient(-45deg, transparent 75%, #bdc3c7 75%);
-
-  /* Construction Theme Palette */
-  --construction-slate: #1f2937; /* slate-800 */
-  --construction-charcoal: #111827; /* gray-900 */
-  --construction-orange: #b45309; /* amber-700 muted */
-  --construction-yellow: #a16207; /* amber-600 muted */
-  --construction-amber: #92400e; /* amber-800 */
-  --construction-concrete: #e5e7eb; /* gray-200 */
-  --construction-gradient: linear-gradient(135deg, #6b7280 0%, #374151 50%, #111827 100%);
+  /* PAP Brand Colors - Based on Logo */
+  --pap-blue: #1e40af; /* blue-800 - primary blue from logo */
+  --pap-blue-light: #3b82f6; /* blue-500 */
+  --pap-blue-dark: #1e3a8a; /* blue-900 */
+  --pap-red: #dc2626; /* red-600 - red accent from logo */
+  --pap-red-dark: #991b1b; /* red-800 */
+  --pap-gray: #475569; /* slate-600 - neutral */
+  --pap-gray-light: #94a3b8; /* slate-400 */
+  --pap-gray-dark: #1e293b; /* slate-800 */
+  
+  /* Gradients */
+  --pap-gradient-primary: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+  --pap-gradient-accent: linear-gradient(135deg, #1e40af 0%, #dc2626 100%);
+  --pap-gradient-dark: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  
+  /* Simple texture without checkerboard */
+  --metal-texture: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.05) 0%, transparent 50%),
+                   radial-gradient(circle at 80% 80%, rgba(255,255,255,0.03) 0%, transparent 50%);
 }
 
 @theme inline {
@@ -158,36 +153,35 @@ body {
   background: var(--steel-gradient);
 }
 
-/* Construction Utilities */
+/* PAP Brand Utilities */
 .construction-header-bg {
   background-color: #ffffff;
-  border-bottom: 1px solid var(--construction-concrete);
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .construction-logo {
-  background: var(--construction-gradient);
+  background: var(--pap-gradient-primary);
 }
 
 .construction-text {
-  color: var(--construction-slate);
+  color: var(--pap-gray-dark);
 }
 
 .construction-link {
-  color: var(--construction-slate);
+  color: var(--pap-gray-dark);
 }
 
 .construction-link:hover {
-  color: var(--construction-amber);
+  color: var(--pap-blue);
 }
 
 .gradient-primary {
-  background-image: var(--construction-gradient);
+  background-image: var(--pap-gradient-primary);
 }
 
 .metal-texture {
   background: var(--metal-texture);
-  background-size: 20px 20px;
-  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  background-size: 100% 100%;
 }
 
 .metal-shine {

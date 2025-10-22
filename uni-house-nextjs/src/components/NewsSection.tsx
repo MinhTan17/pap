@@ -42,8 +42,8 @@ export default function NewsSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-white mb-4 relative">
-            <span className="gradient-primary bg-clip-text text-transparent">{t('title')}</span>
-            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-blue-500 to-orange-500 rounded-full"></div>
+            <span className="bg-gradient-to-r from-gray-300 to-white bg-clip-text text-transparent">{t('title')}</span>
+            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-blue-500 to-red-500 rounded-full"></div>
           </h2>
         </div>
 

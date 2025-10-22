@@ -20,7 +20,7 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
     id: base.id,
     name: base.name.toUpperCase(),
     images: [
-      '/api/placeholder/600/400',
+      '/icons/products/C1100.png',
       '/api/placeholder/300/200',
       '/api/placeholder/300/200',
       '/api/placeholder/300/200'

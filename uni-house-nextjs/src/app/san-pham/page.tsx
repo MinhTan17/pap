@@ -27,8 +27,8 @@ export default function ProductsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center">
             <h1 className="text-5xl font-bold text-gray-800 mb-6 relative">
-              <span className="gradient-primary bg-clip-text text-transparent">SẢN PHẨM</span>
-              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-blue-600 to-orange-500 rounded-full"></div>
+              <span className="bg-gradient-to-r from-blue-800 to-blue-900 bg-clip-text text-transparent">SẢN PHẨM</span>
+              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-blue-600 to-red-600 rounded-full"></div>
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Cung cấp đầy đủ các loại sắt thép, hợp kim chất lượng cao nhập khẩu từ các nước tiên tiến
@@ -47,7 +47,7 @@ export default function ProductsPage() {
                 onClick={() => setSelectedCategory(category.id)}
                 className={`px-6 py-2 rounded-full font-medium transition-colors ${
                   selectedCategory === category.id
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-blue-800 text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
