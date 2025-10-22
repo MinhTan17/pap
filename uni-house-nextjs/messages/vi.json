@@ -1,8 +1,46 @@
 {
-  "nav.home": "Trang chủ",
-  "nav.about": "Giới thiệu",
-  "nav.product": "Sản phẩm",
-  "nav.service": "Dịch vụ",
-  "nav.news": "Tin tức",
-  "nav.contact": "Liên hệ"
+  "nav": {
+    "home": "Trang chủ",
+    "about": "Giới thiệu",
+    "product": "Sản phẩm",
+    "service": "Dịch vụ",
+    "news": "Tin tức",
+    "contact": "Liên hệ"
+  },
+  "services": {
+    "title": "DỊCH VỤ CUNG CẤP",
+    "subtitle": "Dưới đây là một số dịch vụ công ty chúng tôi cung cấp",
+    "quality": "Chất lượng cao"
+  },
+  "products": {
+    "title": "SẢN PHẨM NỔI BẬT",
+    "subtitle": "Khám phá các sản phẩm chất lượng cao của chúng tôi",
+    "viewAll": "Xem tất cả sản phẩm",
+    "available": "Có sẵn",
+    "details": "Chi tiết"
+  },
+  "news": {
+    "title": "TIN TỨC MỚI NHẤT",
+    "subtitle": "Cập nhật tin tức và sự kiện mới nhất từ chúng tôi",
+    "readMore": "Đọc thêm",
+    "viewAll": "Xem tất cả tin tức",
+    "latest": "Mới nhất",
+    "viewMore": "Xem Thêm"
+  },
+  "hotline": {
+    "title": "HOTLINE",
+    "quote": "Ngay cả khi bạn chưa có phát thảo sẵn sàng về những gì bạn muốn, chúng tôi sẽ giúp bạn những mẫu thiết kế hợp lý nhất"
+  },
+  "footer": {
+    "company": "PHÚ AN PHÁT",
+    "servicesTitle": "DỊCH VỤ CHÚNG TÔI",
+    "productsTitle": "SẢN PHẨM",
+    "address": "Địa chỉ",
+    "phone": "Điện thoại",
+    "fax": "Fax",
+    "email": "Email",
+    "hotline": "Hotline",
+    "website": "Website",
+    "copyright": "© 2019 Phú An Phát"
+  }
 }

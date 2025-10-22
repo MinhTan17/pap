@@ -1,9 +1,11 @@
 'use client'
 
 import { useData } from '@/contexts/DataContext'
+import { useTranslations } from 'next-intl'
 
 export default function NewsSection() {
   const { homepageNews: newsItems } = useData()
+  const t = useTranslations('news')
 
   const getIcon = (iconType: string) => {
     switch (iconType) {
@@ -40,7 +42,7 @@ export default function NewsSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-white mb-4 relative">
-            <span className="gradient-primary bg-clip-text text-transparent">TIN TỨC</span>
+            <span className="gradient-primary bg-clip-text text-transparent">{t('title')}</span>
             <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-blue-500 to-orange-500 rounded-full"></div>
           </h2>
         </div>
@@ -84,9 +86,9 @@ export default function NewsSection() {
                         <svg className="w-4 h-4 text-orange-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <span>Mới nhất</span>
+                        <span>{t('latest')}</span>
                       </div>
-                      <span className="text-blue-600 font-medium">Xem Thêm</span>
+                      <span className="text-blue-600 font-medium">{t('viewMore')}</span>
                     </div>
                   </div>
                 </div>

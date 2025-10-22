@@ -1,8 +1,46 @@
 {
-  "nav.home": "Home",
-  "nav.about": "About",
-  "nav.product": "Products",
-  "nav.service": "Services",
-  "nav.news": "News",
-  "nav.contact": "Contact"
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "product": "Products",
+    "service": "Services",
+    "news": "News",
+    "contact": "Contact"
+  },
+  "services": {
+    "title": "OUR SERVICES",
+    "subtitle": "Below are some of the services our company provides",
+    "quality": "High Quality"
+  },
+  "products": {
+    "title": "FEATURED PRODUCTS",
+    "subtitle": "Discover our high-quality products",
+    "viewAll": "View all products",
+    "available": "Available",
+    "details": "Details"
+  },
+  "news": {
+    "title": "LATEST NEWS",
+    "subtitle": "Stay updated with our latest news and events",
+    "readMore": "Read more",
+    "viewAll": "View all news",
+    "latest": "Latest",
+    "viewMore": "View More"
+  },
+  "hotline": {
+    "title": "HOTLINE",
+    "quote": "Even if you don't have a ready draft of what you want, we will help you with the most reasonable design samples"
+  },
+  "footer": {
+    "company": "PHU AN PHAT",
+    "servicesTitle": "OUR SERVICES",
+    "productsTitle": "PRODUCTS",
+    "address": "Address",
+    "phone": "Phone",
+    "fax": "Fax",
+    "email": "Email",
+    "hotline": "Hotline",
+    "website": "Website",
+    "copyright": "© 2019 Phu An Phat"
+  }
 }

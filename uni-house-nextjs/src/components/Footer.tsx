@@ -1,6 +1,10 @@
+'use client'
+
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 
 export default function Footer() {
+  const t = useTranslations('footer')
   return (
     <footer className="bg-gray-800 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -19,7 +23,7 @@ export default function Footer() {
 
           {/* Dịch vụ chúng tôi */}
           <div>
-            <h3 className="text-xl font-bold mb-4">DỊCH VỤ CHÚNG TÔI</h3>
+            <h3 className="text-xl font-bold mb-4">{t('servicesTitle')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="/services" className="text-gray-300 hover:text-white transition-colors">
@@ -46,7 +50,7 @@ export default function Footer() {
 
           {/* Sản phẩm */}
           <div>
-            <h3 className="text-xl font-bold mb-4">SẢN PHẨM</h3>
+            <h3 className="text-xl font-bold mb-4">{t('productsTitle')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="/products" className="text-gray-300 hover:text-white transition-colors">
@@ -78,31 +82,31 @@ export default function Footer() {
 
           {/* Thông tin liên hệ */}
           <div>
-            <h3 className="text-2xl font-bold mb-4">PHÚ AN PHÁT</h3>
+            <h3 className="text-2xl font-bold mb-4">{t('company')}</h3>
             <div className="space-y-3 text-gray-300">
               <p>
-                <span className="font-semibold">Địa chỉ:</span><br />
+                <span className="font-semibold">{t('address')}:</span><br />
                 Đường số 9, KCN Tam Phước,<br />
                 Phường Tam Phước, Tp. Biên Hòa, Đồng Nai
               </p>
               <p>
-                <span className="font-semibold">Điện thoại:</span><br />
+                <span className="font-semibold">{t('phone')}:</span><br />
                 (02513) 937 964 - (02513) 937 974
               </p>
               <p>
-                <span className="font-semibold">Fax:</span><br />
+                <span className="font-semibold">{t('fax')}:</span><br />
                 (02513) 937 984
               </p>
               <p>
-                <span className="font-semibold">Email:</span><br />
+                <span className="font-semibold">{t('email')}:</span><br />
                 Sales.phuanphat@gmail.com
               </p>
               <p>
-                <span className="font-semibold">Hotline:</span><br />
+                <span className="font-semibold">{t('hotline')}:</span><br />
                 0909 926 618 – 0907 353 348
               </p>
               <p>
-                <span className="font-semibold">Website:</span><br />
+                <span className="font-semibold">{t('website')}:</span><br />
                 www.phuanphat.com.vn
               </p>
             </div>
@@ -135,7 +139,7 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="mt-12 pt-8 border-t border-gray-700 text-center text-gray-400">
-          <p>© 2019 Phú An Phát</p>
+          <p>{t('copyright')}</p>
         </div>
       </div>
     </footer>

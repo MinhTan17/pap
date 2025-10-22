@@ -2,9 +2,11 @@
 
 import Link from 'next/link'
 import { useData } from '@/contexts/DataContext'
+import { useTranslations } from 'next-intl'
 
 export default function ServicesSection() {
   const { services } = useData()
+  const t = useTranslations('services')
 
   return (
     <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
@@ -16,11 +18,11 @@ export default function ServicesSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-800 mb-4 relative">
-            <span className="gradient-primary bg-clip-text text-transparent">DỊCH VỤ CUNG CẤP</span>
+            <span className="gradient-primary bg-clip-text text-transparent">{t('title')}</span>
             <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-blue-600 to-orange-500 rounded-full"></div>
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Dưới đây là một số dịch vụ công ty chúng tôi cung cấp
+            {t('subtitle')}
           </p>
         </div>
 
@@ -53,7 +55,7 @@ export default function ServicesSection() {
                   <div className="mt-4 pt-4 border-t border-gray-200">
                     <div className="flex items-center text-xs text-gray-500">
                       <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                      <span>Chất lượng cao</span>
+                      <span>{t('quality')}</span>
                     </div>
                   </div>
                 </div>

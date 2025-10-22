@@ -1,11 +1,23 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import Link from 'next/link'
+import { useTranslations, useLocale } from 'next-intl'
+import { useRouter } from 'next/navigation'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [lang, setLang] = useState<'vi' | 'en'>(() => (typeof window !== 'undefined' && localStorage.getItem('lang') === 'en' ? 'en' : 'vi'))
+  const t = useTranslations('nav')
+  const locale = useLocale()
+  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
+
+  const switchLanguage = (newLocale: string) => {
+    startTransition(() => {
+      document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`
+      router.refresh()
+    })
+  }
 
   return (
     <header className="construction-header-bg sticky top-0 z-50">
@@ -26,22 +38,22 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
             <Link href="/" className="construction-link font-medium uppercase">
-              Trang chủ
+              {t('home')}
             </Link>
             <Link href="/gioi-thieu" className="construction-link font-medium uppercase">
-              Giới thiệu
+              {t('about')}
             </Link>
             <Link href="/san-pham" className="construction-link font-medium uppercase">
-              Sản phẩm
+              {t('product')}
             </Link>
             <Link href="/dich-vu" className="construction-link font-medium uppercase">
-              Dịch vụ
+              {t('service')}
             </Link>
             <Link href="/tin-tuc" className="construction-link font-medium uppercase">
-              Tin tức
+              {t('news')}
             </Link>
             <Link href="/lien-he" className="construction-link font-medium uppercase">
-              Liên hệ
+              {t('contact')}
             </Link>
           </nav>
 
@@ -49,15 +61,17 @@ export default function Header() {
           {/* Language Switcher */}
           <div className="hidden md:flex items-center space-x-2">
             <button
-              onClick={() => { setLang('vi'); localStorage.setItem('lang','vi'); }}
-              className={`flex items-center space-x-1 px-2 py-1 rounded hover:bg-gray-100 ${lang==='vi' ? 'font-semibold' : ''}`}
+              onClick={() => switchLanguage('vi')}
+              disabled={isPending || locale === 'vi'}
+              className={`flex items-center space-x-1 px-2 py-1 rounded hover:bg-gray-100 ${locale === 'vi' ? 'font-semibold' : ''} disabled:opacity-50`}
             >
               <span className="text-lg">🇻🇳</span>
               <span className="text-sm">VI</span>
             </button>
             <button
-              onClick={() => { setLang('en'); localStorage.setItem('lang','en'); }}
-              className={`flex items-center space-x-1 px-2 py-1 rounded hover:bg-gray-100 ${lang==='en' ? 'font-semibold' : ''}`}
+              onClick={() => switchLanguage('en')}
+              disabled={isPending || locale === 'en'}
+              className={`flex items-center space-x-1 px-2 py-1 rounded hover:bg-gray-100 ${locale === 'en' ? 'font-semibold' : ''} disabled:opacity-50`}
             >
               <span className="text-lg">🇬🇧</span>
               <span className="text-sm">EN</span>
@@ -80,22 +94,22 @@ export default function Header() {
           <div className="md:hidden py-4 border-t">
             <div className="flex flex-col space-y-2">
               <Link href="/" className="construction-link font-medium py-2 uppercase" onClick={() => setIsMenuOpen(false)}>
-                Trang chủ
+                {t('home')}
               </Link>
               <Link href="/gioi-thieu" className="construction-link font-medium py-2 uppercase" onClick={() => setIsMenuOpen(false)}>
-                Giới thiệu
+                {t('about')}
               </Link>
               <Link href="/san-pham" className="construction-link font-medium py-2 uppercase" onClick={() => setIsMenuOpen(false)}>
-                Sản phẩm
+                {t('product')}
               </Link>
               <Link href="/dich-vu" className="construction-link font-medium py-2 uppercase" onClick={() => setIsMenuOpen(false)}>
-                Dịch vụ
+                {t('service')}
               </Link>
               <Link href="/tin-tuc" className="construction-link font-medium py-2 uppercase" onClick={() => setIsMenuOpen(false)}>
-                Tin tức
+                {t('news')}
               </Link>
               <Link href="/lien-he" className="construction-link font-medium py-2 uppercase" onClick={() => setIsMenuOpen(false)}>
-                Liên hệ
+                {t('contact')}
               </Link>
             </div>
           </div>
