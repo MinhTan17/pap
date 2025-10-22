@@ -71,14 +71,23 @@ export default function ProductsPage() {
               <div key={product.id} className="group cursor-pointer precision-cut" style={{ animationDelay: `${index * 0.1}s` }}>
                 <Link href={`/san-pham/${product.id}`} className="block">
                 <div className="relative bg-white rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 steel-glow border border-gray-200">
-                  {/* Product Header */}
-                  <div className={`relative h-24 bg-gradient-to-r ${product.color} flex items-center justify-center overflow-hidden`}>
-                    {/* Metal shine effect */}
-                    <div className="metal-shine absolute inset-0"></div>
-                    
-                    {/* Industrial corner accent */}
-                    <div className="absolute top-0 right-0 w-0 h-0 border-l-[20px] border-l-transparent border-t-[20px] border-t-black opacity-20"></div>
-                  </div>
+                  {/* Product Image */}
+                  {product.image ? (
+                    <div className="relative h-48 overflow-hidden bg-gray-100">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                      {/* Overlay gradient */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                    </div>
+                  ) : (
+                    <div className={`relative h-48 bg-gradient-to-r ${product.color} flex items-center justify-center overflow-hidden`}>
+                      <div className="metal-shine absolute inset-0"></div>
+                      <div className="absolute top-0 right-0 w-0 h-0 border-l-[20px] border-l-transparent border-t-[20px] border-t-black opacity-20"></div>
+                    </div>
+                  )}
                   
                   <div className="p-6">
                     <h3 className="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition-colors mb-2 leading-tight">
@@ -95,13 +104,13 @@ export default function ProductsPage() {
                           <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
                           <span>Có sẵn</span>
                         </div>
-                        <span className="text-blue-600 font-medium">Chi tiết</span>
+                        <span className="text-blue-600 font-medium">Chi tiết →</span>
                       </div>
                     </div>
                   </div>
                   
                   {/* Hover effect overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-orange-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
                 </div>
                 </Link>
               </div>
@@ -126,8 +135,8 @@ export default function ProductsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-800 mb-4 relative">
-              <span className="gradient-primary bg-clip-text text-transparent">DANH MỤC SẢN PHẨM</span>
-              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-blue-600 to-orange-500 rounded-full"></div>
+              <span className="bg-gradient-to-r from-blue-800 to-blue-900 bg-clip-text text-transparent">DANH MỤC SẢN PHẨM</span>
+              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-blue-600 to-red-600 rounded-full"></div>
             </h2>
             <p className="text-xl text-gray-600">
               Chúng tôi cung cấp đầy đủ các loại sắt thép, hợp kim chất lượng cao nhập khẩu
@@ -234,7 +243,7 @@ export default function ProductsPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-blue-600 to-orange-600 relative overflow-hidden">
+      <section className="py-20 bg-gradient-to-br from-slate-800 via-blue-900 to-slate-900 relative overflow-hidden">
         {/* Industrial Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="metal-texture w-full h-full"></div>
@@ -244,16 +253,16 @@ export default function ProductsPage() {
           <h2 className="text-4xl font-bold text-white mb-6">
             Cần Tư Vấn Sản Phẩm?
           </h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
             Liên hệ ngay để được tư vấn và báo giá chi tiết về các sản phẩm sắt thép, hợp kim chất lượng cao
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all steel-glow">
+            <a href="https://zalo.me/0909926618" target="_blank" rel="noopener noreferrer" className="bg-red-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-red-700 transition-all steel-glow">
               Yêu cầu báo giá
-            </button>
-            <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-all steel-glow">
+            </a>
+            <a href="tel:0909926618" className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-800 transition-all steel-glow">
               Liên hệ tư vấn
-            </button>
+            </a>
           </div>
         </div>
       </section>

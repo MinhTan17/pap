@@ -28,7 +28,7 @@ export const newsArticles: NewsItem[] = [
     category: 'Thiết kế',
     date: '15/01/2024',
     readTime: '5 phút đọc',
-    image: '/api/placeholder/400/250',
+    image: '/icons/service/tt.png',
     description: 'Nội dung bài viết chi tiết...',
     icon: 'steel',
     color: 'from-blue-500 to-blue-700'
@@ -40,7 +40,7 @@ export const newsArticles: NewsItem[] = [
     category: 'Vật liệu',
     date: '12/01/2024',
     readTime: '7 phút đọc',
-    image: '/api/placeholder/400/250',
+    image: '/icons/service/tt.png',
     description: 'Nội dung bài viết chi tiết...',
     icon: 'steel',
     color: 'from-blue-500 to-blue-700'
@@ -52,7 +52,7 @@ export const newsArticles: NewsItem[] = [
     category: 'Thi công',
     date: '10/01/2024',
     readTime: '6 phút đọc',
-    image: '/api/placeholder/400/250',
+    image: '/icons/service/tt.png',
     description: 'Nội dung bài viết chi tiết...',
     icon: 'steel',
     color: 'from-blue-500 to-blue-700'
@@ -64,7 +64,7 @@ export const newsArticles: NewsItem[] = [
     category: 'Công nghệ',
     date: '08/01/2024',
     readTime: '8 phút đọc',
-    image: '/api/placeholder/400/250',
+    image: '/icons/service/tt.png',
     description: 'Nội dung bài viết chi tiết...',
     icon: 'laser',
     color: 'from-red-500 to-orange-500'
@@ -76,7 +76,7 @@ export const newsArticles: NewsItem[] = [
     category: 'Tư vấn',
     date: '05/01/2024',
     readTime: '4 phút đọc',
-    image: '/api/placeholder/400/250',
+    image: '/icons/service/tt.png',
     description: 'Nội dung bài viết chi tiết...',
     icon: 'steel',
     color: 'from-blue-500 to-blue-700'
@@ -88,7 +88,7 @@ export const newsArticles: NewsItem[] = [
     category: 'Dự án',
     date: '03/01/2024',
     readTime: '6 phút đọc',
-    image: '/api/placeholder/400/250',
+    image: '/icons/service/tt.png',
     description: 'Nội dung bài viết chi tiết...',
     icon: 'steel',
     color: 'from-blue-500 to-blue-700'

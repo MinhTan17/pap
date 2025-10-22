@@ -19,11 +19,11 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
   const product = base ? {
     id: base.id,
     name: base.name.toUpperCase(),
-    images: [
+    images: base.images || [
+      base.image || '/icons/products/C1100.png',
       '/icons/products/C1100.png',
-      '/api/placeholder/300/200',
-      '/api/placeholder/300/200',
-      '/api/placeholder/300/200'
+      '/icons/products/C1100.png',
+      '/icons/products/C1100.png'
     ],
     description: base.description,
     specifications: {
@@ -34,11 +34,30 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
     }
   } : null
 
-  const relatedProducts = [
-    { id: 1, name: "Thép xây dựng", image: "/api/placeholder/300/200" },
-    { id: 2, name: "Nhôm tấm", image: "/api/placeholder/300/200" },
-    { id: 3, name: "Kim loại đặc biệt", image: "/api/placeholder/300/200" }
-  ]
+  // Get related products: same category first, then random others
+  const relatedProducts = (() => {
+    if (!base) return []
+    
+    // Get products from same category
+    const sameCategory = products.filter(p => 
+      String(p.id) !== params.id && p.category === base.category
+    )
+    
+    // Get products from other categories
+    const otherProducts = products.filter(p => 
+      String(p.id) !== params.id && p.category !== base.category
+    )
+    
+    // Combine: same category first, then others, limit to 3
+    const combined = [...sameCategory, ...otherProducts].slice(0, 3)
+    
+    return combined.map(p => ({
+      id: p.id,
+      name: p.name.split(':')[0].trim(),
+      image: p.image,
+      category: p.category
+    }))
+  })()
 
   const tabs = [
     { id: 'info', label: 'THÔNG TIN CHI TIẾT' },
@@ -64,30 +83,50 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Main Image */}
           <div className="mb-6">
-            <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
-              <div className="text-center text-gray-600">
-                <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
+            <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden">
+              {product?.images[0] ? (
+                <img
+                  src={product.images[0]}
+                  alt={product?.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-gray-600">
+                  <div className="text-center">
+                    <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <p className="text-lg">Hình ảnh sản phẩm chính</p>
+                  </div>
                 </div>
-                <p className="text-lg">Hình ảnh sản phẩm chính</p>
-              </div>
+              )}
             </div>
           </div>
 
           {/* Thumbnail Images */}
           <div className="grid grid-cols-4 gap-4">
             {product?.images.slice(1).map((image, index) => (
-              <div key={index} className="aspect-square bg-gray-200 rounded-lg flex items-center justify-center">
-                <div className="text-center text-gray-600">
-                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
+              <div key={index} className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
+                {image ? (
+                  <img
+                    src={image}
+                    alt={`${product?.name} - ${index + 2}`}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform cursor-pointer"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-gray-600">
+                    <div className="text-center">
+                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                      <p className="text-xs">Hình {index + 2}</p>
+                    </div>
                   </div>
-                  <p className="text-xs">Hình {index + 2}</p>
-                </div>
+                )}
               </div>
             ))}
           </div>
@@ -173,15 +212,25 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
                 <h3 className="text-2xl font-bold text-gray-800 mb-6">Hình ảnh</h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {product?.images.map((image, index) => (
-                    <div key={index} className="aspect-square bg-gray-200 rounded-lg flex items-center justify-center">
-                      <div className="text-center text-gray-600">
-                        <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
+                    <div key={index} className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
+                      {image ? (
+                        <img
+                          src={image}
+                          alt={`${product?.name} - ${index + 1}`}
+                          className="w-full h-full object-cover hover:scale-105 transition-transform cursor-pointer"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-600">
+                          <div className="text-center">
+                            <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                              </svg>
+                            </div>
+                            <p className="text-sm">Hình {index + 1}</p>
+                          </div>
                         </div>
-                        <p className="text-sm">Hình {index + 1}</p>
-                      </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -196,22 +245,32 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-800 mb-4">SẢN PHẨM LIÊN QUAN</h2>
-            <div className="w-24 h-1 bg-blue-600 mx-auto"></div>
+            <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-red-600 mx-auto"></div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {relatedProducts.map((relatedProduct) => (
               <Link key={relatedProduct.id} href={`/san-pham/${relatedProduct.id}`}>
                 <div className="group cursor-pointer">
-                  <div className="aspect-video bg-gray-200 rounded-lg mb-4 flex items-center justify-center group-hover:shadow-lg transition-shadow">
-                    <div className="text-center text-gray-600">
-                      <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                        </svg>
+                  <div className="aspect-video bg-gray-200 rounded-lg mb-4 overflow-hidden group-hover:shadow-lg transition-shadow">
+                    {relatedProduct.image ? (
+                      <img
+                        src={relatedProduct.image}
+                        alt={relatedProduct.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-600">
+                        <div className="text-center">
+                          <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            </svg>
+                          </div>
+                          <p className="text-sm">Hình ảnh</p>
+                        </div>
                       </div>
-                      <p className="text-sm">Hình ảnh</p>
-                    </div>
+                    )}
                   </div>
                   <h3 className="text-lg font-semibold text-gray-800 group-hover:text-blue-600 transition-colors text-center">
                     {relatedProduct.name}

@@ -1,21 +1,38 @@
+'use client'
+
+import Link from 'next/link'
 import { partners } from '@/data/partners'
 
-export default function Partners() {
+interface PartnersSectionProps {
+  title?: string
+  subtitle?: string
+  showDescription?: boolean
+  className?: string
+}
+
+export default function PartnersSection({
+  title = "ĐỐI TÁC CHIẾN LƯỢC",
+  subtitle = "Chúng tôi hợp tác với các thương hiệu uy tín trong ngành",
+  showDescription = false,
+  className = ""
+}: PartnersSectionProps) {
   return (
-    <section className="py-20 bg-gradient-to-br from-gray-50 to-white">
+    <section className={`py-16 bg-gradient-to-br from-gray-50 to-white ${className}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+        {/* Header */}
+        <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4 relative">
             <span className="bg-gradient-to-r from-blue-800 to-blue-900 bg-clip-text text-transparent">
-              ĐỐI TÁC CHIẾN LƯỢC
+              {title}
             </span>
             <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-blue-600 to-red-600 rounded-full"></div>
           </h2>
-          <p className="text-xl text-gray-600">
-            Các đối tác mà chúng tôi đã hợp tác hiện nay trên thị trường
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            {subtitle}
           </p>
         </div>
 
+        {/* Partners Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
           {partners.map((partner, index) => (
             <div
@@ -24,36 +41,38 @@ export default function Partners() {
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {partner.website ? (
-                <a
-                  href={partner.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block bg-white rounded-lg p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 group-hover:border-blue-300"
-                >
-                  {/* Partner Logo */}
-                  <div className="aspect-square flex items-center justify-center mb-4 bg-gray-50 rounded-lg overflow-hidden">
-                    {partner.logo ? (
-                      <img
-                        src={partner.logo}
-                        alt={partner.name}
-                        className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
-                      />
-                    ) : (
-                      <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-red-500 rounded-lg flex items-center justify-center">
-                        <span className="text-white font-bold text-xl">
-                          {partner.name.charAt(0)}
-                        </span>
-                      </div>
-                    )}
-                  </div>
+                <Link href={partner.website} target="_blank" rel="noopener noreferrer">
+                  <div className="bg-white rounded-lg p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 group-hover:border-blue-300">
+                    {/* Partner Logo */}
+                    <div className="aspect-square flex items-center justify-center mb-4 bg-gray-50 rounded-lg overflow-hidden">
+                      {partner.logo ? (
+                        <img
+                          src={partner.logo}
+                          alt={partner.name}
+                          className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-red-500 rounded-lg flex items-center justify-center">
+                          <span className="text-white font-bold text-xl">
+                            {partner.name.charAt(0)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
 
-                  {/* Partner Name */}
-                  <div className="text-center">
-                    <h3 className="text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-2">
-                      {partner.name}
-                    </h3>
+                    {/* Partner Name */}
+                    <div className="text-center">
+                      <h3 className="text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-2">
+                        {partner.name}
+                      </h3>
+                      {showDescription && partner.description && (
+                        <p className="text-xs text-gray-500 mt-2 line-clamp-2">
+                          {partner.description}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </a>
+                </Link>
               ) : (
                 <div className="bg-white rounded-lg p-6 shadow-lg border border-gray-200">
                   {/* Partner Logo */}
@@ -78,6 +97,11 @@ export default function Partners() {
                     <h3 className="text-sm font-semibold text-gray-800 line-clamp-2">
                       {partner.name}
                     </h3>
+                    {showDescription && partner.description && (
+                      <p className="text-xs text-gray-500 mt-2 line-clamp-2">
+                        {partner.description}
+                      </p>
+                    )}
                   </div>
                 </div>
               )}

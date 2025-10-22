@@ -28,19 +28,27 @@ export default function ProductsSection() {
               <a href={`/san-pham/${product.id}`} className="block">
               <div className="relative overflow-hidden rounded-lg shadow-xl hover:shadow-2xl transition-all duration-500 steel-glow bg-white border border-gray-200">
                 {/* Product Image */}
-                {product.image && (
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-40 object-cover"
-                  />
+                {product.image ? (
+                  <div className="relative h-40 overflow-hidden bg-gray-100">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    {/* Overlay gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                  </div>
+                ) : (
+                  <div className={`relative h-40 bg-gradient-to-r ${product.color} flex items-center justify-center`}>
+                    <div className="metal-shine absolute inset-0"></div>
+                  </div>
                 )}
                 
                 <div className="p-4">
-                  <h3 className="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition-colors mb-2 leading-tight">
+                  <h3 className="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition-colors mb-2 leading-tight line-clamp-2">
                     {product.name}
                   </h3>
-                  <p className="text-xs text-gray-600 mb-3 leading-relaxed">
+                  <p className="text-xs text-gray-600 mb-3 leading-relaxed line-clamp-2">
                     {product.description}
                   </p>
                   
@@ -51,13 +59,13 @@ export default function ProductsSection() {
                         <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
                         <span>{t('available')}</span>
                       </div>
-                      <span className="text-blue-600 font-medium">{t('details')}</span>
+                      <span className="text-blue-600 font-medium">{t('details')} →</span>
                   </div>
                 </div>
                 </div>
                 
                 {/* Hover effect overlay */}
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-orange-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
               </a>
             </div>
