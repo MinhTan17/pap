@@ -50,19 +50,38 @@ const DataContext = createContext<DataContextType | undefined>(undefined)
 export function DataProvider({ children }: { children: React.ReactNode }) {
   // Initialize state with localStorage or default data
   const [services, setServices] = useState<ServiceItem[]>(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window === 'undefined') return initialServices
+
+    try {
       const saved = localStorage.getItem('admin-services')
-      return saved ? JSON.parse(saved) : initialServices
+      if (!saved) return initialServices
+
+      const parsed: ServiceItem[] = JSON.parse(saved)
+      // Gộp để đảm bảo luôn có field image (và các field mới khác)
+      return initialServices.map(init => {
+        const found = parsed.find(p => p.id === init.id)
+        return { ...init, ...found } // init có ảnh chuẩn
+      })
+    } catch {
+      return initialServices
     }
-    return initialServices
   })
 
   const [products, setProducts] = useState<ProductItem[]>(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window === 'undefined') return initialProducts
+
+    try {
       const saved = localStorage.getItem('admin-products')
-      return saved ? JSON.parse(saved) : initialProducts
+      if (!saved) return initialProducts
+
+      const parsed: ProductItem[] = JSON.parse(saved)
+      return initialProducts.map(init => {
+        const found = parsed.find(p => p.id === init.id)
+        return { ...init, ...found }
+      })
+    } catch {
+      return initialProducts
     }
-    return initialProducts
   })
 
   const [categories, setCategories] = useState<ProductCategory[]>(() => {

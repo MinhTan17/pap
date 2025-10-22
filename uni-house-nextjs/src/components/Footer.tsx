@@ -8,12 +8,13 @@ export default function Footer() {
           {/* Logo */}
           <div>
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 via-green-500 to-yellow-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">P</span>
-              </div>
-              <span className="text-2xl font-bold">PHÚ AN PHÁT</span>
+              <img
+                src="/icons/banners/logo.png"
+                alt="Phú An Phát logo"
+                className="h-14 md:h-16 w-auto object-contain"
+              />
+              <span className="text-2xl font-bold"></span>
             </div>
-            <p className="text-gray-300 text-sm">LOGO HERE</p>
           </div>
 
           {/* Dịch vụ chúng tôi */}

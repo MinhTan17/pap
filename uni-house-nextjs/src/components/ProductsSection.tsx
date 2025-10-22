@@ -25,29 +25,14 @@ export default function ProductsSection() {
             <div key={product.id} className="group cursor-pointer precision-cut" style={{ animationDelay: `${index * 0.1}s` }}>
               <a href={`/san-pham/${product.id}`} className="block">
               <div className="relative overflow-hidden rounded-lg shadow-xl hover:shadow-2xl transition-all duration-500 steel-glow bg-white border border-gray-200">
-                {/* Product Header */}
-                <div className={`relative h-24 bg-gradient-to-r ${product.color} flex items-center justify-center overflow-hidden`}>
-                  {/* Metal shine effect */}
-                  <div className="metal-shine absolute inset-0"></div>
-                  
-                  {/* Product Image or Placeholder */}
-                  <div className="relative z-10">
-                    {product.image ? (
-                      <img 
-                        src={product.image} 
-                        alt={product.name}
-                        className="w-12 h-12 object-contain"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 flex items-center justify-center text-white text-2xl font-bold">
-                        {product.name.charAt(0)}
-                      </div>
-                    )}
-                  </div>
-                  
-                  {/* Industrial corner accent */}
-                  <div className="absolute top-0 right-0 w-0 h-0 border-l-[20px] border-l-transparent border-t-[20px] border-t-black opacity-20"></div>
-                </div>
+                {/* Product Image */}
+                {product.image && (
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-40 object-cover"
+                  />
+                )}
                 
                 <div className="p-4">
                   <h3 className="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition-colors mb-2 leading-tight">

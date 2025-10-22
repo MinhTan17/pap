@@ -23,7 +23,7 @@ export const services: ServiceItem[] = [
     description: 'Gia công phay và mài cho độ phẳng và độ song song cao.',
     color: 'from-blue-600 to-blue-800',
     features: ['Độ phẳng cao', 'Bề mặt đẹp', 'Kích thước chính xác'],
-    image: '/images/services/milling.jpg'
+    image: '/icons/services/m.png'
   },
   {
     id: 3,
@@ -31,7 +31,7 @@ export const services: ServiceItem[] = [
     description: 'Đội ngũ kinh nghiệm, sản phẩm chính xác với thiết kế thông minh.',
     color: 'from-green-600 to-green-800',
     features: ['Dung sai chặt', 'Bền bỉ', 'Vật liệu đa dạng'],
-    image: '/images/services/precision-machining.jpg'
+    image: '/icons/services/phay.png'
   },
   {
     id: 4,
@@ -39,7 +39,7 @@ export const services: ServiceItem[] = [
     description: 'Tư vấn & hỗ trợ tối đa để sản phẩm đạt chất lượng tốt nhất.',
     color: 'from-orange-600 to-red-600',
     features: ['Tôi – Ram', 'Thấm Cacbon', 'Cải thiện cơ tính'],
-    image: '/images/services/heat-treatment.jpg'
+    image: '/icons/services/phay.png'
   },
   {
     id: 5,
@@ -47,7 +47,7 @@ export const services: ServiceItem[] = [
     description: 'Cắt chính xác – ưu tiên hàng đầu của chúng tôi.',
     color: 'from-purple-600 to-blue-600',
     features: ['Tấm lớn', 'Dày vật liệu', 'Chi phí tối ưu'],
-    image: '/images/services/plasma-cutting.jpg'
+    image: '/icons/services/phay.png'
   },
   {
     id: 6,
@@ -55,6 +55,6 @@ export const services: ServiceItem[] = [
     description: 'Cung cấp sắt thép tốt nhất của các nước tiên tiến với thời gian ngắn.',
     color: 'from-yellow-600 to-amber-600',
     features: ['Nguồn gốc rõ ràng', 'Chất lượng đảm bảo', 'Giá cả cạnh tranh'],
-    image: '/images/services/steel.jpg'
+    image: '/icons/services/phay.png'
   }
 ]

@@ -29,29 +29,14 @@ export default function ServicesSection() {
             <div key={service.id} className="group cursor-pointer precision-cut" style={{ animationDelay: `${index * 0.2}s` }}>
               <Link href={`/dich-vu/${service.id}`} className="block">
               <div className="relative overflow-hidden rounded-lg shadow-xl hover:shadow-2xl transition-all duration-500 steel-glow bg-white border border-gray-200">
-                {/* Industrial Header */}
-                <div className={`relative h-32 bg-gradient-to-r ${service.color} flex items-center justify-center overflow-hidden`}>
-                  {/* Metal shine effect */}
-                  <div className="metal-shine absolute inset-0"></div>
-                  
-                  {/* Service Image or Placeholder */}
-                  <div className="relative z-10">
-                    {service.image ? (
-                      <img 
-                        src={service.image} 
-                        alt={service.title}
-                        className="w-16 h-16 object-contain"
-                      />
-                    ) : (
-                      <div className="w-16 h-16 flex items-center justify-center text-white text-4xl font-bold">
-                        {service.title.charAt(0)}
-                      </div>
-                    )}
-                  </div>
-                  
-                  {/* Industrial corner accent */}
-                  <div className="absolute top-0 right-0 w-0 h-0 border-l-[30px] border-l-transparent border-t-[30px] border-t-black opacity-20"></div>
-                </div>
+                {/* Service Image */}
+                {service.image && (
+                  <img
+                    src={service.image}
+                    alt={service.title}
+                    className="w-full h-48 object-cover"
+                  />
+                )}
                 
                 {/* Industrial indicator dot */}
                 <div className="absolute top-4 left-4 w-3 h-3 bg-orange-500 rounded-full steel-glow"></div>

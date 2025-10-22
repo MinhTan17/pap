@@ -5,6 +5,7 @@ import Link from 'next/link'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [lang, setLang] = useState<'vi' | 'en'>(() => (typeof window !== 'undefined' && localStorage.getItem('lang') === 'en' ? 'en' : 'vi'))
 
   return (
     <header className="construction-header-bg sticky top-0 z-50">
@@ -13,10 +14,12 @@ export default function Header() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-3">
-              <div className="w-12 h-12 construction-logo rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">P</span>
-              </div>
-              <span className="text-2xl font-bold construction-text">PHÚ AN PHÁT</span>
+              <img
+                src="/icons/banners/logo.png"
+                alt="Phú An Phát logo"
+                className="h-14 md:h-20 w-auto object-contain"
+              />
+              <span className="text-2xl font-bold construction-text"></span>
             </Link>
           </div>
 
@@ -42,17 +45,22 @@ export default function Header() {
             </Link>
           </nav>
 
-          {/* Icons */}
-          <div className="hidden md:flex items-center space-x-4">
-            <button className="construction-link">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+        
+          {/* Language Switcher */}
+          <div className="hidden md:flex items-center space-x-2">
+            <button
+              onClick={() => { setLang('vi'); localStorage.setItem('lang','vi'); }}
+              className={`flex items-center space-x-1 px-2 py-1 rounded hover:bg-gray-100 ${lang==='vi' ? 'font-semibold' : ''}`}
+            >
+              <span className="text-lg">🇻🇳</span>
+              <span className="text-sm">VI</span>
             </button>
-            <button className="construction-link">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
+            <button
+              onClick={() => { setLang('en'); localStorage.setItem('lang','en'); }}
+              className={`flex items-center space-x-1 px-2 py-1 rounded hover:bg-gray-100 ${lang==='en' ? 'font-semibold' : ''}`}
+            >
+              <span className="text-lg">🇬🇧</span>
+              <span className="text-sm">EN</span>
             </button>
           </div>
 
