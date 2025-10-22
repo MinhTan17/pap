@@ -14,7 +14,6 @@ export default function ServicesManagement() {
     setEditingService({
       id: Math.max(...services.map(s => s.id)) + 1,
       title: '',
-      icon: 'laser',
       description: '',
       color: 'from-blue-600 to-blue-800',
       features: []
@@ -144,21 +143,6 @@ export default function ServicesManagement() {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Icon</label>
-                <select
-                  value={editingService.icon}
-                  onChange={(e) => setEditingService({ ...editingService, icon: e.target.value as any })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                >
-                  <option value="laser">Laser</option>
-                  <option value="milling">Milling</option>
-                  <option value="precision">Precision</option>
-                  <option value="heat">Heat</option>
-                  <option value="plasma">Plasma</option>
-                  <option value="steel">Steel</option>
-                </select>
-              </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">Màu sắc</label>

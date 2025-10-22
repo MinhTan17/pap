@@ -17,8 +17,7 @@ export default function BannersManagement() {
       subtitle: '',
       description: '',
       gradient: 'from-blue-600 via-blue-700 to-gray-800',
-      icon: 'laser',
-      useImage: false,
+      image: '',
       imageAlt: ''
     })
   }
@@ -60,8 +59,7 @@ export default function BannersManagement() {
         if (editingBanner && e.target?.result) {
           setEditingBanner({ 
             ...editingBanner, 
-            image: e.target.result as string,
-            useImage: true 
+            image: e.target.result as string
           })
         }
       }
@@ -85,12 +83,8 @@ export default function BannersManagement() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {banners.map((banner) => (
           <div key={banner.id} className="bg-white rounded-lg shadow border overflow-hidden">
-            <div className={`aspect-video flex items-center justify-center relative overflow-hidden ${
-              banner.useImage && banner.image 
-                ? '' 
-                : `bg-gradient-to-br ${banner.gradient}`
-            }`}>
-              {banner.useImage && banner.image ? (
+            <div className="aspect-video flex items-center justify-center relative overflow-hidden">
+              {banner.image ? (
                 <>
                   <img 
                     src={banner.image} 
@@ -104,7 +98,7 @@ export default function BannersManagement() {
                   </div>
                 </>
               ) : (
-                <div className="text-center text-white p-4">
+                <div className="text-center text-gray-900 p-4">
                   <h3 className="text-lg font-bold mb-2">{banner.title}</h3>
                   <p className="text-sm opacity-90">{banner.subtitle}</p>
                 </div>
@@ -172,89 +166,52 @@ export default function BannersManagement() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Icon</label>
+                <label className="block text-sm font-medium text-gray-700">Màu nền gradient (tùy chọn)</label>
                 <select
-                  value={editingBanner.icon}
-                  onChange={(e) => setEditingBanner({ ...editingBanner, icon: e.target.value as any })}
+                  value={editingBanner.gradient}
+                  onChange={(e) => setEditingBanner({ ...editingBanner, gradient: e.target.value })}
                   className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
                 >
-                  <option value="laser">Laser</option>
-                  <option value="steel">Steel</option>
-                  <option value="precision">Precision</option>
-                  <option value="heat">Heat</option>
-                  <option value="plasma">Plasma</option>
-                  <option value="milling">Milling</option>
+                  <option value="from-red-600 via-orange-500 to-yellow-500">Đỏ - Cam - Vàng</option>
+                  <option value="from-blue-600 via-blue-700 to-gray-800">Xanh dương - Xám</option>
+                  <option value="from-green-600 via-green-700 to-blue-800">Xanh lá - Xanh dương</option>
+                  <option value="from-purple-600 via-purple-700 to-indigo-800">Tím - Chàm</option>
+                  <option value="from-orange-600 via-red-600 to-pink-600">Cam - Đỏ - Hồng</option>
+                  <option value="from-gray-600 via-gray-700 to-gray-800">Xám gradient</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Loại banner</label>
-                <div className="mt-2 space-y-2">
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="bannerType"
-                      checked={!editingBanner.useImage}
-                      onChange={() => setEditingBanner({ ...editingBanner, useImage: false })}
-                      className="mr-2"
-                    />
-                    Sử dụng màu nền gradient
-                  </label>
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="bannerType"
-                      checked={editingBanner.useImage}
-                      onChange={() => setEditingBanner({ ...editingBanner, useImage: true })}
-                      className="mr-2"
-                    />
-                    Sử dụng hình ảnh
-                  </label>
-                </div>
+                <label className="block text-sm font-medium text-gray-700">Upload hình ảnh</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                />
               </div>
-
-              {!editingBanner.useImage && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Màu nền</label>
-                  <select
-                    value={editingBanner.gradient}
-                    onChange={(e) => setEditingBanner({ ...editingBanner, gradient: e.target.value })}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                  >
-                    <option value="from-red-600 via-orange-500 to-yellow-500">Đỏ - Cam - Vàng</option>
-                    <option value="from-blue-600 via-blue-700 to-gray-800">Xanh dương - Xám</option>
-                    <option value="from-green-600 via-green-700 to-blue-800">Xanh lá - Xanh dương</option>
-                    <option value="from-purple-600 via-purple-700 to-indigo-800">Tím - Chàm</option>
-                    <option value="from-orange-600 via-red-600 to-pink-600">Cam - Đỏ - Hồng</option>
-                    <option value="from-gray-600 via-gray-700 to-gray-800">Xám gradient</option>
-                  </select>
-                </div>
-              )}
-
-              {editingBanner.useImage && (
-                <>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Upload hình ảnh</label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileUpload}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Alt text cho hình ảnh</label>
-                    <input
-                      type="text"
-                      value={editingBanner.imageAlt || ''}
-                      onChange={(e) => setEditingBanner({ ...editingBanner, imageAlt: e.target.value })}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                      placeholder="Mô tả hình ảnh cho SEO"
-                    />
-                  </div>
-                </>
-              )}
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Hoặc nhập đường dẫn ảnh</label>
+                <input
+                  type="text"
+                  value={editingBanner.image || ''}
+                  onChange={(e) => setEditingBanner({ ...editingBanner, image: e.target.value })}
+                  placeholder="/icons/banners/banner.png"
+                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Alt text cho hình ảnh</label>
+                <input
+                  type="text"
+                  value={editingBanner.imageAlt || ''}
+                  onChange={(e) => setEditingBanner({ ...editingBanner, imageAlt: e.target.value })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                  placeholder="Mô tả hình ảnh cho SEO"
+                />
+              </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">Link (tùy chọn)</label>
@@ -270,12 +227,8 @@ export default function BannersManagement() {
               {/* Preview */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Preview</label>
-                <div className={`aspect-video rounded border flex items-center justify-center relative overflow-hidden ${
-                  editingBanner.useImage && editingBanner.image 
-                    ? '' 
-                    : `bg-gradient-to-br ${editingBanner.gradient}`
-                }`}>
-                  {editingBanner.useImage && editingBanner.image ? (
+                <div className="aspect-video rounded border flex items-center justify-center relative overflow-hidden">
+                  {editingBanner.image ? (
                     <>
                       <img 
                         src={editingBanner.image} 

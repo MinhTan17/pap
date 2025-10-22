@@ -8,49 +8,6 @@ import { processSteps } from '@/data/common'
 export default function ServicesPage() {
   const { services } = useData()
 
-  const getIcon = (iconType: string) => {
-    switch (iconType) {
-      case 'laser':
-        return (
-          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
-        )
-      case 'milling':
-        return (
-          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-        )
-      case 'precision':
-        return (
-          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        )
-      case 'heat':
-        return (
-          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
-        )
-      case 'plasma':
-        return (
-          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-          </svg>
-        )
-      case 'steel':
-        return (
-          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-          </svg>
-        )
-      default:
-        return null
-    }
-  }
-
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -87,45 +44,60 @@ export default function ServicesPage() {
             {services.map((service, index) => (
               <div key={service.id} className="group cursor-pointer precision-cut" style={{ animationDelay: `${index * 0.2}s` }}>
                 <Link href={`/dich-vu/${service.id}`} className="block">
-                <div className="relative overflow-hidden rounded-lg shadow-xl hover:shadow-2xl transition-all duration-500 steel-glow bg-white border border-gray-200">
-                  {/* Industrial Header */}
-                  <div className={`relative h-32 bg-gradient-to-r ${service.color} flex items-center justify-center overflow-hidden`}>
-                    {/* Metal shine effect */}
-                    <div className="metal-shine absolute inset-0"></div>
-                    
-                    {/* Welding spark effect for laser and heat services */}
-                    {(service.icon === 'laser' || service.icon === 'heat') && (
-                      <div className="welding-spark"></div>
-                    )}
-                    
-                    {/* Icon */}
-                    <div className="relative z-10">
-                      {getIcon(service.icon)}
+                  <div className="relative overflow-hidden rounded-lg shadow-xl hover:shadow-2xl transition-all duration-500 steel-glow bg-white border border-gray-200">
+                    {/* Service Image Section */}
+                    <div className="relative h-64 overflow-hidden group">
+                      <div className="relative w-full h-full">
+                        {service.image ? (
+                          <img 
+                            src={service.image}
+                            alt={service.title}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = `https://placehold.co/600x400/1a365d/ffffff?text=${encodeURIComponent(service.title)}`;
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-r from-gray-700 to-gray-900 flex items-center justify-center">
+                            <span className="text-white text-center px-4">
+                              {service.title}
+                            </span>
+                          </div>
+                        )}
+                        
+                        {/* Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+                        
+                        {/* Service Title Overlay */}
+                        <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                          <h3 className="text-xl font-bold mb-1">{service.title}</h3>
+                          <div className="h-1 w-16 bg-white mb-3"></div>
+                          <p className="text-sm opacity-90 line-clamp-2">{service.description}</p>
+                        </div>
+                      </div>
                     </div>
                     
-                    {/* Industrial corner accent */}
-                    <div className="absolute top-0 right-0 w-0 h-0 border-l-[30px] border-l-transparent border-t-[30px] border-t-black opacity-20"></div>
+                    {/* Service Details */}
+                    <div className="p-6">
+                      <h3 className="text-lg font-bold text-gray-800 group-hover:text-blue-600 transition-colors mb-3 leading-tight">
+                        {service.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm leading-relaxed mb-3">
+                        {service.description}
+                      </p>
+                      <ul className="space-y-2 text-sm text-gray-600">
+                        {(service.features || []).map((feature, idx) => (
+                          <li key={idx} className="flex items-center">
+                            <svg className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
-                  
-                  <div className="p-6">
-                    <h3 className="text-lg font-bold text-gray-800 group-hover:text-blue-600 transition-colors mb-3 leading-tight">
-                      {service.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm leading-relaxed mb-3">
-                      {service.description}
-                    </p>
-                    <ul className="space-y-2 text-sm text-gray-600">
-                      {(service.features || []).map((feature, idx) => (
-                        <li key={idx} className="flex items-center">
-                          <svg className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
                 </Link>
               </div>
             ))}

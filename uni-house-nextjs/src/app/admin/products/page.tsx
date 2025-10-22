@@ -17,7 +17,6 @@ export default function ProductsManagement() {
       category: 'alloy',
       price: 'Liên hệ',
       description: '',
-      icon: 'copper',
       color: 'from-orange-500 to-red-600'
     })
   }
@@ -172,24 +171,6 @@ export default function ProductsManagement() {
                   rows={3}
                   className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Icon</label>
-                <select
-                  value={editingProduct.icon}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, icon: e.target.value as any })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                >
-                  <option value="copper">Copper</option>
-                  <option value="aluminum">Aluminum</option>
-                  <option value="hot-die">Hot Die</option>
-                  <option value="stainless">Stainless</option>
-                  <option value="cold-die">Cold Die</option>
-                  <option value="plastic-mold">Plastic Mold</option>
-                  <option value="machine">Machine</option>
-                  <option value="carbon">Carbon</option>
-                </select>
               </div>
 
               <div>
