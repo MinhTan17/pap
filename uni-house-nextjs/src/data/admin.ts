@@ -21,7 +21,9 @@ export const adminMenu: AdminMenuItem[] = [
     children: [
       { id: 'banners', label: 'Banner/Slideshow', href: '/admin/banners' },
       { id: 'services', label: 'Dịch vụ', href: '/admin/services' },
+      { id: 'services-detail', label: 'Chi tiết dịch vụ', href: '/admin/services/1' }, // Placeholder, sẽ dynamic
       { id: 'products', label: 'Sản phẩm', href: '/admin/products' },
+      { id: 'products-detail', label: 'Chi tiết sản phẩm', href: '/admin/products/1' }, // Placeholder
       { id: 'news', label: 'Tin tức', href: '/admin/news' },
       { id: 'categories', label: 'Danh mục sản phẩm', href: '/admin/categories' }
     ]

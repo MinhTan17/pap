@@ -21,15 +21,19 @@ function ProductDetailContent({ productId }: { productId: string }) {
   const { products } = useData()
   const [activeTab, setActiveTab] = useState('info')
 
+  // Cache-busting helper
+  const addCacheBuster = (url: string) => {
+    const timestamp = Date.now()
+    return `${url}?v=${timestamp}`
+  }
+
   const base = products.find(p => String(p.id) === productId)
   const product = base ? {
     id: base.id,
     name: base.name.toUpperCase(),
-    images: base.images || [
-      base.image || '/icons/products/C1100.png',
-      '/icons/products/C1100.png',
-      '/icons/products/C1100.png',
-      '/icons/products/C1100.png'
+    images: (base.images && base.images.length > 0) ? base.images : [
+      base.image || '',
+     
     ],
     description: base.description,
     specifications: {
@@ -92,7 +96,7 @@ function ProductDetailContent({ productId }: { productId: string }) {
             <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden">
               {product?.images[0] ? (
                 <img
-                  src={product.images[0]}
+                  src={addCacheBuster(product.images[0])}
                   alt={product?.name}
                   className="w-full h-full object-cover"
                 />
@@ -117,7 +121,7 @@ function ProductDetailContent({ productId }: { productId: string }) {
               <div key={index} className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
                 {image ? (
                   <img
-                    src={image}
+                    src={addCacheBuster(image)}
                     alt={`${product?.name} - ${index + 2}`}
                     className="w-full h-full object-cover hover:scale-105 transition-transform cursor-pointer"
                   />
@@ -221,7 +225,7 @@ function ProductDetailContent({ productId }: { productId: string }) {
                     <div key={index} className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
                       {image ? (
                         <img
-                          src={image}
+                          src={addCacheBuster(image)}
                           alt={`${product?.name} - ${index + 1}`}
                           className="w-full h-full object-cover hover:scale-105 transition-transform cursor-pointer"
                         />
@@ -261,7 +265,7 @@ function ProductDetailContent({ productId }: { productId: string }) {
                   <div className="aspect-video bg-gray-200 rounded-lg mb-4 overflow-hidden group-hover:shadow-lg transition-shadow">
                     {relatedProduct.image ? (
                       <img
-                        src={relatedProduct.image}
+                        src={addCacheBuster(relatedProduct.image)}
                         alt={relatedProduct.name}
                         className="w-full h-full object-cover"
                       />

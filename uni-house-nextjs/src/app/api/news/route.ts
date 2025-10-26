@@ -21,7 +21,13 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const { articles, homepage } = await request.json()
+    // Clone request to avoid body already read errors
+    const body = await request.text()
+    if (!body || body.trim() === '') {
+      return NextResponse.json({ error: 'Empty request body' }, { status: 400 })
+    }
+    
+    const { articles, homepage } = JSON.parse(body)
     
     const filePath = path.join(process.cwd(), 'src/data/news.ts')
     

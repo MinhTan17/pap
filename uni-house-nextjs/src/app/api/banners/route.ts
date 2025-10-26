@@ -24,7 +24,13 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const banners = await request.json()
+    // Clone request to avoid body already read errors
+    const body = await request.text()
+    if (!body || body.trim() === '') {
+      return NextResponse.json({ error: 'Empty request body' }, { status: 400 })
+    }
+    
+    const banners = JSON.parse(body)
     
     const filePath = path.join(process.cwd(), 'src/data/banners.ts')
     

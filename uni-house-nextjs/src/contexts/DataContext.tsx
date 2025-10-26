@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
 import { services as initialServices, ServiceItem } from '@/data/services'
 import { products as initialProducts, categories as initialCategories, ProductItem, ProductCategory } from '@/data/products'
 import { newsArticles as initialNews, homepageNews as initialHomepageNews, NewsItem } from '@/data/news'
@@ -51,277 +51,144 @@ interface DataContextType {
 const DataContext = createContext<DataContextType | undefined>(undefined)
 
 export function DataProvider({ children }: { children: React.ReactNode }) {
-  // Initialize state with localStorage or default data
-  const [services, setServices] = useState<ServiceItem[]>(() => {
-    if (typeof window === 'undefined') return initialServices
+  // Refs to track save operations and prevent infinite loops
+  const servicesSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const productsSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const bannersSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const isSavingServicesRef = useRef(false)
+  const isSavingProductsRef = useRef(false)
+  const isSavingBannersRef = useRef(false)
+  
+  // Initialize state - load from API on mount
+  const [services, setServices] = useState<ServiceItem[]>(initialServices)
 
-    try {
-      const saved = localStorage.getItem('admin-services')
-      if (!saved) return initialServices
-
-      const parsed: ServiceItem[] = JSON.parse(saved)
-      // Gộp để đảm bảo luôn có field image (và các field mới khác)
-      return initialServices.map(init => {
-        const found = parsed.find(p => p.id === init.id)
-        return { ...init, ...found } // init có ảnh chuẩn
-      })
-    } catch {
-      return initialServices
-    }
-  })
-
-  // Listen for localStorage changes from other tabs/windows AND same tab (admin)
+  // Load data from API on mount
   useEffect(() => {
-    // Handler for cross-tab changes (storage event)
-    const handleStorageChange = (e: StorageEvent) => {
-      if (!e.newValue) return
-
+    const loadData = async () => {
       try {
-        const parsed = JSON.parse(e.newValue)
+        // Load products from API
+        const productsRes = await fetch('/api/products')
+        if (productsRes.ok) {
+          const productsData = await productsRes.json()
+          setProducts(productsData)
+          console.log('✅ Loaded products from API')
+        }
         
-        switch (e.key) {
-          case 'admin-services':
-            setServices(parsed)
-            console.log('🔄 Services updated from admin (cross-tab)')
-            break
-          case 'admin-products':
-            setProducts(parsed)
-            console.log('🔄 Products updated from admin (cross-tab)')
-            break
-          case 'admin-banners':
-            setBanners(parsed)
-            console.log('🔄 Banners updated from admin (cross-tab)')
-            break
-          case 'admin-news-articles':
-            setNewsArticles(parsed)
-            console.log('🔄 News updated from admin (cross-tab)')
-            break
-          case 'admin-categories':
-            setCategories(parsed)
-            console.log('🔄 Categories updated from admin (cross-tab)')
-            break
+        // Load services from API
+        const servicesRes = await fetch('/api/services')
+        if (servicesRes.ok) {
+          const servicesData = await servicesRes.json()
+          setServices(servicesData)
+          console.log('✅ Loaded services from API')
+        }
+        
+        // Load banners from API
+        const bannersRes = await fetch('/api/banners')
+        if (bannersRes.ok) {
+          const bannersData = await bannersRes.json()
+          setBanners(bannersData)
+          console.log('✅ Loaded banners from API')
+        }
+        
+        // Load news from API
+        const newsRes = await fetch('/api/news')
+        if (newsRes.ok) {
+          const newsData = await newsRes.json()
+          if (newsData.articles) setNewsArticles(newsData.articles)
+          if (newsData.homepage) setHomepageNews(newsData.homepage)
+          console.log('✅ Loaded news from API')
         }
       } catch (error) {
-        console.error('Error parsing storage change:', error)
+        console.error('❌ Error loading data from API:', error)
       }
     }
-
-    // Handler for same-tab changes (custom event)
-    const handleCustomStorageChange = (e: Event) => {
-      const customEvent = e as CustomEvent
-      const { key, value } = customEvent.detail
-      
-      switch (key) {
-        case 'admin-services':
-          setServices(value)
-          console.log('🔄 Services updated from admin (same-tab)')
-          break
-        case 'admin-products':
-          setProducts(value)
-          console.log('🔄 Products updated from admin (same-tab)')
-          break
-        case 'admin-banners':
-          setBanners(value)
-          console.log('🔄 Banners updated from admin (same-tab)')
-          break
-        case 'admin-news-articles':
-          setNewsArticles(value)
-          console.log('🔄 News updated from admin (same-tab)')
-          break
-        case 'admin-categories':
-          setCategories(value)
-          console.log('🔄 Categories updated from admin (same-tab)')
-          break
-      }
-    }
-
-    window.addEventListener('storage', handleStorageChange)
-    window.addEventListener('localStorageChange', handleCustomStorageChange)
     
-    return () => {
-      window.removeEventListener('storage', handleStorageChange)
-      window.removeEventListener('localStorageChange', handleCustomStorageChange)
-    }
+    loadData()
   }, [])
 
-  const [products, setProducts] = useState<ProductItem[]>(() => {
-    if (typeof window === 'undefined') return initialProducts
+  const [products, setProducts] = useState<ProductItem[]>(initialProducts)
 
-    try {
-      const saved = localStorage.getItem('admin-products')
-      if (!saved) return initialProducts
+  const [categories, setCategories] = useState<ProductCategory[]>(initialCategories)
 
-      const parsed: ProductItem[] = JSON.parse(saved)
-      return initialProducts.map(init => {
-        const found = parsed.find(p => p.id === init.id)
-        return { ...init, ...found }
-      })
-    } catch {
-      return initialProducts
-    }
-  })
+  const [newsArticles, setNewsArticles] = useState<NewsItem[]>(initialNews)
 
-  const [categories, setCategories] = useState<ProductCategory[]>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('admin-categories')
-      return saved ? JSON.parse(saved) : initialCategories
-    }
-    return initialCategories
-  })
+  const [homepageNews, setHomepageNews] = useState<NewsItem[]>(initialHomepageNews)
 
-  const [newsArticles, setNewsArticles] = useState<NewsItem[]>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('admin-news-articles')
-      return saved ? JSON.parse(saved) : initialNews
-    }
-    return initialNews
-  })
+  const [banners, setBanners] = useState<BannerSlide[]>(initialBanners)
 
-  const [homepageNews, setHomepageNews] = useState<NewsItem[]>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('admin-homepage-news')
-      return saved ? JSON.parse(saved) : initialHomepageNews
-    }
-    return initialHomepageNews
-  })
-
-  const [banners, setBanners] = useState<BannerSlide[]>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('admin-banners')
-      return saved ? JSON.parse(saved) : initialBanners
-    }
-    return initialBanners
-  })
-
-  // Helper function to safely save to localStorage
-  const safeLocalStorageSet = (key: string, value: any) => {
-    if (typeof window === 'undefined') return
-    
-    try {
-      const jsonString = JSON.stringify(value)
-      const sizeKB = (new Blob([jsonString]).size / 1024).toFixed(2)
-      localStorage.setItem(key, jsonString)
-      console.log(`💾 Đã lưu ${key}: ${sizeKB}KB`)
-      
-      // Dispatch custom event để sync trong cùng tab
-      window.dispatchEvent(new CustomEvent('localStorageChange', {
-        detail: { key, value }
-      }))
-    } catch (error) {
-      if (error instanceof DOMException && error.name === 'QuotaExceededError') {
-        console.error(`❌ localStorage đầy! Không thể lưu ${key}`)
-        alert(`⚠️ CẢNH BÁO: Bộ nhớ localStorage đã đầy!\n\n` +
-              `Không thể lưu: ${key}\n\n` +
-              `Giải pháp:\n` +
-              `1. Xóa bớt dữ liệu không cần thiết\n` +
-              `2. Dùng đường dẫn file thay vì upload base64\n` +
-              `3. Nén ảnh trước khi upload\n` +
-              `4. Xóa cache: F12 > Application > Local Storage > Clear All`)
-      } else {
-        console.error(`❌ Lỗi khi lưu ${key}:`, error)
-      }
-    }
-  }
-
-  // Save to localStorage AND file whenever state changes
+  // Save to file whenever state changes (debounced)
   useEffect(() => {
-    safeLocalStorageSet('admin-services', services)
+    // Clear existing timeout
+    if (servicesSaveTimeoutRef.current) {
+      clearTimeout(servicesSaveTimeoutRef.current)
+    }
     
-    // Convert base64 to files and save
-    if (typeof window !== 'undefined') {
-      const processAndSave = async () => {
-        const processedServices = await Promise.all(
-          services.map(async (service) => {
-            if (service.image && service.image.startsWith('data:image/')) {
-              const newPath = await convertBase64ToFile(service.image, 'icons/services')
-              return { ...service, image: newPath }
-            }
-            return service
-          })
-        )
+    // Debounce API calls to prevent multiple simultaneous requests
+    if (typeof window !== 'undefined' && !isSavingServicesRef.current) {
+      servicesSaveTimeoutRef.current = setTimeout(async () => {
+        isSavingServicesRef.current = true
         
-        fetch('/api/services', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(processedServices)
-        })
-        .then(res => res.json())
-        .then(data => {
+        try {
+          const response = await fetch('/api/services', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(services)
+          })
+          
+          const data = await response.json()
           if (data.success) {
             console.log('✅ Đã lưu services vào file!')
-            if (JSON.stringify(processedServices) !== JSON.stringify(services)) {
-              setServices(processedServices)
-            }
+          } else {
+            console.error('❌ Lỗi khi lưu services:', data.error)
           }
-        })
-        .catch(err => console.error('❌ Lỗi khi lưu services:', err))
-      }
-      
-      processAndSave()
+        } catch (err) {
+          console.error('Error saving services:', err)
+        } finally {
+          isSavingServicesRef.current = false
+        }
+      }, 500) // 0.5 second debounce
     }
   }, [services])
 
   useEffect(() => {
-    safeLocalStorageSet('admin-products', products)
+    // Clear existing timeout
+    if (productsSaveTimeoutRef.current) {
+      clearTimeout(productsSaveTimeoutRef.current)
+    }
     
-    // Convert base64 to files and save
-    if (typeof window !== 'undefined') {
-      const processAndSave = async () => {
-        const processedProducts = await Promise.all(
-          products.map(async (product) => {
-            let newImage = product.image
-            let newGallery = product.gallery
-            
-            // Convert main image
-            if (product.image && product.image.startsWith('data:image/')) {
-              newImage = await convertBase64ToFile(product.image, 'icons/products')
-            }
-            
-            // Convert gallery images
-            if (product.gallery && product.gallery.length > 0) {
-              newGallery = await Promise.all(
-                product.gallery.map(async (img) => {
-                  if (img.startsWith('data:image/')) {
-                    return await convertBase64ToFile(img, 'icons/products')
-                  }
-                  return img
-                })
-              )
-            }
-            
-            return { ...product, image: newImage, gallery: newGallery }
-          })
-        )
+    // Debounce API calls to prevent multiple simultaneous requests
+    if (typeof window !== 'undefined' && !isSavingProductsRef.current) {
+      productsSaveTimeoutRef.current = setTimeout(async () => {
+        isSavingProductsRef.current = true
         
-        fetch('/api/products', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(processedProducts)
-        })
-        .then(res => res.json())
-        .then(data => {
+        try {
+          const response = await fetch('/api/products', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(products)
+          })
+          
+          const data = await response.json()
           if (data.success) {
             console.log('✅ Đã lưu products vào file!')
-            if (JSON.stringify(processedProducts) !== JSON.stringify(products)) {
-              setProducts(processedProducts)
-            }
+          } else {
+            console.error('❌ Lỗi khi lưu products:', data.error)
           }
-        })
-        .catch(err => console.error('❌ Lỗi khi lưu products:', err))
-      }
-      
-      processAndSave()
+        } catch (err) {
+          console.error('Error saving products:', err)
+        } finally {
+          isSavingProductsRef.current = false
+        }
+      }, 500) // 0.5 second debounce
     }
   }, [products])
 
+  // Categories are saved with products
   useEffect(() => {
-    safeLocalStorageSet('admin-categories', categories)
+    // Categories will be saved when products are saved
   }, [categories])
 
   useEffect(() => {
-    safeLocalStorageSet('admin-news-articles', newsArticles)
-    safeLocalStorageSet('admin-homepage-news', homepageNews)
-    
     // Save to file via API
     if (typeof window !== 'undefined') {
       fetch('/api/news', {
@@ -338,42 +205,35 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   }, [newsArticles, homepageNews])
 
   useEffect(() => {
-    safeLocalStorageSet('admin-banners', banners)
+    // Clear existing timeout
+    if (bannersSaveTimeoutRef.current) {
+      clearTimeout(bannersSaveTimeoutRef.current)
+    }
     
-    // Convert base64 to files and save
-    if (typeof window !== 'undefined') {
-      const processAndSave = async () => {
-        // Convert all base64 images to files
-        const processedBanners = await Promise.all(
-          banners.map(async (banner) => {
-            if (banner.image && banner.image.startsWith('data:image/')) {
-              const newPath = await convertBase64ToFile(banner.image, 'icons/banners')
-              return { ...banner, image: newPath }
-            }
-            return banner
-          })
-        )
+    // Debounce API calls to prevent multiple simultaneous requests
+    if (typeof window !== 'undefined' && !isSavingBannersRef.current) {
+      bannersSaveTimeoutRef.current = setTimeout(async () => {
+        isSavingBannersRef.current = true
         
-        // Save to file via API
-        fetch('/api/banners', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(processedBanners)
-        })
-        .then(res => res.json())
-        .then(data => {
+        try {
+          const response = await fetch('/api/banners', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(banners)
+          })
+          
+          const data = await response.json()
           if (data.success) {
             console.log('✅ Đã lưu vào file banners.ts!')
-            // Update state with new paths
-            if (JSON.stringify(processedBanners) !== JSON.stringify(banners)) {
-              setBanners(processedBanners)
-            }
+          } else {
+            console.error('❌ Lỗi khi lưu banners:', data.error)
           }
-        })
-        .catch(err => console.error('❌ Lỗi khi lưu vào file:', err))
-      }
-      
-      processAndSave()
+        } catch (err) {
+          console.error('Error saving banners:', err)
+        } finally {
+          isSavingBannersRef.current = false
+        }
+      }, 500) // 0.5 second debounce
     }
   }, [banners])
 
@@ -466,55 +326,43 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     setBanners(banners.filter(b => b.id !== id))
   }
 
-  // Convert base64 to file
-  const convertBase64ToFile = async (base64: string, folder: string): Promise<string> => {
-    if (!base64.startsWith('data:image/')) {
-      return base64 // Already a path
-    }
-    
+  // Reload all data from API
+  const reloadFromStorage = useCallback(async () => {
     try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ base64, folder })
-      })
-      
-      const data = await response.json()
-      if (data.success) {
-        console.log('✅ Converted base64 to file:', data.path)
-        return data.path
-      }
-      return base64
-    } catch (error) {
-      console.error('❌ Error converting base64:', error)
-      return base64
-    }
-  }
-
-  // Reload all data from localStorage
-  const reloadFromStorage = useCallback(() => {
-    if (typeof window === 'undefined') return
-    
-    try {
-      const bannersData = localStorage.getItem('admin-banners')
-      if (bannersData) {
-        setBanners(JSON.parse(bannersData))
-        console.log('🔄 Reloaded banners from localStorage')
+      // Load products from API
+      const productsRes = await fetch('/api/products')
+      if (productsRes.ok) {
+        const productsData = await productsRes.json()
+        setProducts(productsData)
+        console.log('🔄 Reloaded products from API')
       }
       
-      const servicesData = localStorage.getItem('admin-services')
-      if (servicesData) {
-        setServices(JSON.parse(servicesData))
-        console.log('🔄 Reloaded services from localStorage')
+      // Load services from API
+      const servicesRes = await fetch('/api/services')
+      if (servicesRes.ok) {
+        const servicesData = await servicesRes.json()
+        setServices(servicesData)
+        console.log('🔄 Reloaded services from API')
       }
       
-      const productsData = localStorage.getItem('admin-products')
-      if (productsData) {
-        setProducts(JSON.parse(productsData))
-        console.log('🔄 Reloaded products from localStorage')
+      // Load banners from API
+      const bannersRes = await fetch('/api/banners')
+      if (bannersRes.ok) {
+        const bannersData = await bannersRes.json()
+        setBanners(bannersData)
+        console.log('🔄 Reloaded banners from API')
+      }
+      
+      // Load news from API
+      const newsRes = await fetch('/api/news')
+      if (newsRes.ok) {
+        const newsData = await newsRes.json()
+        if (newsData.articles) setNewsArticles(newsData.articles)
+        if (newsData.homepage) setHomepageNews(newsData.homepage)
+        console.log('🔄 Reloaded news from API')
       }
     } catch (error) {
-      console.error('Error reloading from storage:', error)
+      console.error('Error reloading from API:', error)
     }
   }, [])
 

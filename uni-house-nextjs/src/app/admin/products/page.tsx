@@ -52,49 +52,99 @@ export default function ProductsManagement() {
     setIsAdding(false)
   }
 
-  const handleMainImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMainImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        if (editingProduct && e.target?.result) {
-          setEditingProduct({ 
-            ...editingProduct, 
-            image: e.target.result as string
-          })
-        }
-      }
-      reader.readAsDataURL(file)
-    }
-  }
-
-  const handleMultipleImagesUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files
-    if (!files || !editingProduct) return
-
-    const readers: Promise<string>[] = []
-    
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i]
-      const promise = new Promise<string>((resolve) => {
+    if (file && editingProduct) {
+      try {
+        // Convert to base64 first
         const reader = new FileReader()
-        reader.onload = (e) => {
+        reader.onload = async (e) => {
           if (e.target?.result) {
-            resolve(e.target.result as string)
+            const base64 = e.target.result as string
+            
+            // Upload to server
+            const response = await fetch('/api/upload', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ 
+                base64, 
+                folder: 'icons/products'
+              })
+            })
+            
+            const data = await response.json()
+            if (data.success) {
+              setEditingProduct({ 
+                ...editingProduct, 
+                image: data.path
+              })
+              console.log('✅ Uploaded image:', data.path)
+            } else {
+              alert('❌ Lỗi upload ảnh: ' + data.message)
+            }
           }
         }
         reader.readAsDataURL(file)
-      })
-      readers.push(promise)
+      } catch (error) {
+        console.error('Error uploading image:', error)
+        alert('❌ Lỗi khi upload ảnh')
+      }
     }
+  }
 
-    Promise.all(readers).then((results) => {
+  const handleMultipleImagesUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (!files || !editingProduct) return
+
+    try {
+      const uploadPromises: Promise<string>[] = []
+      
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        const promise = new Promise<string>((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onload = async (e) => {
+            if (e.target?.result) {
+              const base64 = e.target.result as string
+              
+              try {
+                // Upload to server
+                const response = await fetch('/api/upload', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ 
+                    base64, 
+                    folder: 'icons/products'
+                  })
+                })
+                
+                const data = await response.json()
+                if (data.success) {
+                  resolve(data.path)
+                } else {
+                  reject(new Error(data.message))
+                }
+              } catch (error) {
+                reject(error)
+              }
+            }
+          }
+          reader.readAsDataURL(file)
+        })
+        uploadPromises.push(promise)
+      }
+
+      const uploadedPaths = await Promise.all(uploadPromises)
       const currentImages = editingProduct.images || []
       setEditingProduct({
         ...editingProduct,
-        images: [...currentImages, ...results]
+        images: [...currentImages, ...uploadedPaths]
       })
-    })
+      console.log(`✅ Uploaded ${uploadedPaths.length} images`)
+    } catch (error) {
+      console.error('Error uploading images:', error)
+      alert('❌ Lỗi khi upload ảnh')
+    }
   }
 
   const handleRemoveImage = (index: number) => {
