@@ -49,7 +49,7 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Bảng điều khiển</h1>
-        <p className="text-gray-600">Chào mừng đến với trang quản trị UniHouse</p>
+        <p className="text-gray-600">Chào mừng đến với trang quản trị Phú An Phát</p>
       </div>
 
       {/* Statistics Cards */}
