@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { services as initialServices, ServiceItem } from '@/data/services'
 import { products as initialProducts, categories as initialCategories, ProductItem, ProductCategory } from '@/data/products'
 import { newsArticles as initialNews, homepageNews as initialHomepageNews, NewsItem } from '@/data/news'
@@ -43,6 +43,9 @@ interface DataContextType {
   addBanner: (banner: BannerSlide) => void
   updateBanner: (id: number, banner: BannerSlide) => void
   deleteBanner: (id: number) => void
+  
+  // Reload from storage
+  reloadFromStorage: () => void
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined)
@@ -66,6 +69,80 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       return initialServices
     }
   })
+
+  // Listen for localStorage changes from other tabs/windows AND same tab (admin)
+  useEffect(() => {
+    // Handler for cross-tab changes (storage event)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (!e.newValue) return
+
+      try {
+        const parsed = JSON.parse(e.newValue)
+        
+        switch (e.key) {
+          case 'admin-services':
+            setServices(parsed)
+            console.log('🔄 Services updated from admin (cross-tab)')
+            break
+          case 'admin-products':
+            setProducts(parsed)
+            console.log('🔄 Products updated from admin (cross-tab)')
+            break
+          case 'admin-banners':
+            setBanners(parsed)
+            console.log('🔄 Banners updated from admin (cross-tab)')
+            break
+          case 'admin-news-articles':
+            setNewsArticles(parsed)
+            console.log('🔄 News updated from admin (cross-tab)')
+            break
+          case 'admin-categories':
+            setCategories(parsed)
+            console.log('🔄 Categories updated from admin (cross-tab)')
+            break
+        }
+      } catch (error) {
+        console.error('Error parsing storage change:', error)
+      }
+    }
+
+    // Handler for same-tab changes (custom event)
+    const handleCustomStorageChange = (e: Event) => {
+      const customEvent = e as CustomEvent
+      const { key, value } = customEvent.detail
+      
+      switch (key) {
+        case 'admin-services':
+          setServices(value)
+          console.log('🔄 Services updated from admin (same-tab)')
+          break
+        case 'admin-products':
+          setProducts(value)
+          console.log('🔄 Products updated from admin (same-tab)')
+          break
+        case 'admin-banners':
+          setBanners(value)
+          console.log('🔄 Banners updated from admin (same-tab)')
+          break
+        case 'admin-news-articles':
+          setNewsArticles(value)
+          console.log('🔄 News updated from admin (same-tab)')
+          break
+        case 'admin-categories':
+          setCategories(value)
+          console.log('🔄 Categories updated from admin (same-tab)')
+          break
+      }
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    window.addEventListener('localStorageChange', handleCustomStorageChange)
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('localStorageChange', handleCustomStorageChange)
+    }
+  }, [])
 
   const [products, setProducts] = useState<ProductItem[]>(() => {
     if (typeof window === 'undefined') return initialProducts
@@ -116,40 +193,187 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     return initialBanners
   })
 
-  // Save to localStorage whenever state changes
+  // Helper function to safely save to localStorage
+  const safeLocalStorageSet = (key: string, value: any) => {
+    if (typeof window === 'undefined') return
+    
+    try {
+      const jsonString = JSON.stringify(value)
+      const sizeKB = (new Blob([jsonString]).size / 1024).toFixed(2)
+      localStorage.setItem(key, jsonString)
+      console.log(`💾 Đã lưu ${key}: ${sizeKB}KB`)
+      
+      // Dispatch custom event để sync trong cùng tab
+      window.dispatchEvent(new CustomEvent('localStorageChange', {
+        detail: { key, value }
+      }))
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'QuotaExceededError') {
+        console.error(`❌ localStorage đầy! Không thể lưu ${key}`)
+        alert(`⚠️ CẢNH BÁO: Bộ nhớ localStorage đã đầy!\n\n` +
+              `Không thể lưu: ${key}\n\n` +
+              `Giải pháp:\n` +
+              `1. Xóa bớt dữ liệu không cần thiết\n` +
+              `2. Dùng đường dẫn file thay vì upload base64\n` +
+              `3. Nén ảnh trước khi upload\n` +
+              `4. Xóa cache: F12 > Application > Local Storage > Clear All`)
+      } else {
+        console.error(`❌ Lỗi khi lưu ${key}:`, error)
+      }
+    }
+  }
+
+  // Save to localStorage AND file whenever state changes
   useEffect(() => {
+    safeLocalStorageSet('admin-services', services)
+    
+    // Convert base64 to files and save
     if (typeof window !== 'undefined') {
-      localStorage.setItem('admin-services', JSON.stringify(services))
+      const processAndSave = async () => {
+        const processedServices = await Promise.all(
+          services.map(async (service) => {
+            if (service.image && service.image.startsWith('data:image/')) {
+              const newPath = await convertBase64ToFile(service.image, 'icons/services')
+              return { ...service, image: newPath }
+            }
+            return service
+          })
+        )
+        
+        fetch('/api/services', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(processedServices)
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            console.log('✅ Đã lưu services vào file!')
+            if (JSON.stringify(processedServices) !== JSON.stringify(services)) {
+              setServices(processedServices)
+            }
+          }
+        })
+        .catch(err => console.error('❌ Lỗi khi lưu services:', err))
+      }
+      
+      processAndSave()
     }
   }, [services])
 
   useEffect(() => {
+    safeLocalStorageSet('admin-products', products)
+    
+    // Convert base64 to files and save
     if (typeof window !== 'undefined') {
-      localStorage.setItem('admin-products', JSON.stringify(products))
+      const processAndSave = async () => {
+        const processedProducts = await Promise.all(
+          products.map(async (product) => {
+            let newImage = product.image
+            let newGallery = product.gallery
+            
+            // Convert main image
+            if (product.image && product.image.startsWith('data:image/')) {
+              newImage = await convertBase64ToFile(product.image, 'icons/products')
+            }
+            
+            // Convert gallery images
+            if (product.gallery && product.gallery.length > 0) {
+              newGallery = await Promise.all(
+                product.gallery.map(async (img) => {
+                  if (img.startsWith('data:image/')) {
+                    return await convertBase64ToFile(img, 'icons/products')
+                  }
+                  return img
+                })
+              )
+            }
+            
+            return { ...product, image: newImage, gallery: newGallery }
+          })
+        )
+        
+        fetch('/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(processedProducts)
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            console.log('✅ Đã lưu products vào file!')
+            if (JSON.stringify(processedProducts) !== JSON.stringify(products)) {
+              setProducts(processedProducts)
+            }
+          }
+        })
+        .catch(err => console.error('❌ Lỗi khi lưu products:', err))
+      }
+      
+      processAndSave()
     }
   }, [products])
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('admin-categories', JSON.stringify(categories))
-    }
+    safeLocalStorageSet('admin-categories', categories)
   }, [categories])
 
   useEffect(() => {
+    safeLocalStorageSet('admin-news-articles', newsArticles)
+    safeLocalStorageSet('admin-homepage-news', homepageNews)
+    
+    // Save to file via API
     if (typeof window !== 'undefined') {
-      localStorage.setItem('admin-news-articles', JSON.stringify(newsArticles))
+      fetch('/api/news', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ articles: newsArticles, homepage: homepageNews })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) console.log('✅ Đã lưu news vào file!')
+      })
+      .catch(err => console.error('❌ Lỗi khi lưu news:', err))
     }
-  }, [newsArticles])
+  }, [newsArticles, homepageNews])
 
   useEffect(() => {
+    safeLocalStorageSet('admin-banners', banners)
+    
+    // Convert base64 to files and save
     if (typeof window !== 'undefined') {
-      localStorage.setItem('admin-homepage-news', JSON.stringify(homepageNews))
-    }
-  }, [homepageNews])
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('admin-banners', JSON.stringify(banners))
+      const processAndSave = async () => {
+        // Convert all base64 images to files
+        const processedBanners = await Promise.all(
+          banners.map(async (banner) => {
+            if (banner.image && banner.image.startsWith('data:image/')) {
+              const newPath = await convertBase64ToFile(banner.image, 'icons/banners')
+              return { ...banner, image: newPath }
+            }
+            return banner
+          })
+        )
+        
+        // Save to file via API
+        fetch('/api/banners', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(processedBanners)
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            console.log('✅ Đã lưu vào file banners.ts!')
+            // Update state with new paths
+            if (JSON.stringify(processedBanners) !== JSON.stringify(banners)) {
+              setBanners(processedBanners)
+            }
+          }
+        })
+        .catch(err => console.error('❌ Lỗi khi lưu vào file:', err))
+      }
+      
+      processAndSave()
     }
   }, [banners])
 
@@ -242,6 +466,58 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     setBanners(banners.filter(b => b.id !== id))
   }
 
+  // Convert base64 to file
+  const convertBase64ToFile = async (base64: string, folder: string): Promise<string> => {
+    if (!base64.startsWith('data:image/')) {
+      return base64 // Already a path
+    }
+    
+    try {
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ base64, folder })
+      })
+      
+      const data = await response.json()
+      if (data.success) {
+        console.log('✅ Converted base64 to file:', data.path)
+        return data.path
+      }
+      return base64
+    } catch (error) {
+      console.error('❌ Error converting base64:', error)
+      return base64
+    }
+  }
+
+  // Reload all data from localStorage
+  const reloadFromStorage = useCallback(() => {
+    if (typeof window === 'undefined') return
+    
+    try {
+      const bannersData = localStorage.getItem('admin-banners')
+      if (bannersData) {
+        setBanners(JSON.parse(bannersData))
+        console.log('🔄 Reloaded banners from localStorage')
+      }
+      
+      const servicesData = localStorage.getItem('admin-services')
+      if (servicesData) {
+        setServices(JSON.parse(servicesData))
+        console.log('🔄 Reloaded services from localStorage')
+      }
+      
+      const productsData = localStorage.getItem('admin-products')
+      if (productsData) {
+        setProducts(JSON.parse(productsData))
+        console.log('🔄 Reloaded products from localStorage')
+      }
+    } catch (error) {
+      console.error('Error reloading from storage:', error)
+    }
+  }, [])
+
   const value: DataContextType = {
     services,
     updateServices,
@@ -270,6 +546,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     addBanner,
     updateBanner,
     deleteBanner,
+    reloadFromStorage,
   }
 
   return (

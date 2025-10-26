@@ -1,12 +1,38 @@
 'use client'
 
+import { useEffect } from 'react'
 import Link from 'next/link'
 import { useData } from '@/contexts/DataContext'
 import { useTranslations } from 'next-intl'
 
 export default function ServicesSection() {
-  const { services } = useData()
+  const { services, reloadFromStorage } = useData()
   const t = useTranslations('services')
+
+  // Reload khi component mount và khi tab được focus
+  useEffect(() => {
+    reloadFromStorage()
+  }, [reloadFromStorage])
+
+  useEffect(() => {
+    const handleFocus = () => {
+      reloadFromStorage()
+    }
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        reloadFromStorage()
+      }
+    }
+
+    window.addEventListener('focus', handleFocus)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    return () => {
+      window.removeEventListener('focus', handleFocus)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
+  }, [reloadFromStorage])
 
   return (
     <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">

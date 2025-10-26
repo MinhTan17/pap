@@ -8,6 +8,7 @@ export default function ServicesManagement() {
   const { services, addService, updateService, deleteService } = useData()
   const [editingService, setEditingService] = useState<ServiceItem | null>(null)
   const [isAdding, setIsAdding] = useState(false)
+  const [newFeature, setNewFeature] = useState('')
 
   const handleAdd = () => {
     setIsAdding(true)
@@ -16,7 +17,8 @@ export default function ServicesManagement() {
       title: '',
       description: '',
       color: 'from-blue-600 to-blue-800',
-      features: []
+      features: [],
+      image: ''
     })
   }
 
@@ -47,6 +49,38 @@ export default function ServicesManagement() {
   const handleCancel = () => {
     setEditingService(null)
     setIsAdding(false)
+    setNewFeature('')
+  }
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        if (editingService && e.target?.result) {
+          setEditingService({ 
+            ...editingService, 
+            image: e.target.result as string
+          })
+        }
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleAddFeature = () => {
+    if (!editingService || !newFeature.trim()) return
+    
+    const updatedFeatures = [...(editingService.features || []), newFeature.trim()]
+    setEditingService({ ...editingService, features: updatedFeatures })
+    setNewFeature('')
+  }
+
+  const handleRemoveFeature = (index: number) => {
+    if (!editingService) return
+    
+    const updatedFeatures = editingService.features?.filter((_, i) => i !== index) || []
+    setEditingService({ ...editingService, features: updatedFeatures })
   }
 
   return (
@@ -117,12 +151,12 @@ export default function ServicesManagement() {
       {/* Edit Modal */}
       {editingService && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+          <div className="relative top-10 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white mb-10">
             <h3 className="text-lg font-bold text-gray-900 mb-4">
               {isAdding ? 'Thêm dịch vụ mới' : 'Chỉnh sửa dịch vụ'}
             </h3>
             
-            <div className="space-y-4">
+            <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
               <div>
                 <label className="block text-sm font-medium text-gray-700">Tên dịch vụ</label>
                 <input
@@ -143,7 +177,6 @@ export default function ServicesManagement() {
                 />
               </div>
 
-
               <div>
                 <label className="block text-sm font-medium text-gray-700">Màu sắc</label>
                 <select
@@ -156,12 +189,88 @@ export default function ServicesManagement() {
                   <option value="from-green-600 to-green-800">Xanh lá</option>
                   <option value="from-orange-600 to-red-600">Cam - Đỏ</option>
                   <option value="from-purple-600 to-blue-600">Tím - Xanh</option>
+                  <option value="from-yellow-600 to-amber-600">Vàng - Hổ phách</option>
                   <option value="from-gray-600 to-gray-800">Xám</option>
                 </select>
               </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Upload hình ảnh</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Hoặc nhập đường dẫn ảnh</label>
+                <input
+                  type="text"
+                  value={editingService.image || ''}
+                  onChange={(e) => setEditingService({ ...editingService, image: e.target.value })}
+                  placeholder="/icons/services/service.png"
+                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                />
+              </div>
+
+              {/* Preview Image */}
+              {editingService.image && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Preview hình ảnh</label>
+                  <div className="border rounded-md p-2 bg-gray-50">
+                    <img 
+                      src={editingService.image} 
+                      alt={editingService.title}
+                      className="w-32 h-32 object-cover rounded"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Features Management */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Tính năng nổi bật</label>
+                <div className="space-y-2">
+                  {editingService.features && editingService.features.length > 0 && (
+                    <div className="space-y-1">
+                      {editingService.features.map((feature, index) => (
+                        <div key={index} className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded">
+                          <span className="text-sm text-gray-700">{feature}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveFeature(index)}
+                            className="text-red-600 hover:text-red-800 text-sm"
+                          >
+                            Xóa
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={newFeature}
+                      onChange={(e) => setNewFeature(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleAddFeature()}
+                      placeholder="Nhập tính năng mới..."
+                      className="flex-1 border border-gray-300 rounded-md px-3 py-2"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddFeature}
+                      className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                    >
+                      Thêm
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="flex justify-end space-x-2 mt-6">
+            <div className="flex justify-end space-x-2 mt-6 pt-4 border-t">
               <button
                 onClick={handleCancel}
                 className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"

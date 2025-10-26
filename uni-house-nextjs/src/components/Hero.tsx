@@ -4,9 +4,53 @@ import { useState, useEffect } from 'react'
 import { useData } from '@/contexts/DataContext'
 
 export default function Hero() {
-  const { banners } = useData()
+  const { banners, reloadFromStorage } = useData()
   const [currentSlide, setCurrentSlide] = useState(0)
   const [imgErrorIds, setImgErrorIds] = useState<Set<number>>(new Set())
+
+  // Force reload banners from localStorage on mount
+  useEffect(() => {
+    // Check localStorage directly
+    const stored = localStorage.getItem('admin-banners')
+    console.log('📦 localStorage admin-banners:', stored ? JSON.parse(stored) : 'EMPTY')
+    
+    reloadFromStorage()
+  }, [reloadFromStorage])
+
+  // Reload khi tab được focus lại (quay lại từ admin)
+  useEffect(() => {
+    const handleFocus = () => {
+      console.log('👁️ Tab được focus, reload data...')
+      reloadFromStorage()
+    }
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        console.log('👁️ Tab visible, reload data...')
+        reloadFromStorage()
+      }
+    }
+
+    window.addEventListener('focus', handleFocus)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    return () => {
+      window.removeEventListener('focus', handleFocus)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
+  }, [reloadFromStorage])
+
+  useEffect(() => {
+    console.log('🎬 Hero banners:', banners)
+    banners.forEach((banner, index) => {
+      console.log(`Banner ${index + 1}:`, {
+        id: banner.id,
+        title: banner.title,
+        image: banner.image,
+        hasImage: !!banner.image
+      })
+    })
+  }, [banners])
 
   useEffect(() => {
     if (banners.length > 0) {
@@ -30,7 +74,7 @@ export default function Hero() {
       <div className="relative h-full">
         {banners.map((slide, index) => (
           <div
-            key={slide.id}
+            key={`${slide.id}-${slide.image}`}
             className={`absolute inset-0 transition-opacity duration-1000 ${
               index === currentSlide ? 'opacity-100' : 'opacity-0'
             }`}
@@ -42,10 +86,20 @@ export default function Hero() {
                     src={slide.image}
                     alt={slide.imageAlt || slide.title}
                     className="w-full h-full object-cover"
-                    onError={() => {
+                    onLoad={() => {
+                      console.log('✅ Ảnh load thành công:', slide.image)
+                    }}
+                    onError={(e) => {
+                      console.error('❌ Lỗi load ảnh:', slide.image)
+                      console.error('Kiểm tra: File có tồn tại trong public/ không?')
                       setImgErrorIds((prev) => new Set(prev).add(slide.id))
                     }}
                   />
+              )}
+              
+              {/* Dark overlay for better text readability */}
+              {slide.image && (
+                <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/50 z-[1]"></div>
               )}
               
               {/* Content */}
@@ -53,17 +107,29 @@ export default function Hero() {
                 <div className="text-center text-white max-w-4xl">
                   
                   {/* Subtitle */}
-                  <p className="text-lg md:text-xl font-semibold mb-4 opacity-90 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                  <p className="text-lg md:text-xl font-bold mb-4 tracking-wide uppercase animate-fade-in-up" 
+                     style={{ 
+                       animationDelay: '0.2s',
+                       textShadow: '2px 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)'
+                     }}>
                     {slide.subtitle}
                   </p>
                   
                   {/* Main Title */}
-                  <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                  <h1 className="text-3xl md:text-5xl lg:text-6xl font-black mb-6 leading-tight animate-fade-in-up" 
+                      style={{ 
+                        animationDelay: '0.4s',
+                        textShadow: '3px 3px 10px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.6)'
+                      }}>
                     {slide.title}
                   </h1>
                   
                   {/* Description */}
-                  <p className="text-lg md:text-xl opacity-90 max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+                  <p className="text-lg md:text-xl font-medium max-w-2xl mx-auto animate-fade-in-up" 
+                     style={{ 
+                       animationDelay: '0.6s',
+                       textShadow: '2px 2px 6px rgba(0,0,0,0.8), 0 0 15px rgba(0,0,0,0.5)'
+                     }}>
                     {slide.description}
                   </p>
                 </div>

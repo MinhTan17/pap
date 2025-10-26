@@ -17,7 +17,9 @@ export default function ProductsManagement() {
       category: 'alloy',
       price: 'Liên hệ',
       description: '',
-      color: 'from-orange-500 to-red-600'
+      color: 'from-orange-500 to-red-600',
+      image: '',
+      images: []
     })
   }
 
@@ -48,6 +50,68 @@ export default function ProductsManagement() {
   const handleCancel = () => {
     setEditingProduct(null)
     setIsAdding(false)
+  }
+
+  const handleMainImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        if (editingProduct && e.target?.result) {
+          setEditingProduct({ 
+            ...editingProduct, 
+            image: e.target.result as string
+          })
+        }
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleMultipleImagesUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (!files || !editingProduct) return
+
+    const readers: Promise<string>[] = []
+    
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+      const promise = new Promise<string>((resolve) => {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          if (e.target?.result) {
+            resolve(e.target.result as string)
+          }
+        }
+        reader.readAsDataURL(file)
+      })
+      readers.push(promise)
+    }
+
+    Promise.all(readers).then((results) => {
+      const currentImages = editingProduct.images || []
+      setEditingProduct({
+        ...editingProduct,
+        images: [...currentImages, ...results]
+      })
+    })
+  }
+
+  const handleRemoveImage = (index: number) => {
+    if (!editingProduct) return
+    
+    const updatedImages = editingProduct.images?.filter((_, i) => i !== index) || []
+    setEditingProduct({ ...editingProduct, images: updatedImages })
+  }
+
+  const handleAddImageUrl = (url: string) => {
+    if (!editingProduct || !url.trim()) return
+    
+    const currentImages = editingProduct.images || []
+    setEditingProduct({
+      ...editingProduct,
+      images: [...currentImages, url.trim()]
+    })
   }
 
   return (
@@ -124,12 +188,12 @@ export default function ProductsManagement() {
       {/* Edit Modal */}
       {editingProduct && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+          <div className="relative top-10 mx-auto p-5 border w-full max-w-3xl shadow-lg rounded-md bg-white mb-10">
             <h3 className="text-lg font-bold text-gray-900 mb-4">
               {isAdding ? 'Thêm sản phẩm mới' : 'Chỉnh sửa sản phẩm'}
             </h3>
             
-            <div className="space-y-4">
+            <div className="space-y-4 max-h-[75vh] overflow-y-auto pr-2">
               <div>
                 <label className="block text-sm font-medium text-gray-700">Tên sản phẩm</label>
                 <input
@@ -140,27 +204,29 @@ export default function ProductsManagement() {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Danh mục</label>
-                <select
-                  value={editingProduct.category}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                >
-                  {categories.map(category => (
-                    <option key={category.id} value={category.id}>{category.name}</option>
-                  ))}
-                </select>
-              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Danh mục</label>
+                  <select
+                    value={editingProduct.category}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })}
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                  >
+                    {categories.map(category => (
+                      <option key={category.id} value={category.id}>{category.name}</option>
+                    ))}
+                  </select>
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Giá</label>
-                <input
-                  type="text"
-                  value={editingProduct.price}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Giá</label>
+                  <input
+                    type="text"
+                    value={editingProduct.price}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                  />
+                </div>
               </div>
 
               <div>
@@ -190,9 +256,91 @@ export default function ProductsManagement() {
                   <option value="from-gray-600 to-gray-800">Xám đậm</option>
                 </select>
               </div>
+
+              {/* Main Image Section */}
+              <div className="border-t pt-4">
+                <h4 className="text-md font-semibold text-gray-900 mb-3">Hình ảnh chính</h4>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Upload hình ảnh chính</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleMainImageUpload}
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                  />
+                </div>
+                
+                <div className="mt-2">
+                  <label className="block text-sm font-medium text-gray-700">Hoặc nhập đường dẫn ảnh</label>
+                  <input
+                    type="text"
+                    value={editingProduct.image || ''}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, image: e.target.value })}
+                    placeholder="/icons/products/product.png"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                  />
+                </div>
+
+                {editingProduct.image && (
+                  <div className="mt-3">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Preview</label>
+                    <div className="border rounded-md p-2 bg-gray-50 inline-block">
+                      <img 
+                        src={editingProduct.image} 
+                        alt={editingProduct.name}
+                        className="w-32 h-32 object-cover rounded"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Multiple Images Section */}
+              <div className="border-t pt-4">
+                <h4 className="text-md font-semibold text-gray-900 mb-3">Thư viện ảnh (cho trang chi tiết)</h4>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Upload nhiều ảnh</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleMultipleImagesUpload}
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Có thể chọn nhiều ảnh cùng lúc</p>
+                </div>
+
+                {editingProduct.images && editingProduct.images.length > 0 && (
+                  <div className="mt-3">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Ảnh đã thêm ({editingProduct.images.length})
+                    </label>
+                    <div className="grid grid-cols-4 gap-3">
+                      {editingProduct.images.map((img, index) => (
+                        <div key={index} className="relative group">
+                          <img 
+                            src={img} 
+                            alt={`${editingProduct.name} ${index + 1}`}
+                            className="w-full h-24 object-cover rounded border"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveImage(index)}
+                            className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div className="flex justify-end space-x-2 mt-6">
+            <div className="flex justify-end space-x-2 mt-6 pt-4 border-t">
               <button
                 onClick={handleCancel}
                 className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"

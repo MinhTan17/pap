@@ -6,16 +6,22 @@ import { Header, Footer } from '@/components'
 import { useData } from '@/contexts/DataContext'
 
 interface ProductDetailProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
-export default function ProductDetailPage({ params }: ProductDetailProps) {
+export default async function ProductDetailPage({ params }: ProductDetailProps) {
+  const { id } = await params
+  
+  return <ProductDetailContent productId={id} />
+}
+
+function ProductDetailContent({ productId }: { productId: string }) {
   const { products } = useData()
   const [activeTab, setActiveTab] = useState('info')
 
-  const base = products.find(p => String(p.id) === params.id)
+  const base = products.find(p => String(p.id) === productId)
   const product = base ? {
     id: base.id,
     name: base.name.toUpperCase(),
@@ -40,12 +46,12 @@ export default function ProductDetailPage({ params }: ProductDetailProps) {
     
     // Get products from same category
     const sameCategory = products.filter(p => 
-      String(p.id) !== params.id && p.category === base.category
+      String(p.id) !== productId && p.category === base.category
     )
     
     // Get products from other categories
     const otherProducts = products.filter(p => 
-      String(p.id) !== params.id && p.category !== base.category
+      String(p.id) !== productId && p.category !== base.category
     )
     
     // Combine: same category first, then others, limit to 3
