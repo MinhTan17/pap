@@ -2,17 +2,82 @@
 
 import { Header, Footer } from '@/components'
 import { useData } from '@/contexts/DataContext'
+import { use } from 'react'
 
 interface ServiceDetailProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export default function ServiceDetailPage({ params }: ServiceDetailProps) {
+  const resolvedParams = use(params)
   const { services } = useData()
-  const service = services.find(s => String(s.id) === params.id)
+  const service = services.find(s => String(s.id) === resolvedParams.id)
 
-  // Nội dung chi tiết cho dịch vụ cắt cưa (id = 5)
-  const cuttingServiceContent = params.id === '5' ? {
+  // Nếu có detailContent từ admin, hiển thị nó
+  if (service?.detailContent) {
+    return (
+      <>
+        <Header />
+        <div className="min-h-screen bg-gray-50">
+          {/* Header */}
+          <div className={`bg-gradient-to-r ${service.color || 'from-blue-600 to-blue-800'} text-white py-20`}>
+            <div className="container mx-auto px-4">
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">{service.title}</h1>
+              <p className="text-xl text-white/90 max-w-3xl">{service.description}</p>
+            </div>
+          </div>
+
+          {/* Service Image */}
+          {service.image && (
+            <div className="container mx-auto px-4 -mt-10">
+              <div className="bg-white rounded-lg shadow-xl overflow-hidden">
+                <img 
+                  src={service.image} 
+                  alt={service.title}
+                  className="w-full h-96 object-cover"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Features */}
+          {service.features && service.features.length > 0 && (
+            <div className="container mx-auto px-4 py-12">
+              <div className="bg-white rounded-lg shadow-lg p-8">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Tính năng nổi bật</h2>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {service.features.map((feature, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center mt-1">
+                        <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <span className="text-gray-700">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Detail Content from Admin */}
+          <div className="container mx-auto px-4 py-12">
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <div 
+                className="prose prose-lg max-w-none"
+                dangerouslySetInnerHTML={{ __html: service.detailContent }}
+              />
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </>
+    )
+  }
+
+  // Nội dung chi tiết cho dịch vụ cắt cưa (id = 5) - fallback nếu chưa có detailContent
+  const cuttingServiceContent = resolvedParams.id === '5' ? {
     sections: [
       {
         number: '01',

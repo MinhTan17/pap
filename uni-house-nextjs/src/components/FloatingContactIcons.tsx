@@ -16,19 +16,19 @@ const FloatingContactIcons: React.FC = () => {
   const icons = [
     {
       type: 'zalo' as const,
-      href: 'https://zalo.me/0909926618',
+      href: 'https://zalo.me/0931535007',
       color: '#0068FF',
       label: 'Zalo'
     },
     {
       type: 'fanpage' as const,
-      href: 'https://facebook.com/phuanphat',
+      href: 'https://www.facebook.com/share/1GMhCrG3Sm/?mibextid=wwXIfr',
       color: '#1877F2',
       label: 'Facebook'
     },
     {
       type: 'phone' as const,
-      href: 'tel:0909926618',
+      href: 'tel:0931535007',
       color: '#25D366',
       label: 'Gọi điện'
     }

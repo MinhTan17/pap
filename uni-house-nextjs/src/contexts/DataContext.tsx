@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
 import { services as initialServices, ServiceItem } from '@/data/services'
 import { products as initialProducts, categories as initialCategories, ProductItem, ProductCategory } from '@/data/products'
-import { newsArticles as initialNews, homepageNews as initialHomepageNews, NewsItem } from '@/data/news'
+import { newsArticles as initialNews, NewsItem } from '@/data/news'
 import { initialBanners, BannerSlide } from '@/data/banners'
 
 interface DataContextType {
@@ -30,9 +30,7 @@ interface DataContextType {
 
   // News
   newsArticles: NewsItem[]
-  homepageNews: NewsItem[]
   updateNewsArticles: (news: NewsItem[]) => void
-  updateHomepageNews: (news: NewsItem[]) => void
   addNews: (news: NewsItem) => void
   updateNews: (id: number, news: NewsItem) => void
   deleteNews: (id: number) => void
@@ -55,9 +53,11 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const servicesSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const productsSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const bannersSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const newsSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const isSavingServicesRef = useRef(false)
   const isSavingProductsRef = useRef(false)
   const isSavingBannersRef = useRef(false)
+  const isSavingNewsRef = useRef(false)
   
   // Initialize state - load from API on mount
   const [services, setServices] = useState<ServiceItem[]>(initialServices)
@@ -95,7 +95,6 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         if (newsRes.ok) {
           const newsData = await newsRes.json()
           if (newsData.articles) setNewsArticles(newsData.articles)
-          if (newsData.homepage) setHomepageNews(newsData.homepage)
           console.log('✅ Loaded news from API')
         }
       } catch (error) {
@@ -111,8 +110,6 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const [categories, setCategories] = useState<ProductCategory[]>(initialCategories)
 
   const [newsArticles, setNewsArticles] = useState<NewsItem[]>(initialNews)
-
-  const [homepageNews, setHomepageNews] = useState<NewsItem[]>(initialHomepageNews)
 
   const [banners, setBanners] = useState<BannerSlide[]>(initialBanners)
 
@@ -189,20 +186,37 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   }, [categories])
 
   useEffect(() => {
-    // Save to file via API
-    if (typeof window !== 'undefined') {
-      fetch('/api/news', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ articles: newsArticles, homepage: homepageNews })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) console.log('✅ Đã lưu news vào file!')
-      })
-      .catch(err => console.error('❌ Lỗi khi lưu news:', err))
+    // Clear existing timeout
+    if (newsSaveTimeoutRef.current) {
+      clearTimeout(newsSaveTimeoutRef.current)
     }
-  }, [newsArticles, homepageNews])
+
+    // Debounce API calls to prevent multiple simultaneous requests
+    if (typeof window !== 'undefined' && !isSavingNewsRef.current) {
+      newsSaveTimeoutRef.current = setTimeout(async () => {
+        isSavingNewsRef.current = true
+
+        try {
+          const response = await fetch('/api/news', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ articles: newsArticles })
+          })
+
+          const data = await response.json()
+          if (data.success) {
+            console.log('✅ Đã lưu news vào file!')
+          } else {
+            console.error('❌ Lỗi khi lưu news:', data.error)
+          }
+        } catch (err) {
+          console.error('Error saving news:', err)
+        } finally {
+          isSavingNewsRef.current = false
+        }
+      }, 500) // 0.5 second debounce
+    }
+  }, [newsArticles])
 
   useEffect(() => {
     // Clear existing timeout
@@ -293,10 +307,6 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     setNewsArticles(newNews)
   }
 
-  const updateHomepageNews = (newNews: NewsItem[]) => {
-    setHomepageNews(newNews)
-  }
-
   const addNews = (news: NewsItem) => {
     setNewsArticles([...newsArticles, news])
   }
@@ -358,7 +368,6 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       if (newsRes.ok) {
         const newsData = await newsRes.json()
         if (newsData.articles) setNewsArticles(newsData.articles)
-        if (newsData.homepage) setHomepageNews(newsData.homepage)
         console.log('🔄 Reloaded news from API')
       }
     } catch (error) {
@@ -383,9 +392,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     updateCategory,
     deleteCategory,
     newsArticles,
-    homepageNews,
     updateNewsArticles,
-    updateHomepageNews,
     addNews,
     updateNews,
     deleteNews,

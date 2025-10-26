@@ -26,23 +26,33 @@ export default function Footer() {
             <h3 className="text-xl font-bold mb-4">{t('servicesTitle')}</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/services" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/dich-vu/1" className="text-gray-300 hover:text-white transition-colors">
                   GIA CÔNG CẮT LASER CNC
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/dich-vu/2" className="text-gray-300 hover:text-white transition-colors">
                   GIA CÔNG PHAY VÀ MÀI 6 MẶT
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="text-gray-300 hover:text-white transition-colors">
-                  GIA CÔNG KHUÔN MẪU, CƠ KHÍ CHÍNH XÁC
+                <Link href="/dich-vu/3" className="text-gray-300 hover:text-white transition-colors">
+                  GIA CÔNG CẮT CƯA THÉP
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/dich-vu/4" className="text-gray-300 hover:text-white transition-colors">
                   XỬ LÝ NHIỆT - NHIỆT LUYỆN
+                </Link>
+              </li>
+               <li>
+                <Link href="/dich-vu/5" className="text-gray-300 hover:text-white transition-colors">
+                  GIA CÔNG CẮT PLASMA
+                </Link>
+              </li>
+               <li>
+                <Link href="/dich-vu/6" className="text-gray-300 hover:text-white transition-colors">
+                  GIA CÔNG OXY GAS - CNC
                 </Link>
               </li>
             </ul>
@@ -53,27 +63,27 @@ export default function Footer() {
             <h3 className="text-xl font-bold mb-4">{t('productsTitle')}</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/products" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/san-pham" className="text-gray-300 hover:text-white transition-colors">
                   HỢP KIM
                 </Link>
               </li>
               <li>
-                <Link href="/products" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/san-pham" className="text-gray-300 hover:text-white transition-colors">
                   THÉP LÀM KHUÔN
                 </Link>
               </li>
               <li>
-                <Link href="/products" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/san-pham" className="text-gray-300 hover:text-white transition-colors">
                   THÉP CHẾ TẠO MÁY
                 </Link>
               </li>
               <li>
-                <Link href="/products" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/san-pham" className="text-gray-300 hover:text-white transition-colors">
                   THÉP CARBON
                 </Link>
               </li>
               <li>
-                <Link href="/products" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/san-pham" className="text-gray-300 hover:text-white transition-colors">
                   THÉP KHÔNG RỈ
                 </Link>
               </li>

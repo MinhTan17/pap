@@ -2,35 +2,13 @@
 
 import { useData } from '@/contexts/DataContext'
 import { useTranslations } from 'next-intl'
+import Link from 'next/link'
 
 export default function NewsSection() {
-  const { homepageNews: newsItems } = useData()
+  const { newsArticles } = useData()
   const t = useTranslations('news')
 
-  const getIcon = (iconType: string) => {
-    switch (iconType) {
-      case 'laser':
-        return (
-          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
-        )
-      case 'steel':
-        return (
-          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-          </svg>
-        )
-      case 'plasma':
-        return (
-          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-          </svg>
-        )
-      default:
-        return null
-    }
-  }
+  const homepageNews = newsArticles.slice(0, 6)
 
   return (
     <section className="py-20 bg-gradient-to-br from-gray-800 to-gray-900 relative overflow-hidden">
@@ -48,38 +26,67 @@ export default function NewsSection() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          {newsItems.map((news, index) => (
-            <div key={news.id} className="group cursor-pointer precision-cut" style={{ animationDelay: `${index * 0.2}s` }}>
-              <div className="relative bg-white rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 steel-glow">
-                {/* News Header */}
-                <div className={`relative h-32 bg-gradient-to-r ${news.color} flex items-center justify-center overflow-hidden`}>
-                  {/* Metal shine effect */}
-                  <div className="metal-shine absolute inset-0"></div>
-                  
-                  {/* Welding spark effect for laser news */}
-                  {news.icon === 'laser' && (
-                    <div className="welding-spark"></div>
+          {homepageNews.map((news, index) => (
+            <Link
+              key={news.id}
+              href={`/tin-tuc/${news.id}`}
+              className="group block"
+              onClick={(e) => {
+                // Ensure navigation works in Next.js 13+ app router
+                if (typeof window !== 'undefined') {
+                  window.location.href = `/tin-tuc/${news.id}`
+                }
+              }}
+            >
+              <div className="relative bg-white rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 steel-glow cursor-pointer">
+                {/* News Image */}
+                <div className="aspect-video bg-gray-200 flex items-center justify-center overflow-hidden">
+                  {news.image ? (
+                    <img
+                      src={news.image}
+                      alt={news.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="text-center text-gray-600">
+                      <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                        </svg>
+                      </div>
+                      <p className="text-xs">Hình ảnh</p>
+                    </div>
                   )}
-                  
-                  {/* Icon */}
-                  <div className="relative z-10">
-                    {getIcon(news.icon)}
+
+                  {/* Category Badge */}
+                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
+                    <span className="text-sm font-medium text-gray-800">{news.category}</span>
                   </div>
-                  
-                  {/* Industrial corner accent */}
-                  <div className="absolute top-0 right-0 w-0 h-0 border-l-[30px] border-l-transparent border-t-[30px] border-t-black opacity-20"></div>
+
+                  {/* Date Badge */}
+                  <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full">
+                    <span className="text-sm font-medium text-white">{news.date}</span>
+                  </div>
+
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                    <div className="p-4 text-white">
+                      <h3 className="text-lg font-bold mb-2 line-clamp-2">{news.title}</h3>
+                      <p className="text-sm line-clamp-2 opacity-90">{news.excerpt}</p>
+                    </div>
+                  </div>
                 </div>
-                
+
                 <div className="p-6">
                   <h3 className="text-lg font-bold text-gray-800 group-hover:text-blue-600 transition-colors mb-3 leading-tight">
                     {news.title}
                   </h3>
-                  
-                  <p className="text-gray-600 text-sm mb-4 leading-relaxed">
-                    {news.description}
+
+                  <p className="text-gray-600 text-sm mb-4 leading-relaxed line-clamp-3">
+                    {news.excerpt}
                   </p>
 
-                  {/* Industrial bottom border */}
+                  {/* Bottom info */}
                   <div className="pt-4 border-t border-gray-200">
                     <div className="flex items-center justify-between text-xs">
                       <div className="flex items-center text-gray-500">
@@ -92,11 +99,8 @@ export default function NewsSection() {
                     </div>
                   </div>
                 </div>
-                
-                {/* Hover effect overlay */}
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-orange-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

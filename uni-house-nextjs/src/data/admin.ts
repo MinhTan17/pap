@@ -25,6 +25,7 @@ export const adminMenu: AdminMenuItem[] = [
       { id: 'products', label: 'Sản phẩm', href: '/admin/products' },
       { id: 'products-detail', label: 'Chi tiết sản phẩm', href: '/admin/products/1' }, // Placeholder
       { id: 'news', label: 'Tin tức', href: '/admin/news' },
+      { id: 'news-detail', label: 'Chi tiết tin tức', href: '/admin/news/1' }, // Placeholder, sẽ dynamic
       { id: 'categories', label: 'Danh mục sản phẩm', href: '/admin/categories' }
     ]
   },

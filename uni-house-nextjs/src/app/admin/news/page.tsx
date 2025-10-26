@@ -3,45 +3,14 @@
 import { useState } from 'react'
 import { useData } from '@/contexts/DataContext'
 import { NewsItem } from '@/data/news'
+import Link from 'next/link'
 
 export default function NewsManagement() {
-  const { newsArticles, addNews, updateNews, deleteNews } = useData()
-  const [editingNews, setEditingNews] = useState<NewsItem | null>(null)
-  const [isAdding, setIsAdding] = useState(false)
-
-  const handleAdd = () => {
-    setIsAdding(true)
-    setEditingNews({
-      id: Math.max(...newsArticles.map(n => n.id)) + 1,
-      title: '',
-      description: '',
-      excerpt: '',
-      category: '',
-      date: new Date().toLocaleDateString('vi-VN'),
-      readTime: '5 phút đọc',
-      image: '/api/placeholder/400/250',
-      icon: 'steel',
-      color: 'from-blue-500 to-blue-700'
-    })
-  }
-
-  const handleEdit = (newsItem: NewsItem) => {
-    setEditingNews({ ...newsItem })
-    setIsAdding(false)
-  }
-
-  const handleSave = () => {
-    if (!editingNews) return
-
-    if (isAdding) {
-      addNews(editingNews)
-    } else {
-      updateNews(editingNews.id, editingNews)
-    }
-
-    setEditingNews(null)
-    setIsAdding(false)
-  }
+  const { newsArticles, deleteNews, updateNews } = useData()
+  const [quickItem, setQuickItem] = useState<NewsItem | null>(null)
+  const [qeTitle, setQeTitle] = useState('')
+  const [qeCategory, setQeCategory] = useState('')
+  const [qeDate, setQeDate] = useState('')
 
   const handleDelete = (id: number) => {
     if (confirm('Bạn có chắc muốn xóa tin tức này?')) {
@@ -49,21 +18,31 @@ export default function NewsManagement() {
     }
   }
 
-  const handleCancel = () => {
-    setEditingNews(null)
-    setIsAdding(false)
+  const openQuickEdit = (item: NewsItem) => {
+    setQuickItem(item)
+    setQeTitle(item.title || '')
+    setQeCategory(item.category || '')
+    setQeDate(item.date || '')
   }
+
+  const saveQuickEdit = () => {
+    if (!quickItem) return
+    updateNews(quickItem.id, { ...quickItem, title: qeTitle, category: qeCategory, date: qeDate })
+    setQuickItem(null)
+  }
+
+  const cancelQuickEdit = () => setQuickItem(null)
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Quản lý tin tức</h1>
-        <button
-          onClick={handleAdd}
+        <Link
+          href="/admin/news/add"
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
         >
           Thêm tin tức mới
-        </button>
+        </Link>
       </div>
 
       {/* News List */}
@@ -106,16 +85,22 @@ export default function NewsManagement() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                     <button
-                      onClick={() => handleEdit(newsItem)}
-                      className="text-blue-600 hover:text-blue-900"
+                      onClick={() => openQuickEdit(newsItem)}
+                      className="text-orange-600 hover:text-orange-900 bg-orange-50 px-2 py-1 rounded"
                     >
-                      Sửa
+                      ✎ Sửa nhanh
                     </button>
+                    <Link
+                      href={`/admin/news/${newsItem.id}`}
+                      className="text-green-600 hover:text-green-900 bg-green-50 px-2 py-1 rounded"
+                    >
+                      ✏️ Chỉnh sửa chi tiết
+                    </Link>
                     <button
                       onClick={() => handleDelete(newsItem.id)}
                       className="text-red-600 hover:text-red-900"
                     >
-                      Xóa
+                      🗑️ Xóa
                     </button>
                   </td>
                 </tr>
@@ -125,30 +110,25 @@ export default function NewsManagement() {
         </div>
       </div>
 
-      {/* Edit Modal */}
-      {editingNews && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">
-              {isAdding ? 'Thêm tin tức mới' : 'Chỉnh sửa tin tức'}
-            </h3>
-            
+      {quickItem && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+            <h3 className="text-lg font-bold mb-4">Sửa nhanh tin tức #{quickItem.id}</h3>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700">Tiêu đề</label>
                 <input
                   type="text"
-                  value={editingNews.title}
-                  onChange={(e) => setEditingNews({ ...editingNews, title: e.target.value })}
+                  value={qeTitle}
+                  onChange={(e) => setQeTitle(e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700">Danh mục</label>
                 <select
-                  value={editingNews.category || ''}
-                  onChange={(e) => setEditingNews({ ...editingNews, category: e.target.value })}
+                  value={qeCategory}
+                  onChange={(e) => setQeCategory(e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
                 >
                   <option value="Thiết kế">Thiết kế</option>
@@ -157,73 +137,24 @@ export default function NewsManagement() {
                   <option value="Công nghệ">Công nghệ</option>
                   <option value="Tư vấn">Tư vấn</option>
                   <option value="Dự án">Dự án</option>
+                  <option value="Thị trường">Thị trường</option>
+                  <option value="Laser">Laser</option>
                 </select>
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700">Ngày đăng</label>
                 <input
                   type="text"
-                  value={editingNews.date || ''}
-                  onChange={(e) => setEditingNews({ ...editingNews, date: e.target.value })}
+                  value={qeDate}
+                  onChange={(e) => setQeDate(e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Thời gian đọc</label>
-                <input
-                  type="text"
-                  value={editingNews.readTime || ''}
-                  onChange={(e) => setEditingNews({ ...editingNews, readTime: e.target.value })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Mô tả ngắn</label>
-                <textarea
-                  value={editingNews.excerpt || ''}
-                  onChange={(e) => setEditingNews({ ...editingNews, excerpt: e.target.value })}
-                  rows={2}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Nội dung đầy đủ</label>
-                <textarea
-                  value={editingNews.description}
-                  onChange={(e) => setEditingNews({ ...editingNews, description: e.target.value })}
-                  rows={4}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Hình ảnh</label>
-                <input
-                  type="text"
-                  value={editingNews.image || ''}
-                  onChange={(e) => setEditingNews({ ...editingNews, image: e.target.value })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                  placeholder="15/01/2024"
                 />
               </div>
             </div>
-
-            <div className="flex justify-end space-x-2 mt-6">
-              <button
-                onClick={handleCancel}
-                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
-              >
-                Hủy
-              </button>
-              <button
-                onClick={handleSave}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-              >
-                Lưu
-              </button>
+            <div className="flex justify-end gap-2 mt-6">
+              <button onClick={cancelQuickEdit} className="px-4 py-2 bg-gray-200 rounded-md">Hủy</button>
+              <button onClick={saveQuickEdit} className="px-4 py-2 bg-blue-600 text-white rounded-md">Lưu</button>
             </div>
           </div>
         </div>

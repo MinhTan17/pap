@@ -12,16 +12,6 @@ const inter = Inter({
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="vi" suppressHydrationWarning>
-      <head>
-        <style dangerouslySetInnerHTML={{__html: `
-          /* Cải thiện độ rõ của text trong admin */
-          * {
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
-          }
-        `}} />
-      </head>
       <body suppressHydrationWarning className={inter.className}>
         <DataProvider>
           <div className="flex min-h-screen bg-gray-50">

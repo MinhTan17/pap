@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
   image?: string
   features?: string[]
   color?: string
+  detailContent?: string
 }
 
 export const services: ServiceItem[] = ${JSON.stringify(services, null, 2)}

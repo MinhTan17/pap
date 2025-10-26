@@ -34,14 +34,22 @@ export default function NewsPage() {
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
               <div className="grid lg:grid-cols-2 gap-8">
                 <div className="aspect-video bg-gray-200 flex items-center justify-center">
-                  <div className="text-center text-gray-600">
-                    <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                      </svg>
+                  {featuredNews.image ? (
+                    <img
+                      src={featuredNews.image}
+                      alt={featuredNews.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="text-center text-gray-600">
+                      <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                        </svg>
+                      </div>
+                      <p>Hình ảnh bài viết</p>
                     </div>
-                    <p>Hình ảnh bài viết</p>
-                  </div>
+                  )}
                 </div>
                 <div className="p-8">
                   <div className="flex items-center space-x-4 mb-4">
@@ -57,12 +65,14 @@ export default function NewsPage() {
                     {featuredNews.excerpt}
                   </p>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-500 text-sm flex items-center">
-                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {featuredNews.readTime}
-                    </span>
+                    {featuredNews.readTime && (
+                      <span className="text-gray-500 text-sm flex items-center">
+                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {featuredNews.readTime}
+                      </span>
+                    )}
                     <Link href={`/tin-tuc/${featuredNews.id}`} className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
                       Đọc thêm
                     </Link>
@@ -79,14 +89,22 @@ export default function NewsPage() {
               {newsArticles.slice(1).map((article) => (
                 <article key={article.id} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden">
                   <div className="aspect-video bg-gray-200 flex items-center justify-center">
-                    <div className="text-center text-gray-600">
-                      <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                        </svg>
+                    {article.image ? (
+                      <img
+                        src={article.image}
+                        alt={article.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="text-center text-gray-600">
+                        <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                          </svg>
+                        </div>
+                        <p className="text-xs">Hình ảnh</p>
                       </div>
-                      <p className="text-xs">Hình ảnh</p>
-                    </div>
+                    )}
                   </div>
                   <div className="p-6">
                     <div className="flex items-center space-x-4 mb-3">
@@ -102,12 +120,14 @@ export default function NewsPage() {
                       {article.excerpt}
                     </p>
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-500 text-xs flex items-center">
-                        <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        {article.readTime}
-                      </span>
+                      {article.readTime && (
+                        <span className="text-gray-500 text-xs flex items-center">
+                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          {article.readTime}
+                        </span>
+                      )}
                       <Link href={`/tin-tuc/${article.id}`} className="text-blue-600 hover:text-blue-700 text-sm font-medium">
                         Đọc thêm →
                       </Link>

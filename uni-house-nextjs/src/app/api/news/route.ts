@@ -8,12 +8,10 @@ export async function GET() {
     const fileContent = fs.readFileSync(filePath, 'utf-8')
     
     const articlesMatch = fileContent.match(/export const newsArticles: NewsItem\[\] = (\[[\s\S]*?\n\])/m)
-    const homepageMatch = fileContent.match(/export const homepageNews: NewsItem\[\] = (\[[\s\S]*?\n\])/m)
     
     const articles = articlesMatch ? eval(articlesMatch[1]) : []
-    const homepage = homepageMatch ? eval(homepageMatch[1]) : []
     
-    return NextResponse.json({ articles, homepage })
+    return NextResponse.json({ articles })
   } catch (error) {
     return NextResponse.json({ error: 'Failed to read news' }, { status: 500 })
   }
@@ -27,7 +25,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Empty request body' }, { status: 400 })
     }
     
-    const { articles, homepage } = JSON.parse(body)
+    const { articles } = JSON.parse(body)
     
     const filePath = path.join(process.cwd(), 'src/data/news.ts')
     
@@ -36,15 +34,18 @@ export async function POST(request: NextRequest) {
   title: string
   excerpt: string
   content: string
+  detailContent?: string
   image: string
   date: string
   category: string
   author?: string
+  readTime?: string
+  icon?: string
+  color?: string
+  description?: string
 }
 
 export const newsArticles: NewsItem[] = ${JSON.stringify(articles, null, 2)}
-
-export const homepageNews: NewsItem[] = ${JSON.stringify(homepage, null, 2)}
 `
     
     fs.writeFileSync(filePath, fileContent, 'utf-8')

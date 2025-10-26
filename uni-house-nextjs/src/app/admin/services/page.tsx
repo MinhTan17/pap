@@ -3,8 +3,10 @@
 import { useState } from 'react'
 import { useData } from '@/contexts/DataContext'
 import { ServiceItem } from '@/data/services'
+import { useRouter } from 'next/navigation'
 
 export default function ServicesManagement() {
+  const router = useRouter()
   const { services, addService, updateService, deleteService } = useData()
   const [editingService, setEditingService] = useState<ServiceItem | null>(null)
   const [isAdding, setIsAdding] = useState(false)
@@ -133,6 +135,12 @@ export default function ServicesManagement() {
                       className="text-blue-600 hover:text-blue-900"
                     >
                       Sửa
+                    </button>
+                    <button
+                      onClick={() => router.push(`/admin/services/${service.id}`)}
+                      className="text-green-600 hover:text-green-900"
+                    >
+                      Chỉnh sửa chi tiết
                     </button>
                     <button
                       onClick={() => handleDelete(service.id)}
