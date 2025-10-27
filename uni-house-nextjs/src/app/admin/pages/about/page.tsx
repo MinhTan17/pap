@@ -94,32 +94,24 @@ export default function AboutAdminPage() {
         const file = (event.target as HTMLInputElement).files?.[0]
         if (file) {
           try {
-            // Convert to base64
-            const reader = new FileReader()
-            reader.onload = async (e) => {
-              if (e.target?.result) {
-                const base64 = e.target.result as string
+            // Use FormData instead of base64
+            const formData = new FormData()
+            formData.append('file', file)
+            formData.append('section', 'about')
 
-                // Upload to server
-                const response = await fetch('/api/upload', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    base64,
-                    folder: 'uploads/about'
-                  })
-                })
+            // Upload to server
+            const response = await fetch('/api/upload', {
+              method: 'POST',
+              body: formData
+            })
 
-                const data = await response.json()
-                if (data.success) {
-                  resolve(data.path)
-                  console.log('✅ Uploaded image for editor:', data.path)
-                } else {
-                  reject(new Error(data.message))
-                }
-              }
+            const data = await response.json()
+            if (data.success) {
+              resolve(data.path)
+              console.log('✅ Uploaded image for editor:', data.path)
+            } else {
+              reject(new Error(data.message))
             }
-            reader.readAsDataURL(file)
           } catch (error) {
             reject(error)
           }
@@ -178,7 +170,7 @@ export default function AboutAdminPage() {
           </button>
         </div>
         
-        {/* Preview Content - Copy from gioi-thieu page */}
+        {/* Company Section */}
         <div className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-12 items-start">
@@ -197,27 +189,28 @@ export default function AboutAdminPage() {
               </div>
 
               {/* Image Gallery */}
-              <div className="relative">
-                <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden relative">
-                  {getSectionContent('company') && getSectionContent('company')!.images.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-8">
+                {getSectionContent('company') && getSectionContent('company')!.images.length > 0 ? (
+                  getSectionContent('company')!.images.map((image, index) => (
                     <img
-                      src={getSectionContent('company')!.images[0].url}
-                      alt={getSectionContent('company')!.images[0].caption || "Company office"}
-                      className="w-full h-full object-cover"
+                      key={index}
+                      src={image.url}
+                      alt={image.caption || `Company ${index + 1}`}
+                      className="w-full aspect-video object-cover rounded-lg transition-transform duration-300 hover:scale-105"
                     />
-                  ) : (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-center text-gray-600">
-                        <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                          </svg>
-                        </div>
-                        <p className="text-lg">Văn phòng hiện đại</p>
+                  ))
+                ) : (
+                  <div className="col-span-full flex items-center justify-center">
+                    <div className="text-center text-gray-600">
+                      <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
                       </div>
+                      <p className="text-lg">Văn phòng hiện đại</p>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -241,53 +234,30 @@ export default function AboutAdminPage() {
               </div>
             )}
             
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-              <div className="md:col-span-1">
-                {getSectionContent('staff') && getSectionContent('staff')!.images.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-8">
+              {getSectionContent('staff') && getSectionContent('staff')!.images.length > 0 ? (
+                getSectionContent('staff')!.images.map((image, index) => (
                   <img
-                    src={getSectionContent('staff')!.images[0].url}
-                    alt={getSectionContent('staff')!.images[0].caption || "Staff"}
-                    className="w-full aspect-video object-cover rounded-lg"
+                    key={index}
+                    src={image.url}
+                    alt={image.caption || `Staff ${index + 1}`}
+                    className="w-full aspect-video object-cover rounded-lg transition-transform duration-300 hover:scale-105"
                   />
-                ) : (
-                  <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
+                ))
+              ) : (
+                Array.from({ length: 6 }).map((_, index) => (
+                  <div key={index} className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
                     <div className="text-center text-gray-600">
-                      <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
                         </svg>
                       </div>
-                      <p className="text-sm">Nhân lực</p>
+                      <p className="text-xs">Nhân viên {index + 1}</p>
                     </div>
                   </div>
-                )}
-              </div>
-              
-              <div className="md:col-span-2 grid grid-cols-2 gap-4">
-                {getSectionContent('staff') && getSectionContent('staff')!.images.length > 1 ? (
-                  getSectionContent('staff')!.images.slice(1, 6).map((image, index) => (
-                    <img
-                      key={index}
-                      src={image.url}
-                      alt={image.caption || `Staff ${index + 1}`}
-                      className="aspect-square object-cover rounded-lg"
-                    />
-                  ))
-                ) : (
-                  Array.from({ length: 5 }).map((_, index) => (
-                    <div key={index} className="aspect-square bg-gray-200 rounded-lg flex items-center justify-center">
-                      <div className="text-center text-gray-600">
-                        <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                          </svg>
-                        </div>
-                        <p className="text-xs">Nhân viên {index + 1}</p>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -310,53 +280,30 @@ export default function AboutAdminPage() {
               </div>
             )}
             
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-              <div className="md:col-span-1">
-                {getSectionContent('equipment') && getSectionContent('equipment')!.images.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-8">
+              {getSectionContent('equipment') && getSectionContent('equipment')!.images.length > 0 ? (
+                getSectionContent('equipment')!.images.map((image, index) => (
                   <img
-                    src={getSectionContent('equipment')!.images[0].url}
-                    alt={getSectionContent('equipment')!.images[0].caption || "Equipment"}
-                    className="w-full aspect-video object-cover rounded-lg"
+                    key={index}
+                    src={image.url}
+                    alt={image.caption || `Equipment ${index + 1}`}
+                    className="w-full aspect-video object-cover rounded-lg transition-transform duration-300 hover:scale-105"
                   />
-                ) : (
-                  <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
+                ))
+              ) : (
+                Array.from({ length: 6 }).map((_, index) => (
+                  <div key={index} className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
                     <div className="text-center text-gray-600">
-                      <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                         </svg>
                       </div>
-                      <p className="text-sm">Thiết bị</p>
+                      <p className="text-xs">Máy móc {index + 1}</p>
                     </div>
                   </div>
-                )}
-              </div>
-              
-              <div className="md:col-span-2 grid grid-cols-2 gap-4">
-                {getSectionContent('equipment') && getSectionContent('equipment')!.images.length > 1 ? (
-                  getSectionContent('equipment')!.images.slice(1, 6).map((image, index) => (
-                    <img
-                      key={index}
-                      src={image.url}
-                      alt={image.caption || `Equipment ${index + 1}`}
-                      className="aspect-square object-cover rounded-lg"
-                    />
-                  ))
-                ) : (
-                  Array.from({ length: 5 }).map((_, index) => (
-                    <div key={index} className="aspect-square bg-gray-200 rounded-lg flex items-center justify-center">
-                      <div className="text-center text-gray-600">
-                        <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                          </svg>
-                        </div>
-                        <p className="text-xs">Máy móc {index + 1}</p>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -548,25 +495,32 @@ export default function AboutAdminPage() {
                       ))}
                     </div>
                     
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => document.getElementById(`image-upload-${section.key}`)?.click()}
+                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+                      >
+                        Thêm ảnh
+                      </button>
+                      <span className="text-sm text-gray-600 py-2">Hoặc chọn nhiều file cùng lúc</span>
+                    </div>
                     <input
+                      id={`image-upload-${section.key}`}
                       type="file"
                       accept="image/*"
+                      multiple
                       onChange={(e) => {
-                        const file = e.target.files?.[0]
-                        if (file) {
-                          const reader = new FileReader()
-                          reader.onload = async (e) => {
-                            if (e.target?.result) {
-                              const base64 = e.target.result as string
-                              const response = await fetch('/api/upload', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                  base64,
-                                  folder: 'uploads/about'
-                                })
-                              })
-                              const data = await response.json()
+                        const files = Array.from(e.target.files || [])
+                        files.forEach(file => {
+                          const formData = new FormData()
+                          formData.append('file', file)
+                          formData.append('section', 'about')
+
+                          fetch('/api/upload', {
+                            method: 'POST',
+                            body: formData
+                          }).then(response => response.json())
+                            .then(data => {
                               if (data.success) {
                                 const newImage: ImageItem = {
                                   url: data.path,
@@ -579,10 +533,9 @@ export default function AboutAdminPage() {
                                   images: [...prev.images, newImage]
                                 }))
                               }
-                            }
-                          }
-                          reader.readAsDataURL(file)
-                        }
+                            })
+                            .catch(console.error)
+                        })
                       }}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
@@ -601,7 +554,7 @@ export default function AboutAdminPage() {
                         <div className="mt-4">
                           <h4 className="text-md font-semibold text-gray-800 mb-2">Hình ảnh:</h4>
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            {content.images.map((image, index) => (
+                            {content.images.slice().reverse().map((image, index) => (
                               <div key={index} className="text-center">
                                 <img
                                   src={image.url}
