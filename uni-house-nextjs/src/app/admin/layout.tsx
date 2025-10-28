@@ -1,8 +1,11 @@
+'use client';
+
 import '../globals.css'
 import { AdminSidebar, AdminHeader } from '@/components'
 import { DataProvider } from '@/contexts/DataContext'
 import { Inter } from 'next/font/google'
 import { ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
 import AuthProvider from '@/components/auth/AuthProvider';
 
 const inter = Inter({ 
@@ -16,6 +19,21 @@ export default function AdminLayout({
 }: {
   children: ReactNode
 }) {
+  const pathname = usePathname();
+  const isLoginPage = pathname === '/admin/login';
+
+  // If it's login page, render without auth protection and admin UI
+  if (isLoginPage) {
+    return (
+      <html lang="vi" suppressHydrationWarning>
+        <body suppressHydrationWarning className={inter.className}>
+          {children}
+        </body>
+      </html>
+    );
+  }
+
+  // For other admin pages, use full layout with auth
   return (
     <html lang="vi" suppressHydrationWarning>
       <body suppressHydrationWarning className={inter.className}>

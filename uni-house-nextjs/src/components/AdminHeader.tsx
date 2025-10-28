@@ -7,17 +7,27 @@ export default function AdminHeader() {
 
   const handleLogout = async () => {
     try {
+      console.log('[AdminHeader] Logging out...');
+      
       const response = await fetch('/api/auth/logout', {
         method: 'POST',
+        credentials: 'include',
       });
       
-      if (response.ok) {
-        // Xóa cookie và chuyển hướng về trang đăng nhập
-        document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-        router.push('/admin/login');
+      const data = await response.json();
+      console.log('[AdminHeader] Logout response:', data);
+      
+      if (response.ok && data.success) {
+        console.log('[AdminHeader] Logout successful, redirecting to login...');
+        // Force full page reload to clear all state
+        window.location.href = '/admin/login';
+      } else {
+        console.error('[AdminHeader] Logout failed:', data.message);
+        alert('Có lỗi xảy ra khi đăng xuất');
       }
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('[AdminHeader] Logout error:', error);
+      alert('Có lỗi xảy ra khi đăng xuất');
     }
   };
 

@@ -2,16 +2,31 @@ import { NextResponse } from 'next/server';
 
 export async function POST() {
   try {
-    const response = NextResponse.json({ message: 'Đăng xuất thành công' });
+    console.log('[Auth] Logout request received');
+    
+    const response = NextResponse.json({ 
+      success: true,
+      message: 'Đăng xuất thành công' 
+    });
     
     // Xóa cookie
-    response.cookies.delete('auth-token');
+    response.cookies.set({
+      name: 'auth-token',
+      value: '',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 0
+    });
+    
+    console.log('[Auth] Logout successful');
     
     return response;
   } catch (error) {
-    console.error('Logout error:', error);
+    console.error('[Auth] Logout error:', error);
     return NextResponse.json(
-      { message: 'Có lỗi xảy ra khi đăng xuất' },
+      { success: false, message: 'Có lỗi xảy ra khi đăng xuất' },
       { status: 500 }
     );
   }

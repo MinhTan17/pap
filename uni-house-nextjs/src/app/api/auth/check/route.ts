@@ -1,39 +1,48 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-
-// Thông tin đăng nhập mặc định
-const ADMIN_USERNAME = 'admin';
+import { verifyToken } from '@/lib/auth';
 
 export async function GET() {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get('auth-token')?.value;
     
+    console.log('[Auth Check] Token exists:', !!token);
+    
+    if (!token) {
+      return NextResponse.json({
+        authenticated: false,
+        user: null
+      });
+    }
+    
+    // Verify JWT token
+    const payload = verifyToken(token);
+    
+    if (!payload) {
+      console.log('[Auth Check] Token verification failed');
+      return NextResponse.json({
+        authenticated: false,
+        user: null
+      });
+    }
+    
+    console.log('[Auth Check] Token valid for user:', payload.username);
+    
     // Tạo response
     const response = NextResponse.json({
-      authenticated: !!token,
-      user: token ? { username: ADMIN_USERNAME } : null
+      authenticated: true,
+      user: { username: payload.username }
     });
-    
-    // Thêm headers CORS nếu cần
-    response.headers.set('Access-Control-Allow-Origin', '*');
-    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    response.headers.set('Access-Control-Allow-Credentials', 'true');
     
     return response;
     
   } catch (error) {
-    console.error('Auth check error:', error);
+    console.error('[Auth Check] Error:', error);
     const response = NextResponse.json(
       { authenticated: false, message: 'Authentication check failed' },
       { status: 500 }
     );
-    
-    response.headers.set('Access-Control-Allow-Origin', '*');
-    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    response.headers.set('Access-Control-Allow-Credentials', 'true');
     
     return response;
   }

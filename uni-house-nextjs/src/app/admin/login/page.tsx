@@ -8,45 +8,23 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const router = useRouter();
-
-  // Kiểm tra xem đã đăng nhập chưa
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await fetch('/api/auth/check', {
-          credentials: 'include',
-          cache: 'no-store'
-        });
-        const data = await res.json();
-        if (data.authenticated) {
-          window.location.href = '/admin';
-          return;
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-      } finally {
-        setIsCheckingAuth(false);
-      }
-    };
-    
-    checkAuth();
-  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate input
     if (!username.trim() || !password) {
       setError('Vui lòng nhập đầy đủ thông tin');
       return;
     }
-    
+
     setError('');
     setIsLoading(true);
 
     try {
+      console.log('[Login Page] Attempting login for username:', username);
+
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -55,15 +33,18 @@ export default function LoginPage() {
       });
 
       const data = await response.json();
+      console.log('[Login Page] Login response:', data);
 
       if (response.ok && data.success) {
+        console.log('[Login Page] Login successful, redirecting...');
         // Force a full page reload to ensure all auth state is properly set
         window.location.href = '/admin';
       } else {
+        console.log('[Login Page] Login failed:', data.message);
         setError(data.message || 'Tên đăng nhập hoặc mật khẩu không đúng');
       }
     } catch (err) {
-      console.error('Login error:', err);
+      console.error('[Login Page] Login error:', err);
       setError('Có lỗi xảy ra, vui lòng thử lại');
     } finally {
       setIsLoading(false);
@@ -74,7 +55,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h1 className="text-2xl font-bold mb-6 text-center">Đăng nhập Admin</h1>
-        
+
         {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
             {error}
@@ -92,6 +73,7 @@ export default function LoginPage() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full p-2 border rounded-md"
+              disabled={isLoading}
               required
             />
           </div>
@@ -106,15 +88,24 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-2 border rounded-md"
+              disabled={isLoading}
               required
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+            disabled={isLoading}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed flex items-center justify-center"
           >
-            Đăng nhập
+            {isLoading ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></div>
+                Đang đăng nhập...
+              </>
+            ) : (
+              'Đăng nhập'
+            )}
           </button>
         </form>
       </div>

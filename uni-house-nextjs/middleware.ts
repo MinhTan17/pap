@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { verifyToken } from '@/lib/auth';
 
 // Danh sách các route công khai (không cần đăng nhập)
 const publicPaths = ['/admin/login'];
@@ -26,6 +27,7 @@ export function middleware(request: NextRequest) {
     );
     
     if (isPublicApi) {
+      console.log('[Middleware] Allowing public API access:', pathname);
       return NextResponse.next();
     }
   }
@@ -33,16 +35,29 @@ export function middleware(request: NextRequest) {
   // Lấy token từ cookie
   const token = request.cookies.get('auth-token')?.value;
   
-  // Nếu là trang login và đã có token, chuyển hướng về trang admin
-  if (pathname === '/admin/login' && token) {
+  console.log('[Middleware] Path:', pathname, '| Has token:', !!token);
+  
+  // Verify token if exists
+  let isValidToken = false;
+  if (token) {
+    const payload = verifyToken(token);
+    isValidToken = !!payload;
+    console.log('[Middleware] Token valid:', isValidToken);
+  }
+  
+  // Nếu là trang login và đã có token hợp lệ, chuyển hướng về trang admin
+  if (pathname === '/admin/login' && isValidToken) {
+    console.log('[Middleware] Already authenticated, redirecting to admin');
     return NextResponse.redirect(new URL('/admin', request.url));
   }
 
-  // Nếu không phải là trang public và chưa đăng nhập, chuyển hướng về trang login
-  if (!publicPaths.includes(pathname) && pathname.startsWith('/admin') && !token) {
+  // Nếu không phải là trang public và chưa đăng nhập hoặc token không hợp lệ, chuyển hướng về trang login
+  if (!publicPaths.includes(pathname) && pathname.startsWith('/admin') && !isValidToken) {
+    console.log('[Middleware] Not authenticated or invalid token, redirecting to login');
     return NextResponse.redirect(new URL('/admin/login', request.url));
   }
 
+  console.log('[Middleware] Allowing access to:', pathname);
   return NextResponse.next();
 }
 
