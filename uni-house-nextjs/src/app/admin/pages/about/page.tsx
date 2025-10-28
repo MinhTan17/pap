@@ -170,142 +170,125 @@ export default function AboutAdminPage() {
           </button>
         </div>
         
+        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        
         {/* Company Section */}
-        <div className="py-20 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-12 items-start">
-              {/* Text Content */}
-              <div className="space-y-6 text-gray-700 text-lg leading-relaxed">
-                {getSectionContent('company') ? (
-                  <>
-                    <h2 className="text-2xl font-bold text-gray-800 mb-4">{getSectionContent('company')?.title}</h2>
-                    <div className="whitespace-pre-line">{getSectionContent('company')?.content}</div>
-                  </>
-                ) : (
-                  <>
-                    <p>Công ty TNHH Phú An Phát được thành lập với sứ mệnh mang đến những giải pháp xây dựng toàn diện và chất lượng cao cho khách hàng...</p>
-                  </>
-                )}
-              </div>
-
-              {/* Image Gallery */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-8">
-                {getSectionContent('company') && getSectionContent('company')!.images.length > 0 ? (
-                  getSectionContent('company')!.images.map((image, index) => (
-                    <img
-                      key={index}
-                      src={image.url}
-                      alt={image.caption || `Company ${index + 1}`}
-                      className="w-full aspect-video object-cover rounded-lg transition-transform duration-300 hover:scale-105"
-                    />
-                  ))
-                ) : (
-                  <div className="col-span-full flex items-center justify-center">
-                    <div className="text-center text-gray-600">
-                      <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                        </svg>
-                      </div>
-                      <p className="text-lg">Văn phòng hiện đại</p>
-                    </div>
+        <div className="py-12">
+          <div className="flex flex-col md:flex-row gap-8 items-stretch">
+            {/* Text Content */}
+            <div className="w-full md:w-1/2 space-y-6 flex flex-col justify-center">
+              {getSectionContent('company') ? (
+                <>
+                  <h2 className="text-3xl font-bold text-gray-800">{getSectionContent('company')?.title}</h2>
+                  <div className="text-gray-600 leading-relaxed whitespace-pre-line">
+                    {getSectionContent('company')?.content}
                   </div>
-                )}
-              </div>
+                </>
+              ) : (
+                <p className="text-gray-600">Công ty TNHH Phú An Phát được thành lập với sứ mệnh mang đến những giải pháp xây dựng toàn diện và chất lượng cao cho khách hàng...</p>
+              )}
+            </div>
+
+            {/* Image */}
+            <div className="w-full md:w-1/2 flex items-center">
+              {getSectionContent('company')?.images?.[0]?.url ? (
+                <div className="relative w-full h-80 md:h-96 rounded-xl overflow-hidden shadow-lg">
+                  <img
+                    src={getSectionContent('company')!.images[0].url}
+                    alt={getSectionContent('company')!.images[0].caption || 'Công ty Phú An Phát'}
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                  />
+                </div>
+              ) : (
+                <div className="w-full h-80 md:h-96 bg-gray-100 rounded-xl flex items-center justify-center">
+                  <div className="text-center text-gray-400">
+                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <svg className="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <p>Chưa có hình ảnh</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
 
         {/* Staff Section */}
-        <div className="py-20 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-gray-800 mb-4">
-                {getSectionContent('staff')?.title || 'NHÂN LỰC'}
-              </h2>
-              <div className="w-24 h-1 bg-gray-300 mx-auto"></div>
-            </div>
-            
-            {getSectionContent('staff')?.content && (
-              <div className="text-center mb-8">
-                <p className="text-lg text-gray-600 max-w-4xl mx-auto whitespace-pre-line">
-                  {getSectionContent('staff')?.content}
-                </p>
+        <div className="py-12 bg-gray-50">
+          <div className="flex flex-col md:flex-row gap-8 items-stretch">
+            {/* Text Content */}
+            <div className="w-full md:w-1/2 space-y-6 flex flex-col justify-center">
+              <h2 className="text-3xl font-bold text-gray-800">{getSectionContent('staff')?.title || 'NHÂN LỰC'}</h2>
+              <div className="text-gray-600 leading-relaxed whitespace-pre-line">
+                {getSectionContent('staff')?.content}
               </div>
-            )}
-            
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-8">
-              {getSectionContent('staff') && getSectionContent('staff')!.images.length > 0 ? (
-                getSectionContent('staff')!.images.map((image, index) => (
+            </div>
+
+            {/* Image */}
+            <div className="w-full md:w-1/2 flex items-center">
+              {getSectionContent('staff')?.images?.[0]?.url ? (
+                <div className="relative w-full h-80 md:h-96 rounded-xl overflow-hidden shadow-lg">
                   <img
-                    key={index}
-                    src={image.url}
-                    alt={image.caption || `Staff ${index + 1}`}
-                    className="w-full aspect-video object-cover rounded-lg transition-transform duration-300 hover:scale-105"
+                    src={getSectionContent('staff')!.images[0].url}
+                    alt={getSectionContent('staff')!.images[0].caption || 'Nhân lực Phú An Phát'}
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                   />
-                ))
+                </div>
               ) : (
-                Array.from({ length: 6 }).map((_, index) => (
-                  <div key={index} className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
-                    <div className="text-center text-gray-600">
-                      <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                        </svg>
-                      </div>
-                      <p className="text-xs">Nhân viên {index + 1}</p>
+                <div className="w-full h-80 md:h-96 bg-gray-100 rounded-xl flex items-center justify-center">
+                  <div className="text-center text-gray-400">
+                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <svg className="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
                     </div>
+                    <p>Chưa có hình ảnh</p>
                   </div>
-                ))
+                </div>
               )}
             </div>
           </div>
         </div>
 
         {/* Equipment Section */}
-        <div className="py-20 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-gray-800 mb-4">
-                {getSectionContent('equipment')?.title || 'THIẾT BỊ'}
-              </h2>
-              <div className="w-24 h-1 bg-gray-300 mx-auto"></div>
-            </div>
-            
-            {getSectionContent('equipment')?.content && (
-              <div className="text-center mb-8">
-                <p className="text-lg text-gray-600 max-w-4xl mx-auto whitespace-pre-line">
-                  {getSectionContent('equipment')?.content}
-                </p>
+        <div className="py-12">
+          <div className="flex flex-row gap-8 items-center">
+            {/* Text Content */}
+            <div className="w-1/2 space-y-6">
+              <h2 className="text-3xl font-bold text-gray-800">{getSectionContent('equipment')?.title || 'THIẾT BỊ'}</h2>
+              <div className="text-gray-600 leading-relaxed whitespace-pre-line">
+                {getSectionContent('equipment')?.content}
               </div>
-            )}
-            
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-8">
-              {getSectionContent('equipment') && getSectionContent('equipment')!.images.length > 0 ? (
-                getSectionContent('equipment')!.images.map((image, index) => (
+            </div>
+
+            {/* Image */}
+            <div className="w-1/2">
+              {getSectionContent('equipment')?.images?.[0]?.url ? (
+                <div className="relative w-full h-96 rounded-xl overflow-hidden shadow-lg">
                   <img
-                    key={index}
-                    src={image.url}
-                    alt={image.caption || `Equipment ${index + 1}`}
-                    className="w-full aspect-video object-cover rounded-lg transition-transform duration-300 hover:scale-105"
+                    src={getSectionContent('equipment')!.images[0].url}
+                    alt={getSectionContent('equipment')!.images[0].caption || 'Thiết bị Phú An Phát'}
+                    className="w-full h-full object-cover"
                   />
-                ))
+                </div>
               ) : (
-                Array.from({ length: 6 }).map((_, index) => (
-                  <div key={index} className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
-                    <div className="text-center text-gray-600">
-                      <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                        </svg>
-                      </div>
-                      <p className="text-xs">Máy móc {index + 1}</p>
+                <div className="w-full h-96 bg-gray-100 rounded-xl flex items-center justify-center">
+                  <div className="text-center text-gray-400">
+                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <svg className="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
                     </div>
+                    <p>Chưa có hình ảnh</p>
                   </div>
-                ))
+                </div>
               )}
             </div>
           </div>
+        </div>
         </div>
       </div>
     )
@@ -552,22 +535,28 @@ export default function AboutAdminPage() {
                       />
                       {content.images.length > 0 && (
                         <div className="mt-4">
-                          <h4 className="text-md font-semibold text-gray-800 mb-2">Hình ảnh:</h4>
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            {content.images.slice().reverse().map((image, index) => (
-                              <div key={index} className="text-center">
-                                <img
-                                  src={image.url}
-                                  alt={image.caption || `${section.title} ${index + 1}`}
-                                  className="w-full h-24 object-cover rounded-lg mx-auto"
-                                  style={{ 
-                                    width: image.width > 0 ? `${image.width}px` : '100%',
-                                    height: image.height > 0 ? `${image.height}px` : '96px'
-                                  }}
-                                />
-                                {image.caption && (
-                                  <p className="text-sm text-gray-600 mt-2">{image.caption}</p>
-                                )}
+                          <h4 className="text-md font-semibold text-gray-800 mb-4">Hình ảnh:</h4>
+                          <div className="space-y-4">
+                            {content.images.map((image, index) => (
+                              <div key={index} className="border rounded-lg p-3 bg-white">
+                                <div className="flex items-start space-x-3">
+                                  <div className="flex-shrink-0">
+                                    <img
+                                      src={image.url}
+                                      alt={image.caption || `Ảnh ${index + 1}`}
+                                      className="w-32 h-24 object-cover rounded"
+                                    />
+                                  </div>
+                                  <div className="flex-1">
+                                    <p className="font-medium text-gray-700">Ảnh {index + 1}</p>
+                                    {image.caption && (
+                                      <p className="text-sm text-gray-600 mt-1">{image.caption}</p>
+                                    )}
+                                    <div className="mt-2 text-sm text-gray-500">
+                                      <p>Kích thước: {image.width || 'auto'} x {image.height || 'auto'} px</p>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             ))}
                           </div>
