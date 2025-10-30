@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 
 // Test với các giá trị từ .env.local
-const password = '123456';
+const password = 'adminpap';
 const hash = '$2b$10$ZFDj263Ek9geugrrUUN5H.n4UD5D2GT/BOlKibAH7Rh7WljxWM7tO';
 
 console.log('=================================');

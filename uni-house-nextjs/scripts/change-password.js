@@ -75,13 +75,33 @@ SESSION_MAX_AGE=86400
                 fs.writeFileSync(envPath, envContent);
 
                 console.log('\n✅ File .env.local đã được cập nhật!');
+
+                // Update code file automatically
+                try {
+                    const codePath = path.join(__dirname, '..', 'src', 'app', 'api', 'auth', 'login', 'route.ts');
+                    let codeContent = fs.readFileSync(codePath, 'utf8');
+
+                    // Replace hash in code
+                    const hashRegex = /const ADMIN_PASSWORD_HASH = '[^']+'; \/\/ .*/;
+                    const newHashLine = `const ADMIN_PASSWORD_HASH = '${hash}'; // ${password}`;
+
+                    if (hashRegex.test(codeContent)) {
+                        codeContent = codeContent.replace(hashRegex, newHashLine);
+                        fs.writeFileSync(codePath, codeContent);
+                        console.log('✅ File login/route.ts đã được cập nhật tự động!');
+                    }
+                } catch (codeError) {
+                    console.log('⚠️  Không thể tự động cập nhật code');
+                }
+
                 console.log('\n📝 Mật khẩu mới của bạn:', password);
-                console.log('\n⚠️  LƯU Ý: Bạn cần restart dev server để áp dụng thay đổi!');
-                console.log('   Nhấn Ctrl+C trong terminal server, sau đó chạy: npm run dev\n');
+                console.log('📝 Hash:', hash);
+                console.log('\n✨ Next.js sẽ tự động reload, không cần restart!');
+                console.log('   Đợi 2-3 giây rồi thử đăng nhập với mật khẩu mới\n');
 
             } catch (error) {
                 console.error('❌ Lỗi khi cập nhật .env.local:', error);
-                console.log('\n📋 Vui lòng copy hash trên và paste vào file .env.local thủ công');
+                console.log('\n📋 Vui lòng copy hash trên và paste vào file thủ công');
             }
 
             rl.close();

@@ -5,7 +5,7 @@ import { checkRateLimit, resetRateLimit } from '@/lib/rate-limit';
 
 // Thông tin đăng nhập
 const ADMIN_USERNAME = 'admin';
-const ADMIN_PASSWORD_HASH = '$2b$10$ZFDj263Ek9geugrrUUN5H.n4UD5D2GT/BOlKibAH7Rh7WljxWM7tO'; // 123456
+const ADMIN_PASSWORD_HASH = '$2b$10$jF5gdSCqYg89ABr362oWRegzxWLFk2rvt2OXyH8WlCCz/2VukIo6K'; // AdminPAP@0703!2025
 
 export async function POST(request: Request) {
   try {
@@ -16,12 +16,10 @@ export async function POST(request: Request) {
       request.headers.get('x-real-ip') ||
       'unknown';
 
-    console.log('=================================');
-    console.log('[Auth] Login attempt for username:', username, 'from IP:', clientIp);
-    console.log('[Auth] Expected username:', ADMIN_USERNAME);
-    console.log('[Auth] Expected hash:', ADMIN_PASSWORD_HASH);
-    console.log('[Auth] Password length:', password?.length);
-    console.log('=================================');
+    // Only log in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[Auth] Login attempt for username:', username);
+    }
 
     // Check rate limit
     const rateLimit = checkRateLimit(clientIp, {
@@ -41,8 +39,7 @@ export async function POST(request: Request) {
       );
     }
 
-    console.log('[Auth] Rate limit check passed. Remaining attempts:', rateLimit.remaining);
-    console.log('[Auth] Password received:', password ? '***' : 'empty');
+
 
     // Kiểm tra thông tin đăng nhập
     const isUsernameValid = username === ADMIN_USERNAME;
@@ -59,11 +56,9 @@ export async function POST(request: Request) {
       );
     }
 
-    console.log('[Auth] Username valid:', isUsernameValid);
-    console.log('[Auth] Password valid:', isPasswordValid);
+
 
     if (!isUsernameValid || !isPasswordValid) {
-      console.log('[Auth] Login failed - invalid credentials. Remaining attempts:', rateLimit.remaining);
       return NextResponse.json(
         {
           success: false,
