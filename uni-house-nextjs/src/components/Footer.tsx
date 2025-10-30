@@ -150,7 +150,7 @@ export default function Footer() {
         <div className="mt-12 pt-8 border-t border-gray-700 text-center text-gray-400">
           <p>{t('copyright')}</p>
           <p className="text-sm text-gray-500 mt-4">
-            Thiết kế bởi <a href="https://zalo.me/0337854179" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Võ Minh Tân</a> | Liên hệ: <a href="mailto:tintin17205@gmail.com" className="text-blue-500 hover:underline">tanvo.web@gmail.com</a>
+            Design by Võ Minh Tân | Contact: <a href="https://zalo.me/0337854179" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Zalo</a>
           </p>
         </div>
       </div>
