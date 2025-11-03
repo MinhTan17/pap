@@ -17,37 +17,38 @@ export const partners: Partner[] = [
   },
   {
     id: 2,
-    name: 'Tập đoàn Hòa Phát',
-    logo: '/icons/partners/hoa-phat.png',
-    website: 'https://hoaphat.com.vn',
+    name: 'CÔNG TY TNHH DAITOH INDUSTRY VIỆT NAM',
+    logo: '/icons/partners/DAITOH.png',
+    website: 'http://daitoh-vietnam.com/?lang=vi.vn',
     description: 'Tập đoàn thép hàng đầu Việt Nam'
   },
   {
     id: 3,
-    name: 'Công ty CP Kim loại Màu',
-    logo: '/icons/partners/kim-loai-mau.png',
-    website: 'https://nonferrous.vn',
+    name: 'CÔNG TY HỮU HẠN CƠ KHÍ ĐỘNG LỰC TOÀN CẦU',
+    logo: '/icons/partners/dltc.png',
+    website: 'https://https://masothue.com/3602852511-cong-ty-huu-han-co-khi-dong-luc-toan-cau.vn',
     description: 'Chuyên gia hợp kim màu'
   },
   {
     id: 4,
-    name: 'Công ty TNHH Vật liệu Xây dựng ABC',
-    logo: '/icons/partners/abc-construction.png',
-    website: 'https://abc.vn',
+    name: 'CÔNG TY TRÁCH NHIỆM HỮU HẠN HIROTA PRECISION VIỆT NAM',
+    logo: '/icons/partners/hrt.jpg',
+    website: 'https://hirota-vn.com/',
     description: 'Vật liệu xây dựng chất lượng cao'
   },
   {
     id: 5,
-    name: 'Nhà máy Thép Pomina',
-    logo: '/icons/partners/pomina.png',
-    website: 'https://pomina.com.vn',
+    name: 'CÔNG TY CỔ PHẦN CÁP ĐIỆN VÀ HỆ THỐNG LS-VINA',
+    logo: '/icons/partners/lsvina.png',
+    website: 'https://lsvinacns.vn/',
     description: 'Thép xây dựng cao cấp'
   },
   {
     id: 6,
-    name: 'Công ty CP Thép Việt Ý',
-    logo: '/icons/partners/viet-y.png',
-    website: 'https://viety.com.vn',
+    name: 'CÔNG TY TNHH STOLZ-MIRAS (VIỆT NAM)',
+    logo: '/icons/partners/mras.png',
+    website: 'https://www.stolzmiras.com/',
     description: 'Thép công nghiệp chất lượng'
   }
+  
 ]

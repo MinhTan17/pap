@@ -23,7 +23,7 @@ export default function HotlineSection() {
                 {t('title')}
               </button>
               <div className="text-white text-2xl md:text-3xl font-bold">
-                0123 456 891
+                0931 535 007
               </div>
             </div>
           </div>

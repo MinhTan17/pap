@@ -2,11 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import { useData } from '@/contexts/DataContext'
+import { useSwipe } from '@/hooks/useSwipe'
+import { useDrag } from '@/hooks/useDrag'
 
 export default function Hero() {
   const { banners, reloadFromStorage } = useData()
   const [currentSlide, setCurrentSlide] = useState(0)
   const [imgErrorIds, setImgErrorIds] = useState<Set<number>>(new Set())
+  const [isTransitioning, setIsTransitioning] = useState(false)
 
   // Force reload banners from localStorage on mount
   useEffect(() => {
@@ -55,30 +58,83 @@ export default function Hero() {
   useEffect(() => {
     if (banners.length > 0) {
       const timer = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % banners.length)
+        if (!isTransitioning) {
+          handleNext()
+        }
       }, 5000)
 
       return () => clearInterval(timer)
     }
-  }, [banners.length])
+  }, [banners.length, isTransitioning])
 
+  // Navigation handlers
+  const handleNext = () => {
+    if (!isTransitioning && banners.length > 0) {
+      setIsTransitioning(true)
+      setCurrentSlide((prev) => (prev + 1) % banners.length)
+      setTimeout(() => setIsTransitioning(false), 500)
+    }
+  }
+
+  const handlePrevious = () => {
+    if (!isTransitioning && banners.length > 0) {
+      setIsTransitioning(true)
+      setCurrentSlide((prev) => (prev === 0 ? banners.length - 1 : prev - 1))
+      setTimeout(() => setIsTransitioning(false), 500)
+    }
+  }
+
+  const handleDotClick = (index: number) => {
+    if (!isTransitioning) {
+      setIsTransitioning(true)
+      setCurrentSlide(index)
+      setTimeout(() => setIsTransitioning(false), 500)
+    }
+  }
+
+  // Touch/Swipe handlers for mobile
+  const swipeHandlers = useSwipe({
+    onSwipeLeft: handleNext,
+    onSwipeRight: handlePrevious,
+    threshold: 50,
+  })
+
+  // Mouse drag handlers for desktop
+  const { isDragging, ...dragHandlers } = useDrag({
+    onDragLeft: handleNext,
+    onDragRight: handlePrevious,
+    threshold: 50,
+  })
+
+
+  // Calculate transform offset
+  const offset = -(currentSlide * 100)
 
   return (
     <section className="relative h-96 md:h-[600px] overflow-hidden">
       {/* Industrial Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div className="metal-texture w-full h-full"></div>
       </div>
       
       {/* Slider Container */}
-      <div className="relative h-full">
-        {banners.map((slide, index) => (
-          <div
-            key={`${slide.id}-${slide.image}`}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
-              index === currentSlide ? 'opacity-100' : 'opacity-0'
-            }`}
-          >
+      <div 
+        className={`relative h-full ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+        {...swipeHandlers}
+        {...dragHandlers}
+      >
+        <div
+          className="flex h-full transition-transform duration-500 ease-in-out"
+          style={{
+            transform: `translateX(${offset}%)`,
+            willChange: 'transform',
+          }}
+        >
+          {banners.map((slide, index) => (
+            <div
+              key={`${slide.id}-${slide.image}`}
+              className="flex-shrink-0 w-full h-full"
+            >
             <div className={`h-full relative overflow-hidden bg-gradient-to-br ${slide.gradient}`}>
               {/* Background Image (optional) */}
               {slide.image && !imgErrorIds.has(slide.id) && (
@@ -139,41 +195,24 @@ export default function Hero() {
               <div className="absolute top-0 right-0 w-0 h-0 border-l-[60px] border-l-transparent border-t-[60px] border-t-black opacity-20"></div>
               <div className="absolute bottom-0 left-0 w-0 h-0 border-r-[60px] border-r-transparent border-b-[60px] border-b-black opacity-20"></div>
             </div>
-          </div>
-        ))}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Navigation Dots */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3">
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
         {banners.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentSlide(index)}
+            onClick={() => handleDotClick(index)}
             className={`w-4 h-4 rounded-full transition-all duration-300 steel-glow ${
               index === currentSlide ? 'bg-orange-500 scale-125' : 'bg-white bg-opacity-50 hover:bg-opacity-75'
             }`}
+            aria-label={`Go to slide ${index + 1}`}
           />
         ))}
       </div>
-
-      {/* Navigation Arrows */}
-      <button
-        onClick={() => setCurrentSlide(currentSlide === 0 ? banners.length - 1 : currentSlide - 1)}
-        className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-60 text-white p-3 rounded-full hover:bg-opacity-80 transition-all steel-glow"
-      >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-      
-      <button
-        onClick={() => setCurrentSlide((currentSlide + 1) % banners.length)}
-        className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-60 text-white p-3 rounded-full hover:bg-opacity-80 transition-all steel-glow"
-      >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
     </section>
   )
 }
