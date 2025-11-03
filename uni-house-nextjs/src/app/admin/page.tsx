@@ -43,6 +43,7 @@ export default function AdminDashboard() {
     { title: 'Thêm Sản phẩm mới', href: '/admin/products', icon: '➕' },
     { title: 'Quản lý Danh mục', href: '/admin/categories', icon: '📁' },
     { title: 'Quản lý Media', href: '/admin/media', icon: '🖼️' },
+    { title: 'Quản lý Trang Liên hệ', href: '/admin/contact', icon: '📞' },
   ]
 
   return (

@@ -76,7 +76,7 @@ export default function AboutPage() {
       {/* Company Info */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row gap-12 items-stretch">
+          <div className="flex flex-col md:flex-row gap-12 items-start">
             {/* Text Content */}
             <div className="w-full md:w-1/2 space-y-6 text-gray-700 text-lg leading-relaxed">
               {companyData ? (
@@ -113,8 +113,9 @@ export default function AboutPage() {
               )}
             </div>
 
-            {/* Main Image */}
-            <div className="w-full md:w-1/2 flex items-center">
+            {/* Images Column */}
+            <div className="w-full md:w-1/2 flex flex-col gap-6">
+              {/* Main Image */}
               {companyData?.images?.[0]?.url ? (
                 <div className="relative w-full h-80 md:h-96 rounded-xl overflow-hidden shadow-lg">
                   <img
@@ -135,22 +136,22 @@ export default function AboutPage() {
                   </div>
                 </div>
               )}
+              
+              {/* Additional Images - Vertical Stack */}
+              {companyData?.images && companyData.images.length > 1 && (
+                <>
+                  {companyData.images.slice(1).map((image, index) => (
+                    <img
+                      key={index + 1}
+                      src={image.url}
+                      alt={image.caption || `Company ${index + 2}`}
+                      className="w-full aspect-video object-cover rounded-lg transition-transform duration-300 hover:scale-105"
+                    />
+                  ))}
+                </>
+              )}
             </div>
           </div>
-          
-          {/* Additional Images Grid */}
-          {companyData?.images && companyData.images.length > 1 && (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-8">
-              {companyData.images.slice(1).map((image, index) => (
-                <img
-                  key={index + 1}
-                  src={image.url}
-                  alt={image.caption || `Company ${index + 2}`}
-                  className="w-full aspect-video object-cover rounded-lg transition-transform duration-300 hover:scale-105"
-                />
-              ))}
-            </div>
-          )}
         </div>
       </section>
 

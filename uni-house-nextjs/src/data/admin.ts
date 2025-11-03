@@ -35,7 +35,7 @@ export const adminMenu: AdminMenuItem[] = [
     children: [
       { id: 'homepage', label: 'Trang chủ', href: '/admin/pages/homepage' },
       { id: 'about', label: 'Giới thiệu', href: '/admin/pages/about' },
-      { id: 'contact', label: 'Liên hệ', href: '/admin/pages/contact' }
+      { id: 'contact-page', label: 'Trang Liên hệ', href: '/admin/contact' }
     ]
   },
   {

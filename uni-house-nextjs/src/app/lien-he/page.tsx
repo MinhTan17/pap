@@ -1,9 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Header, Footer } from '@/components'
+import { loadContactInfo } from '@/lib/contactStorage'
+import { ContactInfo } from '@/types/contact'
 
 export default function ContactPage() {
+  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -14,6 +17,11 @@ export default function ContactPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+
+  useEffect(() => {
+    const data = loadContactInfo()
+    setContactInfo(data)
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -81,7 +89,7 @@ export default function ContactPage() {
       <section className="py-8 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-800 text-center">
-            CÔNG TY TNHH PHÚ AN PHÁT
+            {contactInfo?.company.name || 'CÔNG TY TNHH PHÚ AN PHÁT'}
           </h2>
         </div>
       </section>
@@ -92,47 +100,43 @@ export default function ContactPage() {
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Contact Information */}
             <div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-6">PHÚ AN PHÁT</h3>
+              <h3 className="text-2xl font-bold text-gray-800 mb-6">
+                {contactInfo?.company.name || 'PHÚ AN PHÁT'}
+              </h3>
 
               <div className="space-y-3 text-gray-700">
-                <p><strong>Địa chỉ:</strong> KCN Tam Phước, P.Tam Phước, Đồng Nai</p>
-                <p><strong>Hotline:</strong> 0931 535 007</p>
+                <p><strong>Địa chỉ:</strong> {contactInfo?.company.address || 'KCN Tam Phước, P.Tam Phước, Đồng Nai'}</p>
+                <p><strong>Hotline:</strong> {contactInfo?.company.hotline || '0931 535 007'}</p>
               </div>
 
               <div className="mt-8">
                 <h4 className="text-xl font-bold text-gray-800 mb-4">CÁC CHI NHÁNH THUỘC CÙNG MẠNG LƯỚI PHÚ AN PHÁT</h4>
 
-                <div className="mb-6">
-                  <h5 className="text-lg font-semibold text-gray-800 mb-3">CHI NHÁNH MIỀN BẮC:</h5>
-
-                  <div className="mb-4 pl-4 border-l-4 border-yellow-500">
-                    <p className="font-semibold text-gray-800">HẢO AN PHÁT</p>
-                    <p className="text-sm text-gray-600">Thôn Phù Trì, Xã Quang Minh, TP. Hà Nội</p>
-                    <p className="text-sm text-gray-600">Hotline: 0868 586 927</p>
+                {contactInfo && contactInfo.northBranches.length > 0 && (
+                  <div className="mb-6">
+                    <h5 className="text-lg font-semibold text-gray-800 mb-3">CHI NHÁNH MIỀN BẮC:</h5>
+                    {contactInfo.northBranches.map((branch, index) => (
+                      <div key={branch.id} className={`pl-4 border-l-4 border-yellow-500 ${index < contactInfo.northBranches.length - 1 ? 'mb-4' : ''}`}>
+                        <p className="font-semibold text-gray-800">{branch.name}</p>
+                        <p className="text-sm text-gray-600">{branch.address}</p>
+                        <p className="text-sm text-gray-600">Hotline: {branch.hotline}</p>
+                      </div>
+                    ))}
                   </div>
+                )}
 
-                  <div className="pl-4 border-l-4 border-yellow-500">
-                    <p className="font-semibold text-gray-800">HƯNG THỊNH PHÁT</p>
-                    <p className="text-sm text-gray-600">Thôn Chợ Nga, xã Nội Bài, Hà Nội</p>
-                    <p className="text-sm text-gray-600">Hotline: 0966 265 504</p>
+                {contactInfo && contactInfo.southBranches.length > 0 && (
+                  <div>
+                    <h5 className="text-lg font-semibold text-gray-800 mb-3">CHI NHÁNH MIỀN NAM:</h5>
+                    {contactInfo.southBranches.map((branch, index) => (
+                      <div key={branch.id} className={`pl-4 border-l-4 border-yellow-500 ${index < contactInfo.southBranches.length - 1 ? 'mb-4' : ''}`}>
+                        <p className="font-semibold text-gray-800">{branch.name}</p>
+                        <p className="text-sm text-gray-600">{branch.address}</p>
+                        <p className="text-sm text-gray-600">Hotline: {branch.hotline}</p>
+                      </div>
+                    ))}
                   </div>
-                </div>
-
-                <div>
-                  <h5 className="text-lg font-semibold text-gray-800 mb-3">CHI NHÁNH MIỀN NAM:</h5>
-
-                  <div className="mb-4 pl-4 border-l-4 border-yellow-500">
-                    <p className="font-semibold text-gray-800">BẢO AN PHÁT</p>
-                    <p className="text-sm text-gray-600">KCN Tam Phước, Phường Tam Phước, Đồng Nai</p>
-                    <p className="text-sm text-gray-600">Hotline: 0907 353 348</p>
-                  </div>
-
-                  <div className="pl-4 border-l-4 border-yellow-500">
-                    <p className="font-semibold text-gray-800">TINH NGUYÊN HẢO</p>
-                    <p className="text-sm text-gray-600">KCN Tam Phước, Phường Tam Phước, Đồng Nai</p>
-                    <p className="text-sm text-gray-600">Hotline: 0966 265 504</p>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
 
@@ -244,7 +248,7 @@ export default function ContactPage() {
       <section className="py-8 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.4449267878436!2d106.87445731533406!3d10.850445192277934!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3174d8a415c5b7e3%3A0x5d7a3b3e3e3e3e3e!2zxJDGsOG7nW5nIHPhu5EgOSwgVGFtIFBoxrDhu5tjLCBCacOqbiBIw7JhLCDEkOG7k25nIE5haSwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1234567890123!5m2!1svi!2s"
+            src={contactInfo?.mapUrl || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.4449267878436!2d106.87445731533406!3d10.850445192277934!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3174d8a415c5b7e3%3A0x5d7a3b3e3e3e3e3e!2zxJDGsOG7nW5nIHPhu5EgOSwgVGFtIFBoxrDhu5tjLCBCacOqbiBIw7JhLCDEkOG7k25nIE5haSwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1234567890123!5m2!1svi!2s"}
             width="100%"
             height="450"
             style={{ border: 0 }}

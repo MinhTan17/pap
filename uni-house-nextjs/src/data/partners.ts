@@ -24,9 +24,9 @@ export const partners: Partner[] = [
   },
   {
     id: 3,
-    name: 'CÔNG TY HỮU HẠN CƠ KHÍ ĐỘNG LỰC TOÀN CẦU',
-    logo: '/icons/partners/dltc.png',
-    website: 'https://https://masothue.com/3602852511-cong-ty-huu-han-co-khi-dong-luc-toan-cau.vn',
+    name: 'CÔNG TY TNHH SHING MARK VINA',
+    logo: '/icons/partners/sm.png',
+    website: '',
     description: 'Chuyên gia hợp kim màu'
   },
   {

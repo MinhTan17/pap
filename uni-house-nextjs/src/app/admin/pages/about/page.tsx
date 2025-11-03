@@ -511,6 +511,8 @@ export default function AboutAdminPage() {
                                   width: 300,
                                   height: 200
                                 }
+                                // Thêm ảnh mới vào cuối danh sách
+                                // Thứ tự: [Ảnh cũ 1, Ảnh cũ 2, ..., Ảnh mới]
                                 setFormData(prev => ({
                                   ...prev,
                                   images: [...prev.images, newImage]
