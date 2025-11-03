@@ -257,10 +257,10 @@ export default function ProductsPage() {
             Liên hệ ngay để được tư vấn và báo giá chi tiết về các sản phẩm sắt thép, hợp kim chất lượng cao
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="https://zalo.me/0909926618" target="_blank" rel="noopener noreferrer" className="bg-red-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-red-700 transition-all steel-glow">
+            <a href="https://zalo.me/0931535007" target="_blank" rel="noopener noreferrer" className="bg-red-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-red-700 transition-all steel-glow">
               Yêu cầu báo giá
             </a>
-            <a href="tel:0909926618" className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-800 transition-all steel-glow">
+            <a href="tel:0931535007" className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-800 transition-all steel-glow">
               Liên hệ tư vấn
             </a>
           </div>

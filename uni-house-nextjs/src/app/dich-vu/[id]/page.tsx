@@ -307,7 +307,7 @@ export default function ServiceDetailPage({ params }: ServiceDetailProps) {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               {/* Zalo Button */}
               <a
-                href="https://zalo.me/0909926618"
+                href="https://zalo.me/0931535007"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group inline-flex items-center gap-3 bg-red-600 text-white px-8 py-4 rounded-lg font-bold text-lg shadow-xl hover:bg-red-700 hover:shadow-2xl hover:scale-105 transition-all duration-300"
@@ -324,13 +324,13 @@ export default function ServiceDetailPage({ params }: ServiceDetailProps) {
               
               {/* Hotline Button */}
               <a
-                href="tel:0909926618"
+                href="tel:0931535007"
                 className="inline-flex items-center gap-3 bg-blue-800 text-white px-8 py-4 rounded-lg font-bold text-lg border-2 border-blue-700 hover:bg-blue-700 hover:border-red-600 transition-all duration-300"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
-                <span>0909 926 618</span>
+                <span>0931 535 007</span>
               </a>
             </div>
             

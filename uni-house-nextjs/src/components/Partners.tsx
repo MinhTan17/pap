@@ -48,7 +48,7 @@ export default function Partners() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="https://zalo.me/0909926618"
+              href="https://zalo.me/0931535007"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition-all"

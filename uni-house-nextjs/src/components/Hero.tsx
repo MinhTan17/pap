@@ -16,7 +16,7 @@ export default function Hero() {
     // Check localStorage directly
     const stored = localStorage.getItem('admin-banners')
     console.log('📦 localStorage admin-banners:', stored ? JSON.parse(stored) : 'EMPTY')
-    
+
     reloadFromStorage()
   }, [reloadFromStorage])
 
@@ -116,9 +116,9 @@ export default function Hero() {
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div className="metal-texture w-full h-full"></div>
       </div>
-      
+
       {/* Slider Container */}
-      <div 
+      <div
         className={`relative h-full ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
         {...swipeHandlers}
         {...dragHandlers}
@@ -135,9 +135,9 @@ export default function Hero() {
               key={`${slide.id}-${slide.image}`}
               className="flex-shrink-0 w-full h-full"
             >
-            <div className={`h-full relative overflow-hidden bg-gradient-to-br ${slide.gradient}`}>
-              {/* Background Image (optional) */}
-              {slide.image && !imgErrorIds.has(slide.id) && (
+              <div className={`h-full relative overflow-hidden bg-gradient-to-br ${slide.gradient}`}>
+                {/* Background Image (optional) */}
+                {slide.image && !imgErrorIds.has(slide.id) && (
                   <img
                     src={slide.image}
                     alt={slide.imageAlt || slide.title}
@@ -151,50 +151,50 @@ export default function Hero() {
                       setImgErrorIds((prev) => new Set(prev).add(slide.id))
                     }}
                   />
-              )}
-              
-              {/* Dark overlay for better text readability */}
-              {slide.image && (
-                <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/50 z-[1]"></div>
-              )}
-              
-              {/* Content */}
-              <div className="relative z-10 h-full flex items-center justify-center px-4">
-                <div className="text-center text-white max-w-4xl">
-                  
-                  {/* Subtitle */}
-                  <p className="text-lg md:text-xl font-bold mb-4 tracking-wide uppercase animate-fade-in-up" 
-                     style={{ 
-                       animationDelay: '0.2s',
-                       textShadow: '2px 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)'
-                     }}>
-                    {slide.subtitle}
-                  </p>
-                  
-                  {/* Main Title */}
-                  <h1 className="text-3xl md:text-5xl lg:text-6xl font-black mb-6 leading-tight animate-fade-in-up" 
-                      style={{ 
+                )}
+
+                {/* Dark overlay for better text readability */}
+                {slide.image && (
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/50 z-[1]"></div>
+                )}
+
+                {/* Content */}
+                <div className="relative z-10 h-full flex items-center justify-center px-4">
+                  <div className="text-center text-white max-w-4xl">
+
+                    {/* Subtitle */}
+                    <p className="text-lg md:text-xl font-bold mb-4 tracking-wide uppercase animate-fade-in-up"
+                      style={{
+                        animationDelay: '0.2s',
+                        textShadow: '2px 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)'
+                      }}>
+                      {slide.subtitle}
+                    </p>
+
+                    {/* Main Title */}
+                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-black mb-6 leading-tight animate-fade-in-up"
+                      style={{
                         animationDelay: '0.4s',
                         textShadow: '3px 3px 10px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.6)'
                       }}>
-                    {slide.title}
-                  </h1>
-                  
-                  {/* Description */}
-                  <p className="text-lg md:text-xl font-medium max-w-2xl mx-auto animate-fade-in-up" 
-                     style={{ 
-                       animationDelay: '0.6s',
-                       textShadow: '2px 2px 6px rgba(0,0,0,0.8), 0 0 15px rgba(0,0,0,0.5)'
-                     }}>
-                    {slide.description}
-                  </p>
+                      {slide.title}
+                    </h1>
+
+                    {/* Description */}
+                    <p className="text-lg md:text-xl font-medium max-w-2xl mx-auto animate-fade-in-up"
+                      style={{
+                        animationDelay: '0.6s',
+                        textShadow: '2px 2px 6px rgba(0,0,0,0.8), 0 0 15px rgba(0,0,0,0.5)'
+                      }}>
+                      {slide.description}
+                    </p>
+                  </div>
                 </div>
+
+                {/* Industrial corner accents */}
+                <div className="absolute top-0 right-0 w-0 h-0 border-l-[60px] border-l-transparent border-t-[60px] border-t-black opacity-20"></div>
+                <div className="absolute bottom-0 left-0 w-0 h-0 border-r-[60px] border-r-transparent border-b-[60px] border-b-black opacity-20"></div>
               </div>
-              
-              {/* Industrial corner accents */}
-              <div className="absolute top-0 right-0 w-0 h-0 border-l-[60px] border-l-transparent border-t-[60px] border-t-black opacity-20"></div>
-              <div className="absolute bottom-0 left-0 w-0 h-0 border-r-[60px] border-r-transparent border-b-[60px] border-b-black opacity-20"></div>
-            </div>
             </div>
           ))}
         </div>
@@ -206,9 +206,8 @@ export default function Hero() {
           <button
             key={index}
             onClick={() => handleDotClick(index)}
-            className={`w-4 h-4 rounded-full transition-all duration-300 steel-glow ${
-              index === currentSlide ? 'bg-orange-500 scale-125' : 'bg-white bg-opacity-50 hover:bg-opacity-75'
-            }`}
+            className={`w-4 h-4 rounded-full transition-all duration-300 steel-glow ${index === currentSlide ? 'bg-orange-500 scale-125' : 'bg-white bg-opacity-50 hover:bg-opacity-75'
+              }`}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
