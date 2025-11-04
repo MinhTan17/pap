@@ -49,6 +49,27 @@ export const partners: Partner[] = [
     logo: '/icons/partners/mras.png',
     website: 'https://www.stolzmiras.com/',
     description: 'Thép công nghiệp chất lượng'
+  },
+  {
+    id: 7,
+    name: 'CÔNG TY CỔ PHẦN KỸ THUẬT VIJA - VIJA TECHNOLOGY JSC',
+    logo: '/icons/partners/vija.png',
+    website: 'https://vija-vn.com/',
+    description: 'Thép công nghiệp chất lượng'
+  },
+  {
+    id: 8,
+    name: 'CÔNG TY TNHH MTV ĐỘNG CƠ & MÁY NÔNG NGHIỆP MIỀN NAM',
+    logo: '/icons/partners/viky.png',
+    website: 'https://sveam.com/',
+    description: 'Thép công nghiệp chất lượng'
+  },
+  {
+    id: 9,
+    name: 'CÔNG TY TNHH YOSHIMOTO VIỆT NAM ',
+    logo: '/icons/partners/yoshi.png',
+    website: 'https://www.yoshimoto-sangyo.co.jp/vn/',
+    description: 'Thép công nghiệp chất lượng'
   }
   
 ]

@@ -260,7 +260,7 @@ export default function ProductsPage() {
             <a href="https://zalo.me/0931535007" target="_blank" rel="noopener noreferrer" className="bg-red-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-red-700 transition-all steel-glow">
               Yêu cầu báo giá
             </a>
-            <a href="tel:0931535007" className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-800 transition-all steel-glow">
+            <a href="/lien-he" className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-800 transition-all steel-glow">
               Liên hệ tư vấn
             </a>
           </div>

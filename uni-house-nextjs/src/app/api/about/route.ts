@@ -14,6 +14,7 @@ interface AboutContent {
   title: string
   content: string
   images: ImageItem[]
+  gridImages?: ImageItem[] // 6 ảnh nhỏ hiển thị dưới dạng grid
   section: 'company' | 'staff' | 'equipment'
   updatedAt: string
 }
@@ -66,7 +67,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { section, title, content, images } = body
+    const { section, title, content, images, gridImages } = body
 
     if (!section) {
       return NextResponse.json({ error: 'Missing section field' }, { status: 400 })
@@ -80,6 +81,7 @@ export async function POST(request: NextRequest) {
       title: title || '',
       content: content || '',
       images: images || [],
+      gridImages: gridImages || [],
       section,
       updatedAt: new Date().toISOString()
     }

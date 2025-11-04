@@ -15,6 +15,7 @@ interface AboutContent {
   title: string
   content: string
   images: ImageItem[]
+  gridImages?: ImageItem[] // 6 ảnh nhỏ hiển thị dưới dạng grid
   section: 'company' | 'staff' | 'equipment'
   updatedAt: string
 }
@@ -76,9 +77,9 @@ export default function AboutPage() {
       {/* Company Info */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row gap-12 items-start">
+          <div className="flex flex-col md:flex-row gap-12 items-stretch">
             {/* Text Content */}
-            <div className="w-full md:w-1/2 space-y-6 text-gray-700 text-lg leading-relaxed">
+            <div className="w-full md:w-1/2 space-y-6 text-gray-700 text-lg leading-relaxed flex flex-col justify-center">
               {companyData ? (
                 <>
                   <h2 className="text-2xl font-bold text-gray-800 mb-4">{companyData.title}</h2>
@@ -114,7 +115,7 @@ export default function AboutPage() {
             </div>
 
             {/* Images Column */}
-            <div className="w-full md:w-1/2 flex flex-col gap-6">
+            <div className="w-full md:w-1/2 flex flex-col gap-6 justify-center">
               {/* Main Image */}
               {companyData?.images?.[0]?.url ? (
                 <div className="relative w-full h-80 md:h-96 rounded-xl overflow-hidden shadow-lg">
@@ -165,21 +166,10 @@ export default function AboutPage() {
             <div className="w-24 h-1 bg-gray-300 mx-auto"></div>
           </div>
           
-          <div className="flex flex-col md:flex-row-reverse gap-12 items-stretch">
-            {/* Text Content */}
-            <div className="w-full md:w-1/2 space-y-6 text-gray-700 text-lg leading-relaxed">
-              {staffData?.content ? (
-                <div 
-                  className="prose max-w-none"
-                  dangerouslySetInnerHTML={{ __html: staffData.content }}
-                />
-              ) : (
-                <p>Đội ngũ nhân viên chuyên nghiệp, giàu kinh nghiệm và tận tâm với công việc.</p>
-              )}
-            </div>
-
-            {/* Main Image */}
-            <div className="w-full md:w-1/2 flex items-center">
+          <div className="flex flex-col md:flex-row gap-12 items-stretch">
+            {/* Images Column - LEFT */}
+            <div className="w-full md:w-1/2 flex flex-col gap-6 justify-center">
+              {/* Main Image */}
               {staffData?.images?.[0]?.url ? (
                 <div className="relative w-full h-80 md:h-96 rounded-xl overflow-hidden shadow-lg">
                   <img
@@ -200,23 +190,48 @@ export default function AboutPage() {
                   </div>
                 </div>
               )}
+              
+              {/* Additional Images - Vertical Stack */}
+              {staffData?.images && staffData.images.length > 1 && (
+                <>
+                  {staffData.images.slice(1).map((image, index) => (
+                    <img
+                      key={index + 1}
+                      src={image.url}
+                      alt={image.caption || `Nhân viên ${index + 2}`}
+                      className="w-full aspect-video object-cover rounded-lg transition-transform duration-300 hover:scale-105"
+                    />
+                  ))}
+                </>
+              )}
+            </div>
+
+            {/* Text Content - RIGHT */}
+            <div className="w-full md:w-1/2 space-y-6 text-gray-700 text-lg leading-relaxed">
+              {staffData?.content ? (
+                <div 
+                  className="prose max-w-none"
+                  dangerouslySetInnerHTML={{ __html: staffData.content }}
+                />
+              ) : (
+                <p>Đội ngũ nhân viên chuyên nghiệp, giàu kinh nghiệm và tận tâm với công việc.</p>
+              )}
             </div>
           </div>
           
-          {/* Additional Images Grid */}
-          {staffData?.images && staffData.images.length > 1 && (
+          {/* Grid Images - 6 ảnh nhỏ tùy chỉnh riêng */}
+          {staffData?.gridImages && staffData.gridImages.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-8">
-              {staffData.images.slice(1).map((image, index) => (
+              {staffData.gridImages.map((image, index) => (
                 <img
-                  key={index + 1}
+                  key={index}
                   src={image.url}
-                  alt={image.caption || `Nhân viên ${index + 2}`}
+                  alt={image.caption || `Nhân viên ${index + 1}`}
                   className="w-full aspect-video object-cover rounded-lg transition-transform duration-300 hover:scale-105"
                 />
               ))}
             </div>
-          )}
-          {(!staffData?.images || staffData.images.length <= 1) && (
+          ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-8">
               {Array.from({ length: 6 }).map((_, index) => (
                 <div key={index} className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
@@ -247,7 +262,7 @@ export default function AboutPage() {
           
           <div className="flex flex-col md:flex-row gap-12 items-stretch">
             {/* Text Content */}
-            <div className="w-full md:w-1/2 space-y-6 text-gray-700 text-lg leading-relaxed">
+            <div className="w-full md:w-1/2 space-y-6 text-gray-700 text-lg leading-relaxed flex flex-col justify-center">
               {equipmentData?.content ? (
                 <div 
                   className="prose max-w-none"
@@ -258,8 +273,9 @@ export default function AboutPage() {
               )}
             </div>
 
-            {/* Main Image */}
-            <div className="w-full md:w-1/2 flex items-center">
+            {/* Images Column */}
+            <div className="w-full md:w-1/2 flex flex-col gap-6 justify-center">
+              {/* Main Image */}
               {equipmentData?.images?.[0]?.url ? (
                 <div className="relative w-full h-80 md:h-96 rounded-xl overflow-hidden shadow-lg">
                   <img
@@ -280,23 +296,36 @@ export default function AboutPage() {
                   </div>
                 </div>
               )}
+              
+              {/* Additional Images - Vertical Stack */}
+              {equipmentData?.images && equipmentData.images.length > 1 && (
+                <>
+                  {equipmentData.images.slice(1).map((image, index) => (
+                    <img
+                      key={index + 1}
+                      src={image.url}
+                      alt={image.caption || `Thiết bị ${index + 2}`}
+                      className="w-full aspect-video object-cover rounded-lg transition-transform duration-300 hover:scale-105"
+                    />
+                  ))}
+                </>
+              )}
             </div>
           </div>
           
-          {/* Additional Images Grid */}
-          {equipmentData?.images && equipmentData.images.length > 1 && (
+          {/* Grid Images - 6 ảnh nhỏ tùy chỉnh riêng */}
+          {equipmentData?.gridImages && equipmentData.gridImages.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-8">
-              {equipmentData.images.slice(1).map((image, index) => (
+              {equipmentData.gridImages.map((image, index) => (
                 <img
-                  key={index + 1}
+                  key={index}
                   src={image.url}
-                  alt={image.caption || `Thiết bị ${index + 2}`}
+                  alt={image.caption || `Thiết bị ${index + 1}`}
                   className="w-full aspect-video object-cover rounded-lg transition-transform duration-300 hover:scale-105"
                 />
               ))}
             </div>
-          )}
-          {(!equipmentData?.images || equipmentData.images.length <= 1) && (
+          ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-8">
               {Array.from({ length: 6 }).map((_, index) => (
                 <div key={index} className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
@@ -325,12 +354,26 @@ export default function AboutPage() {
             Hãy để chúng tôi giúp bạn thực hiện dự án xây dựng của mình một cách hoàn hảo nhất.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-              Liên hệ ngay
-            </button>
-            <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
-              Xem dự án
-            </button>
+            <a
+              href="https://zalo.me/0931535007"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors inline-flex items-center justify-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.477 2 2 6.477 2 12c0 2.237.738 4.304 1.986 5.972L2.05 21.95l4.028-1.937A9.954 9.954 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18c-1.988 0-3.84-.73-5.25-1.938l-.375-.313-2.438 1.175 1.188-2.4-.325-.388A7.951 7.951 0 014 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"/>
+              </svg>
+              Chat Zalo
+            </a>
+            <a
+              href="/lien-he"
+              className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors inline-flex items-center justify-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              Gửi Email
+            </a>
           </div>
         </div>
       </section>

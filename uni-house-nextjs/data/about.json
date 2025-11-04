@@ -17,8 +17,9 @@
         "height": 200
       }
     ],
+    "gridImages": [],
     "section": "company",
-    "updatedAt": "2025-11-03T16:05:07.903Z"
+    "updatedAt": "2025-11-04T11:23:53.050Z"
   },
   {
     "id": "about-staff-1762182678309",
@@ -28,48 +29,56 @@
       {
         "url": "/uploads/about/about-1762182906832.JPG",
         "caption": "",
-        "width": 300,
-        "height": 500
+        "width": 400,
+        "height": 0
       },
       {
-        "url": "/uploads/about/about-1762182972563.png",
+        "url": "/uploads/about/about-1762255278832.JPG",
+        "caption": "",
+        "width": 300,
+        "height": 200
+      }
+    ],
+    "gridImages": [
+      {
+        "url": "/uploads/about/about-1762255318607.png",
         "caption": "",
         "width": 300,
         "height": 200
       },
       {
-        "url": "/uploads/about/about-1762182972972.jpg",
+        "url": "/uploads/about/about-1762255318795.jpg",
         "caption": "",
         "width": 300,
         "height": 200
       },
       {
-        "url": "/uploads/about/about-1762182974408.JPG",
+        "url": "/uploads/about/about-1762255318863.jpg",
         "caption": "",
         "width": 300,
         "height": 200
       },
       {
-        "url": "/uploads/about/about-1762182974801.JPG",
+        "url": "/uploads/about/about-1762255319032.jpg",
         "caption": "",
         "width": 300,
         "height": 200
       },
       {
-        "url": "/uploads/about/about-1762182977268.jpg",
+        "url": "/uploads/about/about-1762255319358.JPG",
         "caption": "",
         "width": 300,
         "height": 200
       },
       {
-        "url": "/uploads/about/about-1762182977470.JPG",
+        "url": "/uploads/about/about-1762255319548.JPG",
         "caption": "",
         "width": 300,
         "height": 200
       }
     ],
     "section": "staff",
-    "updatedAt": "2025-11-03T15:31:10.801Z"
+    "updatedAt": "2025-11-04T11:22:08.683Z"
   },
   {
     "id": "about-equipment-1762185726409",
@@ -81,45 +90,47 @@
         "caption": "",
         "width": 300,
         "height": 200
-      },
+      }
+    ],
+    "gridImages": [
       {
-        "url": "/uploads/about/about-1762185830209.png",
+        "url": "/uploads/about/about-1762255553634.png",
         "caption": "",
         "width": 300,
         "height": 200
       },
       {
-        "url": "/uploads/about/about-1762185830250.png",
+        "url": "/uploads/about/about-1762255553691.jpg",
         "caption": "",
         "width": 300,
         "height": 200
       },
       {
-        "url": "/uploads/about/about-1762185830285.png",
+        "url": "/uploads/about/about-1762255553821.png",
         "caption": "",
         "width": 300,
         "height": 200
       },
       {
-        "url": "/uploads/about/about-1762185830428.jpeg",
+        "url": "/uploads/about/about-1762255553891.png",
         "caption": "",
         "width": 300,
         "height": 200
       },
       {
-        "url": "/uploads/about/about-1762185830573.jpg",
+        "url": "/uploads/about/about-1762255553977.jpeg",
         "caption": "",
         "width": 300,
         "height": 200
       },
       {
-        "url": "/uploads/about/about-1762185830891.jpg",
+        "url": "/uploads/about/about-1762255554041.jpg",
         "caption": "",
         "width": 300,
         "height": 200
       }
     ],
     "section": "equipment",
-    "updatedAt": "2025-11-03T16:03:54.878Z"
+    "updatedAt": "2025-11-04T11:25:57.814Z"
   }
 ]

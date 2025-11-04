@@ -1,5 +1,4 @@
 import { partners } from '@/data/partners'
-import PartnersCarousel from './carousel/PartnersCarousel'
 
 export default function Partners() {
   // Handle edge cases
@@ -38,8 +37,36 @@ export default function Partners() {
           </p>
         </div>
 
-        {/* Partners Carousel */}
-        <PartnersCarousel partners={partners} />
+        {/* Partners Grid - Auto-centered rows */}
+        <div className="flex flex-wrap justify-center gap-6 mb-8">
+          {partners.slice(0, 10).map((partner) => {
+            const CardContent = (
+              <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-xl transition-shadow duration-300 flex items-center justify-center w-40 h-32">
+                <img
+                  src={partner.logo}
+                  alt={partner.name}
+                  className="w-full h-20 object-contain"
+                />
+              </div>
+            )
+
+            return partner.website ? (
+              <a
+                key={partner.id}
+                href={partner.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                {CardContent}
+              </a>
+            ) : (
+              <div key={partner.id}>
+                {CardContent}
+              </div>
+            )
+          })}
+        </div>
 
         {/* CTA */}
         <div className="text-center mt-12">
@@ -56,7 +83,7 @@ export default function Partners() {
               Liên hệ hợp tác
             </a>
             <a
-              href="mailto:contact@phuanphat.vn"
+              href="/lien-he"
               className="border-2 border-blue-600 text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 hover:text-white transition-all"
             >
               Gửi email

@@ -11,14 +11,14 @@ export default function ServicesPage() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      
+
       {/* Hero Section */}
       <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
         {/* Industrial Background Pattern */}
         <div className="absolute inset-0 opacity-5">
           <div className="metal-texture w-full h-full"></div>
         </div>
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center">
             <h1 className="text-5xl font-bold text-gray-800 mb-6 relative">
@@ -38,7 +38,7 @@ export default function ServicesPage() {
         <div className="absolute inset-0 opacity-5">
           <div className="metal-texture w-full h-full"></div>
         </div>
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => (
@@ -49,7 +49,7 @@ export default function ServicesPage() {
                     <div className="relative h-64 overflow-hidden group">
                       <div className="relative w-full h-full">
                         {service.image ? (
-                          <img 
+                          <img
                             src={service.image}
                             alt={service.title}
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -65,10 +65,10 @@ export default function ServicesPage() {
                             </span>
                           </div>
                         )}
-                        
+
                         {/* Gradient Overlay */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
-                        
+
                         {/* Service Title Overlay */}
                         <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
                           <h3 className="text-xl font-bold mb-1">{service.title}</h3>
@@ -77,7 +77,7 @@ export default function ServicesPage() {
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Service Details */}
                     <div className="p-6">
                       <h3 className="text-lg font-bold text-gray-800 group-hover:text-blue-600 transition-colors mb-3 leading-tight">
@@ -136,7 +136,7 @@ export default function ServicesPage() {
         <div className="absolute inset-0 opacity-10">
           <div className="metal-texture w-full h-full"></div>
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <h2 className="text-4xl font-bold text-white mb-6">
             Cần Tư Vấn Dịch Vụ?
           </h2>
@@ -144,12 +144,12 @@ export default function ServicesPage() {
             Liên hệ ngay để được tư vấn miễn phí về các dịch vụ gia công – cung ứng vật liệu
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all steel-glow">
+            <a href="https://zalo.me/0931535007" target="_blank" rel="noopener noreferrer" className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all steel-glow text-center cursor-pointer">
               Liên hệ tư vấn
-            </button>
-            <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-all steel-glow">
+            </a>
+            <a href="/lien-he" className="inline-block border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-all steel-glow text-center cursor-pointer">
               Xem báo giá
-            </button>
+            </a>
           </div>
         </div>
       </section>

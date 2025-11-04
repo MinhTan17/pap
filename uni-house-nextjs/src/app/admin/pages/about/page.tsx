@@ -21,6 +21,7 @@ interface AboutContent {
   title: string
   content: string
   images: ImageItem[]
+  gridImages?: ImageItem[] // 6 ảnh nhỏ hiển thị dưới dạng grid
   section: 'company' | 'staff' | 'equipment'
 }
 
@@ -30,7 +31,8 @@ export default function AboutAdminPage() {
   const [formData, setFormData] = useState({
     title: '',
     content: '',
-    images: [] as ImageItem[]
+    images: [] as ImageItem[],
+    gridImages: [] as ImageItem[]
   })
   const [isPreviewMode, setIsPreviewMode] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
@@ -71,7 +73,7 @@ export default function AboutAdminPage() {
       if (response.ok) {
         await fetchAboutContent()
         setEditingSection(null)
-        setFormData({ title: '', content: '', images: [] })
+        setFormData({ title: '', content: '', images: [], gridImages: [] })
         setHasUnsavedChanges(false)
         alert('✅ Đã lưu thành công!')
       }
@@ -141,7 +143,8 @@ export default function AboutAdminPage() {
     setFormData({
       title: content?.title || '',
       content: content?.content || '',
-      images: content?.images || []
+      images: content?.images || [],
+      gridImages: content?.gridImages || []
     })
     setHasUnsavedChanges(false)
     setEditingSection(null)
@@ -338,7 +341,8 @@ export default function AboutAdminPage() {
                         setFormData({
                           title: content?.title || '',
                           content: content?.content || '',
-                          images: content?.images || []
+                          images: content?.images || [],
+                          gridImages: content?.gridImages || []
                         })
                       }}
                       className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
@@ -525,6 +529,113 @@ export default function AboutAdminPage() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
+
+                  {/* Grid Images - 6 ảnh nhỏ (chỉ cho staff và equipment) */}
+                  {(section.key === 'staff' || section.key === 'equipment') && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        6 ảnh nhỏ hiển thị dưới dạng lưới (Grid)
+                      </label>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Tối đa 6 ảnh sẽ được hiển thị dưới dạng lưới 2x3 bên dưới phần nội dung chính
+                      </p>
+                      <div className="space-y-4 mb-4">
+                        {formData.gridImages.map((image, index) => (
+                          <div key={index} className="border border-gray-200 rounded-lg p-4">
+                            <div className="flex gap-4">
+                              <div className="flex-shrink-0">
+                                <img
+                                  src={image.url}
+                                  alt={`Grid ${index + 1}`}
+                                  className="w-24 h-24 object-cover rounded-lg"
+                                />
+                              </div>
+                              <div className="flex-1 space-y-2">
+                                <div>
+                                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Tiêu đề ảnh
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={image.caption}
+                                    onChange={(e) => {
+                                      const newImages = [...formData.gridImages]
+                                      newImages[index].caption = e.target.value
+                                      setFormData(prev => ({ ...prev, gridImages: newImages }))
+                                    }}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Nhập tiêu đề ảnh..."
+                                  />
+                                </div>
+                              </div>
+                              <div className="flex-shrink-0">
+                                <button
+                                  onClick={() => setFormData(prev => ({
+                                    ...prev,
+                                    gridImages: prev.gridImages.filter((_, i) => i !== index)
+                                  }))}
+                                  className="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 text-sm"
+                                >
+                                  Xóa
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => document.getElementById(`grid-image-upload-${section.key}`)?.click()}
+                          className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
+                          disabled={formData.gridImages.length >= 6}
+                        >
+                          {formData.gridImages.length >= 6 ? 'Đã đủ 6 ảnh' : 'Thêm ảnh grid'}
+                        </button>
+                        <span className="text-sm text-gray-600 py-2">
+                          {formData.gridImages.length}/6 ảnh
+                        </span>
+                      </div>
+                      <input
+                        id={`grid-image-upload-${section.key}`}
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={(e) => {
+                          const files = Array.from(e.target.files || [])
+                          const remainingSlots = 6 - formData.gridImages.length
+                          const filesToUpload = files.slice(0, remainingSlots)
+                          
+                          filesToUpload.forEach(file => {
+                            const uploadFormData = new FormData()
+                            uploadFormData.append('file', file)
+                            uploadFormData.append('section', 'about')
+
+                            fetch('/api/upload', {
+                              method: 'POST',
+                              body: uploadFormData
+                            }).then(response => response.json())
+                              .then(data => {
+                                if (data.success) {
+                                  const newImage: ImageItem = {
+                                    url: data.path,
+                                    caption: '',
+                                    width: 300,
+                                    height: 200
+                                  }
+                                  setFormData(prev => ({
+                                    ...prev,
+                                    gridImages: [...prev.gridImages, newImage]
+                                  }))
+                                }
+                              })
+                              .catch(console.error)
+                          })
+                        }}
+                        className="hidden"
+                      />
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div>
@@ -559,6 +670,25 @@ export default function AboutAdminPage() {
                                     </div>
                                   </div>
                                 </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {content.gridImages && content.gridImages.length > 0 && (
+                        <div className="mt-4">
+                          <h4 className="text-md font-semibold text-gray-800 mb-4">6 ảnh Grid:</h4>
+                          <div className="grid grid-cols-3 gap-4">
+                            {content.gridImages.map((image, index) => (
+                              <div key={index} className="border rounded-lg p-2 bg-white">
+                                <img
+                                  src={image.url}
+                                  alt={image.caption || `Grid ${index + 1}`}
+                                  className="w-full h-24 object-cover rounded"
+                                />
+                                {image.caption && (
+                                  <p className="text-xs text-gray-600 mt-1">{image.caption}</p>
+                                )}
                               </div>
                             ))}
                           </div>
