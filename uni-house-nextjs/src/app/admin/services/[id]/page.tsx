@@ -182,7 +182,10 @@ export default function ServiceDetailEditor() {
                 👁️ Xem trên site
               </a>
               <button
-                onClick={() => setIsEditing(true)}
+                onClick={() => {
+                  console.log('🔧 Switching to edit mode')
+                  setIsEditing(true)
+                }}
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
               >
                 Chỉnh sửa
@@ -230,7 +233,7 @@ export default function ServiceDetailEditor() {
         {isEditing ? (
           <div>
             <p className="text-sm text-gray-600 mb-4">
-              Sử dụng các công cụ bên dưới để định dạng nội dung giống như trong Microsoft Word
+              Sử dụng các công cụ bên dưới để định dạng nội dung. Thay đổi sẽ hiển thị ngay trong editor.
             </p>
             <RichTextEditor
               content={detailContent}

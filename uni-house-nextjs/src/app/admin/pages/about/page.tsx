@@ -2,12 +2,16 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import dynamic from 'next/dynamic'
+import { StyleSettings } from '@/types/styles'
+import { styleSettingsToCSS } from '@/utils/styleUtils'
 
 // Import RichTextEditor dynamically to avoid SSR issues
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), {
   ssr: false,
   loading: () => <p>Đang tải trình soạn thảo...</p>
 })
+
+// StylePanel removed - using RichTextEditor toolbar instead
 
 interface ImageItem {
   url: string
@@ -23,6 +27,7 @@ interface AboutContent {
   images: ImageItem[]
   gridImages?: ImageItem[] // 6 ảnh nhỏ hiển thị dưới dạng grid
   section: 'company' | 'staff' | 'equipment'
+  styles?: StyleSettings
 }
 
 export default function AboutAdminPage() {
@@ -32,7 +37,8 @@ export default function AboutAdminPage() {
     title: '',
     content: '',
     images: [] as ImageItem[],
-    gridImages: [] as ImageItem[]
+    gridImages: [] as ImageItem[],
+    styles: {} as StyleSettings
   })
   const [isPreviewMode, setIsPreviewMode] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
@@ -73,7 +79,7 @@ export default function AboutAdminPage() {
       if (response.ok) {
         await fetchAboutContent()
         setEditingSection(null)
-        setFormData({ title: '', content: '', images: [], gridImages: [] })
+        setFormData({ title: '', content: '', images: [], gridImages: [], styles: {} })
         setHasUnsavedChanges(false)
         alert('✅ Đã lưu thành công!')
       }
@@ -144,7 +150,8 @@ export default function AboutAdminPage() {
       title: content?.title || '',
       content: content?.content || '',
       images: content?.images || [],
-      gridImages: content?.gridImages || []
+      gridImages: content?.gridImages || [],
+      styles: content?.styles || {}
     })
     setHasUnsavedChanges(false)
     setEditingSection(null)
@@ -342,7 +349,8 @@ export default function AboutAdminPage() {
                           title: content?.title || '',
                           content: content?.content || '',
                           images: content?.images || [],
-                          gridImages: content?.gridImages || []
+                          gridImages: content?.gridImages || [],
+                          styles: content?.styles || {}
                         })
                       }}
                       className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
@@ -372,32 +380,32 @@ export default function AboutAdminPage() {
 
               {isEditing ? (
                 <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Tiêu đề
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.title}
-                      onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Nhập tiêu đề..."
-                    />
-                  </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Tiêu đề
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.title}
+                        onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Nhập tiêu đề..."
+                      />
+                    </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Nội dung
-                    </label>
-                    <p className="text-sm text-gray-600 mb-4">
-                      Sử dụng các công cụ bên dưới để định dạng nội dung giống như trong Microsoft Word
-                    </p>
-                    <RichTextEditor
-                      content={formData.content}
-                      onChange={handleContentChange}
-                      onUploadImage={handleImageUpload}
-                    />
-                  </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Nội dung
+                      </label>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Sử dụng các công cụ bên dưới để định dạng nội dung giống như trong Microsoft Word
+                      </p>
+                      <RichTextEditor
+                        content={formData.content}
+                        onChange={handleContentChange}
+                        onUploadImage={handleImageUpload}
+                      />
+                    </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -640,7 +648,10 @@ export default function AboutAdminPage() {
               ) : (
                 <div>
                   {content ? (
-                    <div>
+                    <div 
+                      id={`section-${section.key}`}
+                      style={styleSettingsToCSS(content.styles || {})}
+                    >
                       <h3 className="text-lg font-semibold text-gray-800 mb-2">{content.title}</h3>
                       <div 
                         className="prose max-w-none"

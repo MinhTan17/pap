@@ -8,7 +8,7 @@ import Link from '@tiptap/extension-link'
 import Image from '@tiptap/extension-image'
 import Color from '@tiptap/extension-color'
 import { TextStyle } from '@tiptap/extension-text-style'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 
 interface RichTextEditorProps {
   content: string
@@ -17,24 +17,63 @@ interface RichTextEditorProps {
 }
 
 export default function RichTextEditor({ content, onChange, onUploadImage }: RichTextEditorProps) {
+  const [showColorPicker, setShowColorPicker] = useState(false)
+  const [showBgColorPicker, setShowBgColorPicker] = useState(false)
+
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        // Allow HTML to be parsed
+        hardBreak: {
+          keepMarks: true,
+        },
+      }),
       Underline,
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
       Link.configure({
         openOnClick: false,
+        HTMLAttributes: {
+          class: 'text-blue-600 underline',
+        },
       }),
       Image,
       Color,
-      TextStyle,
+      TextStyle.extend({
+        // Allow style attribute for font-size and background-color
+        addAttributes() {
+          return {
+            ...this.parent?.(),
+            style: {
+              default: null,
+              parseHTML: element => element.getAttribute('style'),
+              renderHTML: attributes => {
+                if (!attributes.style) {
+                  return {}
+                }
+                return { style: attributes.style }
+              },
+            },
+          }
+        },
+      }),
     ],
     content,
+    editorProps: {
+      attributes: {
+        class: 'prose max-w-none focus:outline-none',
+      },
+    },
+    parseOptions: {
+      preserveWhitespace: 'full',
+    },
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML())
+    },
+    onCreate: ({ editor }) => {
+      console.log('✅ TipTap Editor initialized successfully')
     },
   })
 
@@ -81,7 +120,7 @@ export default function RichTextEditor({ content, onChange, onUploadImage }: Ric
   return (
     <div className="border rounded-lg overflow-hidden">
       {/* Toolbar */}
-      <div className="bg-gray-100 border-b p-2 flex flex-wrap gap-1">
+      <div className="bg-gray-100 border-b p-2 flex flex-wrap gap-1 items-center">
         {/* Text formatting */}
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -196,6 +235,197 @@ export default function RichTextEditor({ content, onChange, onUploadImage }: Ric
 
         <div className="w-px bg-gray-300 mx-1"></div>
 
+        {/* Font Size - Using HTML directly */}
+        <select
+          onChange={(e) => {
+            const fontSize = e.target.value
+            if (fontSize && editor) {
+              const { from, to } = editor.state.selection
+              const selectedText = editor.state.doc.textBetween(from, to)
+
+              if (selectedText) {
+                // Escape HTML entities
+                const escapedText = selectedText
+                  .replace(/&/g, '&amp;')
+                  .replace(/</g, '&lt;')
+                  .replace(/>/g, '&gt;')
+                  .replace(/"/g, '&quot;')
+                  .replace(/'/g, '&#039;')
+
+                editor
+                  .chain()
+                  .focus()
+                  .deleteSelection()
+                  .insertContent(`<span style="font-size: ${fontSize}">${escapedText}</span>`, {
+                    parseOptions: {
+                      preserveWhitespace: 'full',
+                    },
+                  })
+                  .run()
+
+                console.log('✅ Applied font size:', fontSize, 'to text:', selectedText)
+                e.target.value = '' // Reset dropdown
+              } else {
+                alert('⚠️ Vui lòng bôi đen text trước khi chọn cỡ chữ!')
+                e.target.value = '' // Reset dropdown
+              }
+            }
+          }}
+          className="px-2 py-1 rounded bg-white border text-sm"
+          title="Kích thước chữ (Chọn text trước)"
+        >
+          <option value="">Cỡ chữ</option>
+          <option value="12px">12px</option>
+          <option value="14px">14px</option>
+          <option value="16px">16px</option>
+          <option value="18px">18px</option>
+          <option value="20px">20px</option>
+          <option value="24px">24px</option>
+          <option value="28px">28px</option>
+          <option value="32px">32px</option>
+        </select>
+
+        {/* Text Color */}
+        <div className="relative">
+          <button
+            onClick={() => setShowColorPicker(!showColorPicker)}
+            className="px-3 py-1 rounded bg-white border flex items-center gap-1"
+            title="Màu chữ"
+          >
+            <span>A</span>
+            <div
+              className="w-4 h-1 rounded"
+              style={{ backgroundColor: editor.getAttributes('textStyle').color || '#000000' }}
+            />
+          </button>
+          {showColorPicker && (
+            <div className="absolute top-full left-0 mt-1 p-2 bg-white border rounded shadow-lg z-10">
+              <div className="grid grid-cols-6 gap-1 mb-2">
+                {['#000000', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF',
+                  '#00FFFF', '#FFA500', '#800080', '#008000', '#000080', '#808080'].map(color => (
+                    <button
+                      key={color}
+                      onClick={() => {
+                        editor.chain().focus().setColor(color).run()
+                        setShowColorPicker(false)
+                      }}
+                      className="w-6 h-6 rounded border hover:scale-110"
+                      style={{ backgroundColor: color }}
+                      title={color}
+                    />
+                  ))}
+              </div>
+              <input
+                type="color"
+                onChange={(e) => editor.chain().focus().setColor(e.target.value).run()}
+                className="w-full"
+                title="Chọn màu tùy chỉnh"
+              />
+              <button
+                onClick={() => {
+                  editor.chain().focus().unsetColor().run()
+                  setShowColorPicker(false)
+                }}
+                className="w-full mt-1 px-2 py-1 text-xs bg-gray-200 rounded hover:bg-gray-300"
+              >
+                Xóa màu
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Background Color - Using HTML directly */}
+        <div className="relative">
+          <button
+            onClick={() => setShowBgColorPicker(!showBgColorPicker)}
+            className="px-3 py-1 rounded bg-white border"
+            title="Màu nền"
+          >
+            🎨
+          </button>
+          {showBgColorPicker && (
+            <div className="absolute top-full left-0 mt-1 p-2 bg-white border rounded shadow-lg z-10">
+              <div className="grid grid-cols-6 gap-1 mb-2">
+                {['#FFFFFF', '#FFFF00', '#00FF00', '#00FFFF', '#FF00FF', '#FFA500',
+                  '#FFE4E1', '#E6E6FA', '#F0FFF0', '#FFF8DC', '#FFE4B5', '#F5F5DC'].map(bgColor => (
+                    <button
+                      key={bgColor}
+                      onClick={() => {
+                        const { from, to } = editor.state.selection
+                        const selectedText = editor.state.doc.textBetween(from, to)
+                        if (selectedText) {
+                          // Escape HTML entities
+                          const escapedText = selectedText
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+                            .replace(/"/g, '&quot;')
+                            .replace(/'/g, '&#039;')
+
+                          editor
+                            .chain()
+                            .focus()
+                            .deleteSelection()
+                            .insertContent(`<span style="background-color: ${bgColor}">${escapedText}</span>`, {
+                              parseOptions: {
+                                preserveWhitespace: 'full',
+                              },
+                            })
+                            .run()
+
+                          console.log('✅ Applied background color:', bgColor, 'to text:', selectedText)
+                          setShowBgColorPicker(false)
+                        } else {
+                          alert('⚠️ Vui lòng bôi đen text trước khi chọn màu nền!')
+                          setShowBgColorPicker(false)
+                        }
+                      }}
+                      className="w-6 h-6 rounded border hover:scale-110"
+                      style={{ backgroundColor: bgColor }}
+                      title={bgColor}
+                    />
+                  ))}
+              </div>
+              <input
+                type="color"
+                onChange={(e) => {
+                  const bgColor = e.target.value
+                  const { from, to } = editor.state.selection
+                  const selectedText = editor.state.doc.textBetween(from, to)
+                  if (selectedText) {
+                    // Escape HTML entities
+                    const escapedText = selectedText
+                      .replace(/&/g, '&amp;')
+                      .replace(/</g, '&lt;')
+                      .replace(/>/g, '&gt;')
+                      .replace(/"/g, '&quot;')
+                      .replace(/'/g, '&#039;')
+
+                    editor
+                      .chain()
+                      .focus()
+                      .deleteSelection()
+                      .insertContent(`<span style="background-color: ${bgColor}">${escapedText}</span>`, {
+                        parseOptions: {
+                          preserveWhitespace: 'full',
+                        },
+                      })
+                      .run()
+
+                    console.log('✅ Applied custom background color:', bgColor)
+                  } else {
+                    alert('⚠️ Vui lòng bôi đen text trước khi chọn màu nền!')
+                  }
+                }}
+                className="w-full"
+                title="Chọn màu nền tùy chỉnh"
+              />
+            </div>
+          )}
+        </div>
+
+        <div className="w-px bg-gray-300 mx-1"></div>
+
         {/* Link & Image */}
         <button
           onClick={setLink}
@@ -247,11 +477,41 @@ export default function RichTextEditor({ content, onChange, onUploadImage }: Ric
         </button>
       </div>
 
+      {/* Helper text */}
+      <div className="bg-yellow-50 border-b border-yellow-200 px-4 py-2 text-xs text-yellow-800">
+        💡 <strong>Mẹo:</strong> Bôi đen text trước khi chọn cỡ chữ hoặc màu nền. Màu chữ có thể áp dụng trực tiếp.
+      </div>
+
       {/* Editor content */}
-      <EditorContent 
-        editor={editor} 
-        className="prose max-w-none p-4 min-h-[400px] focus:outline-none"
+      <EditorContent
+        editor={editor}
+        className="prose max-w-none p-4 min-h-[400px] focus:outline-none [&_span]:inline [&_span[style]]:inline"
       />
+
+      {/* Global styles for inline HTML in editor */}
+      <style jsx global>{`
+        .ProseMirror span[style] {
+          display: inline !important;
+        }
+        .ProseMirror span[style*="font-size"] {
+          display: inline !important;
+        }
+        .ProseMirror span[style*="background-color"] {
+          display: inline !important;
+          padding: 2px 4px;
+          border-radius: 2px;
+        }
+        .ProseMirror span[style*="color"] {
+          display: inline !important;
+        }
+        /* Ensure TipTap renders inline styles */
+        .ProseMirror {
+          min-height: 400px;
+        }
+        .ProseMirror p {
+          margin: 0.5em 0;
+        }
+      `}</style>
     </div>
   )
 }

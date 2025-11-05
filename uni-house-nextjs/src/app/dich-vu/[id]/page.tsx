@@ -3,6 +3,7 @@
 import { Header, Footer } from '@/components'
 import { useData } from '@/contexts/DataContext'
 import { use } from 'react'
+import { styleSettingsToCSS } from '@/utils/styleUtils'
 
 interface ServiceDetailProps {
   params: Promise<{ id: string }>
@@ -31,8 +32,8 @@ export default function ServiceDetailPage({ params }: ServiceDetailProps) {
           {service.image && (
             <div className="container mx-auto px-4 -mt-10">
               <div className="bg-white rounded-lg shadow-xl overflow-hidden">
-                <img 
-                  src={service.image} 
+                <img
+                  src={service.image}
                   alt={service.title}
                   className="w-full h-96 object-cover"
                 />
@@ -64,7 +65,7 @@ export default function ServiceDetailPage({ params }: ServiceDetailProps) {
           {/* Detail Content from Admin */}
           <div className="container mx-auto px-4 py-12">
             <div className="bg-white rounded-lg shadow-lg p-8">
-              <div 
+              <div
                 className="prose prose-lg max-w-none"
                 dangerouslySetInnerHTML={{ __html: service.detailContent }}
               />
@@ -284,25 +285,25 @@ export default function ServiceDetailPage({ params }: ServiceDetailProps) {
         <div className="absolute inset-0 opacity-10">
           <div className="metal-texture w-full h-full"></div>
         </div>
-        
+
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center">
             {/* Icon */}
             <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-900 rounded-full mb-6 shadow-lg">
               <span className="text-4xl">💬</span>
             </div>
-            
+
             {/* Title */}
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
               CẦN TƯ VẤN THÊM?
             </h2>
-            
+
             {/* Description */}
             <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
-              Đội ngũ chuyên gia của Phú An Phát luôn sẵn sàng tư vấn miễn phí về dịch vụ, 
+              Đội ngũ chuyên gia của Phú An Phát luôn sẵn sàng tư vấn miễn phí về dịch vụ,
               báo giá và giải đáp mọi thắc mắc của bạn.
             </p>
-            
+
             {/* Contact Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               {/* Zalo Button */}
@@ -313,15 +314,15 @@ export default function ServiceDetailPage({ params }: ServiceDetailProps) {
                 className="group inline-flex items-center gap-3 bg-red-600 text-white px-8 py-4 rounded-lg font-bold text-lg shadow-xl hover:bg-red-700 hover:shadow-2xl hover:scale-105 transition-all duration-300"
               >
                 <svg className="w-8 h-8" viewBox="0 0 48 48" fill="none">
-                  <circle cx="24" cy="24" r="20" fill="white"/>
-                  <path d="M15 31.5C15 31.5 18.5 28 24 28C29.5 28 33 31.5 33 31.5M18 21H18.01M30 21H30.01M24 38C31.732 38 38 31.732 38 24C38 16.268 31.732 10 24 10C16.268 10 10 16.268 10 24C10 31.732 16.268 38 24 38Z" stroke="#0068FF" strokeWidth="2" strokeLinecap="round"/>
+                  <circle cx="24" cy="24" r="20" fill="white" />
+                  <path d="M15 31.5C15 31.5 18.5 28 24 28C29.5 28 33 31.5 33 31.5M18 21H18.01M30 21H30.01M24 38C31.732 38 38 31.732 38 24C38 16.268 31.732 10 24 10C16.268 10 10 16.268 10 24C10 31.732 16.268 38 24 38Z" stroke="#0068FF" strokeWidth="2" strokeLinecap="round" />
                 </svg>
                 <span>Chat Zalo ngay</span>
                 <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </a>
-              
+
               {/* Hotline Button */}
               <a
                 href="tel:0931535007"
@@ -333,7 +334,7 @@ export default function ServiceDetailPage({ params }: ServiceDetailProps) {
                 <span>0931 535 007</span>
               </a>
             </div>
-            
+
             {/* Additional Info */}
             <div className="mt-8 flex flex-wrap justify-center gap-6 text-gray-400">
               <div className="flex items-center gap-2">
@@ -358,11 +359,11 @@ export default function ServiceDetailPage({ params }: ServiceDetailProps) {
             </div>
           </div>
         </div>
-        
+
         {/* Decorative Elements - Industrial Style */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-slate-900/50 rounded-full -ml-48 -mb-48 blur-3xl"></div>
-        
+
         {/* Corner Accents */}
         <div className="absolute top-0 right-0 w-0 h-0 border-l-[60px] border-l-transparent border-t-[60px] border-t-red-600/20"></div>
         <div className="absolute bottom-0 left-0 w-0 h-0 border-r-[60px] border-r-transparent border-b-[60px] border-b-blue-800/20"></div>
