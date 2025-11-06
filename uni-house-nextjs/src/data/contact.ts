@@ -10,7 +10,7 @@ export const DEFAULT_CONTACT_INFO: ContactInfo = {
     {
       id: 'north-1',
       name: 'HẢO AN PHÁT',
-      address: 'Thôn Phù Trì, Xã Quang Minh, TP. Hà Nội',
+      address: 'Thôn Phù Trì, Xã Quang Minh, Hà Nội',
       hotline: '0868 586 927'
     },
     {

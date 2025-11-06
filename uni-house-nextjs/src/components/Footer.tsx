@@ -113,7 +113,7 @@ export default function Footer() {
             <div className="mt-4 pt-4 border-t border-gray-700">
               <h4 className="text-base font-semibold mb-2">Chi nhánh miền Bắc: HẢO AN PHÁT</h4>
               <div className="space-y-1 text-gray-300 text-sm">
-                <p>Thôn Phù Trì, Xã Quang Minh, TP. Hà Nội</p>
+                <p>Thôn Phù Trì, Xã Quang Minh, Hà Nội</p>
                 <p>Hotline: 0868 586 927</p>
                 <p>Website: haoanphat.vn</p>
                 <p>Email: info@haoanphat.vn</p>
