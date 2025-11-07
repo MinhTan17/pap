@@ -4,7 +4,7 @@ import { adminMenu } from '@/data/admin'
 export default function AdminSidebar() {
   return (
     <aside className="w-64 min-h-screen bg-gray-900 text-gray-100">
-      <div className="px-4 py-4 border-b border-gray-800 text-xl font-bold">NHA Admin</div>
+      <div className="px-4 py-4 border-b border-gray-800 text-xl font-bold"> <img src="/icons/banners/logo.png" width={180} alt="" /></div>
       <nav className="p-2 space-y-4">
         {adminMenu.map(group => (
           <div key={group.id}>

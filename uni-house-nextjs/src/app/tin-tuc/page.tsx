@@ -138,20 +138,7 @@ export default function NewsPage() {
             </div>
           </div>
 
-          {/* Pagination */}
-          <div className="flex justify-center">
-            <div className="flex space-x-2">
-              <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
-                Trước
-              </button>
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg">1</button>
-              <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">2</button>
-              <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">3</button>
-              <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
-                Sau
-              </button>
-            </div>
-          </div>
+
         </div>
       </section>
 
@@ -170,9 +157,9 @@ export default function NewsPage() {
               placeholder="Email của bạn"
               className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
             />
-            <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+            <Link href="/lien-he" className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors text-center">
               Đăng ký
-            </button>
+            </Link>
           </div>
         </div>
       </section>

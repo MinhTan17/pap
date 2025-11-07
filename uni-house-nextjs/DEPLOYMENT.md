@@ -174,10 +174,12 @@ sudo certbot --nginx -d your-domain.com
 
 ### 1. Environment Variables
 - [ ] `ADMIN_USERNAME` - Tên đăng nhập admin
-- [ ] `ADMIN_PASSWORD_HASH` - Hash mật khẩu (dùng script generate-hash.js)
-- [ ] `JWT_SECRET` - Secret key cho JWT (random string ít nhất 32 ký tự)
+- [ ] `ADMIN_PASSWORD_HASH` - Hash mật khẩu (chạy: `node scripts/update-password.js`)
+- [ ] `JWT_SECRET` - Secret key cho JWT (chạy: `node scripts/generate-strong-secret.js`)
 - [ ] `SESSION_MAX_AGE` - Thời gian session (86400 = 24h)
 - [ ] `NODE_ENV=production`
+- [ ] `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` - Email config
+- [ ] `EMAIL_FROM`, `EMAIL_TO` - Email addresses
 
 ### 2. Security
 - [ ] Đổi mật khẩu admin mặc định
@@ -302,3 +304,87 @@ tar -xzf uploads-backup.tar.gz
 | DigitalOcean | ❌ | $6/month (basic) |
 
 **Khuyến nghị**: Bắt đầu với Vercel (miễn phí) cho personal projects.
+
+
+---
+
+## 🚀 Quick Start - Deploy Nhanh với Vercel (Khuyến nghị)
+
+### Bước 1: Chuẩn bị
+```bash
+# Tạo mật khẩu mới
+node scripts/update-password.js
+
+# Tạo JWT secret mới
+node scripts/generate-strong-secret.js
+```
+
+### Bước 2: Push code lên GitHub
+```bash
+git add .
+git commit -m "Ready for deployment"
+git push origin main
+```
+
+### Bước 3: Deploy trên Vercel
+1. Truy cập https://vercel.com
+2. Click "New Project"
+3. Import repository từ GitHub
+4. Thêm Environment Variables:
+   - `ADMIN_USERNAME`: admin
+   - `ADMIN_PASSWORD_HASH`: (copy từ script)
+   - `JWT_SECRET`: (copy từ script)
+   - `SESSION_MAX_AGE`: 86400
+   - `SMTP_HOST`: smtp.gmail.com
+   - `SMTP_PORT`: 587
+   - `SMTP_USER`: your-email@gmail.com
+   - `SMTP_PASS`: your-app-password
+   - `EMAIL_FROM`: your-email@gmail.com
+   - `EMAIL_TO`: recipient@example.com
+5. Click "Deploy"
+
+### Bước 4: Kiểm tra
+- Truy cập URL Vercel cung cấp
+- Test login admin: `https://your-app.vercel.app/admin/login`
+- Test contact form
+
+**Xong! Website đã online trong 5 phút! 🎉**
+
+---
+
+## 📱 Sau khi Deploy
+
+### Kiểm tra bảo mật
+1. Test login admin
+2. Test contact form
+3. Check security headers: https://securityheaders.com
+4. Test HTTPS
+
+### Custom Domain (Optional)
+1. Mua domain (Namecheap, GoDaddy, etc.)
+2. Trong Vercel: Settings > Domains
+3. Add domain và follow hướng dẫn DNS
+
+### Monitor
+- Vercel Dashboard > Analytics
+- Check logs nếu có lỗi
+- Monitor email notifications
+
+---
+
+## ⚠️ Lưu Ý Quan Trọng
+
+1. **KHÔNG commit `.env.local`** vào Git
+2. **ĐỔI mật khẩu admin** trước khi deploy
+3. **ĐỔI JWT_SECRET** thành random string
+4. **BẬT HTTPS** (Vercel tự động)
+5. **BACKUP** environment variables ở nơi an toàn
+
+---
+
+## 🆘 Cần Giúp Đỡ?
+
+Xem các file:
+- `SECURITY_SUMMARY.md` - Tóm tắt bảo mật
+- `SECURITY_CHECKLIST.md` - Checklist bảo mật
+- `DEPLOYMENT.md` - Hướng dẫn deploy (file này)

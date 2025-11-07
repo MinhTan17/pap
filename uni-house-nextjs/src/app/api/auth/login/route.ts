@@ -3,9 +3,10 @@ import bcrypt from 'bcryptjs';
 import { generateToken } from '@/lib/auth';
 import { checkRateLimit, resetRateLimit } from '@/lib/rate-limit';
 
-// Thông tin đăng nhập
+
 const ADMIN_USERNAME = 'admin';
-const ADMIN_PASSWORD_HASH = '$2b$10$jF5gdSCqYg89ABr362oWRegzxWLFk2rvt2OXyH8WlCCz/2VukIo6K'; // AdminPAP@0703!2025
+// Password: admin123
+const ADMIN_PASSWORD_HASH = '$2b$10$bBhSEEFGNDkGYv8x0SLj6uTdPl81xM1QrMIcMAHafrJHnuzAjdn5q';
 
 export async function POST(request: Request) {
   try {
@@ -16,20 +17,16 @@ export async function POST(request: Request) {
       request.headers.get('x-real-ip') ||
       'unknown';
 
-    // Only log in development
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[Auth] Login attempt for username:', username);
-    }
+    console.log('[Auth] Login attempt:', { username, clientIp });
 
     // Check rate limit
     const rateLimit = checkRateLimit(clientIp, {
       maxAttempts: 5,
-      windowMs: 15 * 60 * 1000, // 15 minutes
+      windowMs: 15 * 60 * 1000,
     });
 
     if (!rateLimit.allowed) {
       const minutesLeft = Math.ceil((rateLimit.resetTime - Date.now()) / 60000);
-      console.log('[Auth] Rate limit exceeded for IP:', clientIp);
       return NextResponse.json(
         {
           success: false,
@@ -39,12 +36,10 @@ export async function POST(request: Request) {
       );
     }
 
-
-
-    // Kiểm tra thông tin đăng nhập
+    // Kiểm tra username
     const isUsernameValid = username === ADMIN_USERNAME;
 
-    // Use synchronous compare to avoid potential async issues
+    // Kiểm tra password với bcrypt
     let isPasswordValid = false;
     try {
       isPasswordValid = bcrypt.compareSync(password, ADMIN_PASSWORD_HASH);
@@ -56,9 +51,8 @@ export async function POST(request: Request) {
       );
     }
 
-
-
     if (!isUsernameValid || !isPasswordValid) {
+      console.log('[Auth] Login failed');
       return NextResponse.json(
         {
           success: false,
@@ -74,7 +68,7 @@ export async function POST(request: Request) {
     // Tạo JWT token
     const token = generateToken(username);
 
-    console.log('[Auth] Login successful, setting secure cookie');
+    console.log('[Auth] Login successful');
 
     // Tạo response và set cookie
     const response = NextResponse.json({
@@ -89,7 +83,6 @@ export async function POST(request: Request) {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
-      // Không set maxAge để cookie tự động xóa khi đóng browser
     });
 
     return response;

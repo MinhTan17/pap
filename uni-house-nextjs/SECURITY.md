@@ -1,5 +1,9 @@
 # Tài liệu Bảo mật
 
+> **Lưu ý**: Tài liệu này đã được cập nhật. Xem thêm:
+> - `SECURITY_ENHANCED.md` - Chi tiết các tính năng bảo mật nâng cao
+> - `SECURITY_CHECKLIST.md` - Danh sách kiểm tra bảo mật
+
 ## Các tính năng bảo mật đã triển khai
 
 ### 1. JWT (JSON Web Tokens)
