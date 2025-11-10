@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { useData } from '@/contexts/DataContext'
 import dynamic from 'next/dynamic'
 import { ServiceItem } from '@/data/services'
+import { authenticatedFetch } from '@/lib/api-client'
 
 // Import RichTextEditor dynamically to avoid SSR issues
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), {
@@ -51,7 +52,7 @@ export default function ServiceDetailEditor() {
                 const base64 = e.target.result as string
 
                 // Upload to server
-                const response = await fetch('/api/upload', {
+                const response = await authenticatedFetch('/api/upload', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({
@@ -98,39 +99,39 @@ export default function ServiceDetailEditor() {
 
   const handleSave = async () => {
     if (!service) return
-    
+
     setIsSaving(true)
-    
+
     try {
       // Update service in DataContext - auto-save will handle API call
       const updatedService = {
         ...service,
         detailContent
       }
-      
+
       console.log('🔄 Đang lưu service:', updatedService.id)
       console.log('📄 HTML Content:', detailContent)
       console.log('🔍 Has <strong> tag?', detailContent.includes('<strong>'))
       console.log('🔍 Has <em> tag?', detailContent.includes('<em>'))
-      
+
       updateService(service.id, updatedService)
-      
+
       // Wait for auto-save to complete (500ms debounce + 500ms for API)
       await new Promise(resolve => setTimeout(resolve, 1500))
-      
+
       // Reload data from API to ensure consistency
       await reloadFromStorage()
       console.log('✅ Đã reload data từ API')
-      
+
       // Check if data was saved correctly
       const reloadedService = services.find(s => s.id === service.id)
       console.log('🔍 Reloaded detailContent:', reloadedService?.detailContent?.substring(0, 200))
-      
+
       // Update local state to reflect changes
       setService(updatedService)
       setHasUnsavedChanges(false)
       setIsEditing(false)
-      
+
       // Show success message
       alert('✅ Đã lưu thành công! Bạn có thể xem kết quả bằng nút "Xem trên site".')
     } catch (error) {
@@ -229,7 +230,7 @@ export default function ServiceDetailEditor() {
       {/* Content Editor/Preview */}
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-bold mb-4">Nội dung chi tiết</h2>
-        
+
         {isEditing ? (
           <div>
             <p className="text-sm text-gray-600 mb-4">
@@ -245,11 +246,11 @@ export default function ServiceDetailEditor() {
           <div>
             <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded">
               <p className="text-sm text-blue-800">
-                💡 <strong>Chế độ xem trước:</strong> Đây là nội dung sẽ hiển thị trên trang web. 
+                💡 <strong>Chế độ xem trước:</strong> Đây là nội dung sẽ hiển thị trên trang web.
                 Nhấn "Chỉnh sửa" để thay đổi nội dung.
               </p>
             </div>
-            <div 
+            <div
               className="prose max-w-none"
               dangerouslySetInnerHTML={{ __html: detailContent }}
             />
@@ -261,7 +262,7 @@ export default function ServiceDetailEditor() {
       {isEditing && (
         <div className="bg-green-50 border border-green-200 rounded-lg p-4">
           <p className="text-sm text-green-800">
-            ✅ <strong>Tự động lưu:</strong> Thay đổi của bạn sẽ được tự động lưu sau 0.5 giây. 
+            ✅ <strong>Tự động lưu:</strong> Thay đổi của bạn sẽ được tự động lưu sau 0.5 giây.
             Nhấn "Lưu" để kết thúc chỉnh sửa và xem kết quả trên trang web.
           </p>
         </div>
@@ -288,7 +289,7 @@ export default function ServiceDetailEditor() {
         type="file"
         accept="image/*"
         style={{ display: 'none' }}
-        onChange={() => {}} // Handled by handleImageUpload
+        onChange={() => { }} // Handled by handleImageUpload
       />
     </div>
   )

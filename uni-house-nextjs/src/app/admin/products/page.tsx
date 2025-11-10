@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useData } from '@/contexts/DataContext'
 import { ProductItem } from '@/data/products'
+import { authenticatedFetch } from '@/lib/api-client'
 
 export default function ProductsManagement() {
   const { products, categories, addProduct, updateProduct, deleteProduct } = useData()
@@ -63,7 +64,7 @@ export default function ProductsManagement() {
             const base64 = e.target.result as string
             
             // Upload to server
-            const response = await fetch('/api/upload', {
+            const response = await authenticatedFetch('/api/upload', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ 
@@ -109,7 +110,7 @@ export default function ProductsManagement() {
               
               try {
                 // Upload to server
-                const response = await fetch('/api/upload', {
+                const response = await authenticatedFetch('/api/upload', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ 

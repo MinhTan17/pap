@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { useData } from '@/contexts/DataContext'
 import dynamic from 'next/dynamic'
 import { NewsItem } from '@/data/news'
+import { authenticatedFetch } from '@/lib/api-client'
 
 // Import RichTextEditor dynamically to avoid SSR issues
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), {
@@ -51,7 +52,7 @@ export default function NewsDetailEditor() {
                 const base64 = e.target.result as string
 
                 // Upload to server
-                const response = await fetch('/api/upload', {
+                const response = await authenticatedFetch('/api/upload', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({

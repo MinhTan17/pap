@@ -71,6 +71,16 @@ export function middleware(request: NextRequest) {
     );
     
     if (isProtectedApi) {
+      // Chỉ yêu cầu authentication cho POST, PUT, DELETE, PATCH
+      // GET requests không cần authentication (để đọc data)
+      const method = request.method;
+      const requiresAuth = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method);
+      
+      if (!requiresAuth) {
+        console.log('[Middleware] Allowing GET request for protected API:', pathname);
+        return response;
+      }
+      
       // Lấy token từ cookie hoặc header
       const cookieToken = request.cookies.get('auth-token')?.value;
       const fallbackToken = request.cookies.get('auth-token-fallback')?.value;
@@ -79,7 +89,7 @@ export function middleware(request: NextRequest) {
       const token = cookieToken || fallbackToken || headerToken;
       
       if (!token) {
-        console.log('[Middleware] No token for protected API:', pathname);
+        console.log('[Middleware] No token for protected API:', pathname, method);
         return NextResponse.json(
           { success: false, message: 'Unauthorized - No token provided' },
           { status: 401 }
@@ -95,7 +105,7 @@ export function middleware(request: NextRequest) {
         );
       }
       
-      console.log('[Middleware] Token valid for protected API:', pathname);
+      console.log('[Middleware] Token valid for protected API:', pathname, method);
       return response;
     }
     
