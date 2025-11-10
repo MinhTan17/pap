@@ -37,17 +37,14 @@ export default function LoginPage() {
 
       if (response.ok && data.success) {
         console.log('[Login Page] Login successful, redirecting...');
-        console.log('[Login Page] Response data:', data);
         
-        // Store token in localStorage as fallback
+        // Store token in localStorage
         if (data.token) {
           localStorage.setItem('auth-token', data.token);
-          console.log('[Login Page] Token stored in localStorage');
         }
         
-        // Force reload to ensure cookies are sent with next request
-        console.log('[Login Page] Reloading to /admin...');
-        window.location.replace('/admin');
+        // Simple redirect - just change the URL
+        window.location.href = '/admin';
       } else {
         console.log('[Login Page] Login failed:', data.message);
         setError(data.message || 'Tên đăng nhập hoặc mật khẩu không đúng');
