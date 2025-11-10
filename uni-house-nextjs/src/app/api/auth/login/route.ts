@@ -4,12 +4,18 @@ import { generateToken } from '@/lib/auth';
 import { checkRateLimit, resetRateLimit } from '@/lib/rate-limit';
 
 
-// Read from environment variables
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
-const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || '$2b$10$mH.saPf2K4ZpHBs7llxNFeFWANblzh4YJF9lxkqdgQ5t.bcw0u9mC';
-
 export async function POST(request: Request) {
   try {
+    // Read from environment variables inside the function
+    const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+    const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || '$2b$10$f03vntnM9W7VLylMU2PHSehFZHsS3hGgx4f2Lj4rM3EM8bqd0c7mO';
+
+    console.log('[Auth] Environment check:', {
+      hasUsername: !!process.env.ADMIN_USERNAME,
+      hasHash: !!process.env.ADMIN_PASSWORD_HASH,
+      hashPreview: ADMIN_PASSWORD_HASH.substring(0, 15) + '...'
+    });
+
     const { username, password } = await request.json();
 
     // Get client IP for rate limiting
@@ -38,11 +44,13 @@ export async function POST(request: Request) {
 
     // Kiểm tra username
     const isUsernameValid = username === ADMIN_USERNAME;
+    console.log('[Auth] Username check:', { provided: username, expected: ADMIN_USERNAME, valid: isUsernameValid });
 
     // Kiểm tra password với bcrypt
     let isPasswordValid = false;
     try {
       isPasswordValid = bcrypt.compareSync(password, ADMIN_PASSWORD_HASH);
+      console.log('[Auth] Password check:', { valid: isPasswordValid });
     } catch (bcryptError) {
       console.error('[Auth] Bcrypt error:', bcryptError);
       return NextResponse.json(
@@ -52,7 +60,7 @@ export async function POST(request: Request) {
     }
 
     if (!isUsernameValid || !isPasswordValid) {
-      console.log('[Auth] Login failed');
+      console.log('[Auth] Login failed:', { usernameValid: isUsernameValid, passwordValid: isPasswordValid });
       return NextResponse.json(
         {
           success: false,
