@@ -39,7 +39,8 @@ export default function AdminLayout({
     <html lang="vi" suppressHydrationWarning>
       <body suppressHydrationWarning className={inter.className}>
         <DataProvider>
-          <AuthProvider>
+          {/* AuthProvider DISABLED - It was redirecting back to login! */}
+          {/* <AuthProvider> */}
             {/* ClientAuthCheck DISABLED temporarily to fix Vercel issues */}
             {/* <ClientAuthCheck> */}
               <div className="flex min-h-screen bg-gray-50">
@@ -54,7 +55,7 @@ export default function AdminLayout({
                 </div>
               </div>
             {/* </ClientAuthCheck> */}
-          </AuthProvider>
+          {/* </AuthProvider> */}
         </DataProvider>
       </body>
     </html>
