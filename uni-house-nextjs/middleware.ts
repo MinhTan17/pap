@@ -48,12 +48,19 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // Lấy token từ cookie
-  const token = request.cookies.get('auth-token')?.value;
+  // Lấy token từ cookie hoặc header (từ localStorage)
+  const cookieToken = request.cookies.get('auth-token')?.value;
+  const fallbackToken = request.cookies.get('auth-token-fallback')?.value;
+  const headerToken = request.headers.get('authorization')?.replace('Bearer ', '');
   
-  console.log('[Middleware] Cookie check:', {
+  const token = cookieToken || fallbackToken || headerToken;
+  
+  console.log('[Middleware] Token check:', {
     pathname,
-    hasToken: !!token,
+    hasCookieToken: !!cookieToken,
+    hasFallbackToken: !!fallbackToken,
+    hasHeaderToken: !!headerToken,
+    finalToken: !!token,
     allCookies: Array.from(request.cookies.getAll()).map(c => c.name),
   });
   

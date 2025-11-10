@@ -77,18 +77,29 @@ export async function POST(request: Request) {
     const response = NextResponse.json({
       success: true,
       user: { username },
+      token, // Send token in response body as fallback
     });
 
-    // Set cookie - try with strict settings first
+    // Try multiple cookie strategies
+    // Strategy 1: httpOnly cookie (most secure)
     response.cookies.set('auth-token', token, {
       httpOnly: true,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'lax',
       path: '/',
       maxAge: 86400,
     });
 
-    console.log('[Auth] Cookie set successfully');
+    // Strategy 2: Also set a non-httpOnly cookie as fallback
+    response.cookies.set('auth-token-fallback', token, {
+      httpOnly: false,
+      secure: true,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 86400,
+    });
+
+    console.log('[Auth] Cookies set successfully');
 
     return response;
 

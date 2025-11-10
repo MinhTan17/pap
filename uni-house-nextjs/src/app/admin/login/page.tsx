@@ -39,6 +39,12 @@ export default function LoginPage() {
         console.log('[Login Page] Login successful, redirecting...');
         console.log('[Login Page] Response data:', data);
         
+        // Store token in localStorage as fallback
+        if (data.token) {
+          localStorage.setItem('auth-token', data.token);
+          console.log('[Login Page] Token stored in localStorage');
+        }
+        
         // Wait a bit for cookie to be set, then redirect
         setTimeout(() => {
           window.location.href = '/admin';

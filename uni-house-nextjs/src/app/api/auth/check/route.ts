@@ -2,12 +2,21 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    // Try to get token from cookie first, then from Authorization header
     const cookieStore = await cookies();
-    const token = cookieStore.get('auth-token')?.value;
+    const cookieToken = cookieStore.get('auth-token')?.value;
+    const authHeader = request.headers.get('authorization');
+    const headerToken = authHeader?.replace('Bearer ', '');
     
-    console.log('[Auth Check] Token exists:', !!token);
+    const token = cookieToken || headerToken;
+    
+    console.log('[Auth Check] Token check:', {
+      hasCookieToken: !!cookieToken,
+      hasHeaderToken: !!headerToken,
+      finalToken: !!token,
+    });
     
     if (!token) {
       return NextResponse.json({
