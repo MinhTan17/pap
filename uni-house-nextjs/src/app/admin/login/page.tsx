@@ -35,16 +35,12 @@ export default function LoginPage() {
       const data = await response.json();
       console.log('[Login Page] Login response:', data);
 
+      // DEBUG: Show what we got
+      alert(`Response: ${response.ok}, Success: ${data.success}, Message: ${data.message || 'none'}`);
+
       if (response.ok && data.success) {
-        console.log('[Login Page] Login successful, redirecting...');
-        
-        // Store token in localStorage
-        if (data.token) {
-          localStorage.setItem('auth-token', data.token);
-        }
-        
-        // Simple redirect - just change the URL
-        window.location.href = '/admin';
+        alert('Login OK! Redirecting...');
+        window.location.href = '/admin/pages/about';
       } else {
         console.log('[Login Page] Login failed:', data.message);
         setError(data.message || 'Tên đăng nhập hoặc mật khẩu không đúng');
