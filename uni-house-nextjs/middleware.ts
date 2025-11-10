@@ -46,12 +46,24 @@ export function middleware(request: NextRequest) {
   // Verify token if exists
   let isValidToken = false;
   if (token) {
+    console.log('[Middleware] Token found, verifying...', { 
+      pathname, 
+      tokenPreview: token.substring(0, 20) + '...' 
+    });
     const payload = verifyToken(token);
     isValidToken = !!payload;
+    console.log('[Middleware] Token verification result:', { 
+      pathname, 
+      isValidToken, 
+      payload 
+    });
+  } else {
+    console.log('[Middleware] No token found for path:', pathname);
   }
   
   // Nếu là trang login và đã có token hợp lệ, chuyển hướng về trang admin
   if (pathname === '/admin/login' && isValidToken) {
+    console.log('[Middleware] Redirecting from login to admin (already authenticated)');
     const redirectResponse = NextResponse.redirect(new URL('/admin', request.url));
     Object.entries(securityHeaders).forEach(([key, value]) => {
       redirectResponse.headers.set(key, value);
@@ -61,6 +73,7 @@ export function middleware(request: NextRequest) {
 
   // Nếu không phải là trang public và chưa đăng nhập hoặc token không hợp lệ, chuyển hướng về trang login
   if (!publicPaths.includes(pathname) && pathname.startsWith('/admin') && !isValidToken) {
+    console.log('[Middleware] Redirecting to login (not authenticated):', { pathname, isValidToken });
     const redirectResponse = NextResponse.redirect(new URL('/admin/login', request.url));
     Object.entries(securityHeaders).forEach(([key, value]) => {
       redirectResponse.headers.set(key, value);
