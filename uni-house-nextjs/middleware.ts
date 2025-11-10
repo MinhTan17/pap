@@ -3,12 +3,24 @@ import type { NextRequest } from 'next/server';
 import { verifyToken } from '@/lib/auth';
 import { getSecurityHeaders } from '@/lib/security-headers';
 
-// Danh sách các route API công khai
+// Danh sách các route API công khai (không cần authentication)
 const publicApiPaths = [
   '/api/auth/login',
   '/api/auth/check',
   '/api/contact',
   '/api/debug/auth-status',
+  '/api/test-cloudinary',
+  '/api/debug-env',
+  '/api/debug-jwt',
+];
+
+// Danh sách các route API cần authentication
+const protectedApiPaths = [
+  '/api/upload',
+  '/api/about',
+  '/api/services',
+  '/api/products',
+  '/api/auth/logout',
 ];
 
 export function middleware(request: NextRequest) {
@@ -37,59 +49,94 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
-  // Cho phép truy cập các API công khai
+  // Xử lý API routes
   if (pathname.startsWith('/api/')) {
+    // Cho phép truy cập các API công khai
     const isPublicApi = publicApiPaths.some(apiPath => 
       pathname.startsWith(apiPath)
     );
     
     if (isPublicApi) {
+      console.log('[Middleware] Allowing public API:', pathname);
       return response;
     }
+    
+    // Kiểm tra authentication cho protected APIs
+    const isProtectedApi = protectedApiPaths.some(apiPath => 
+      pathname.startsWith(apiPath)
+    );
+    
+    if (isProtectedApi) {
+      // Lấy token từ cookie hoặc header
+      const cookieToken = request.cookies.get('auth-token')?.value;
+      const fallbackToken = request.cookies.get('auth-token-fallback')?.value;
+      const headerToken = request.headers.get('authorization')?.replace('Bearer ', '');
+      
+      const token = cookieToken || fallbackToken || headerToken;
+      
+      if (!token) {
+        console.log('[Middleware] No token for protected API:', pathname);
+        return NextResponse.json(
+          { success: false, message: 'Unauthorized - No token provided' },
+          { status: 401 }
+        );
+      }
+      
+      const payload = verifyToken(token);
+      if (!payload) {
+        console.log('[Middleware] Invalid token for protected API:', pathname);
+        return NextResponse.json(
+          { success: false, message: 'Unauthorized - Invalid token' },
+          { status: 401 }
+        );
+      }
+      
+      console.log('[Middleware] Token valid for protected API:', pathname);
+      return response;
+    }
+    
+    // Các API khác (không public, không protected) - cho phép truy cập
+    console.log('[Middleware] Allowing other API:', pathname);
+    return response;
   }
 
-  // Lấy token từ cookie hoặc header (từ localStorage)
-  const cookieToken = request.cookies.get('auth-token')?.value;
-  const fallbackToken = request.cookies.get('auth-token-fallback')?.value;
-  const headerToken = request.headers.get('authorization')?.replace('Bearer ', '');
-  
-  const token = cookieToken || fallbackToken || headerToken;
-  
-  console.log('[Middleware] Token check:', {
-    pathname,
-    hasCookieToken: !!cookieToken,
-    hasFallbackToken: !!fallbackToken,
-    hasHeaderToken: !!headerToken,
-    finalToken: !!token,
-    allCookies: Array.from(request.cookies.getAll()).map(c => c.name),
-  });
-  
-  // Verify token if exists
-  let isValidToken = false;
-  if (token) {
-    console.log('[Middleware] Token found, verifying...', { 
-      pathname, 
-      tokenPreview: token.substring(0, 20) + '...' 
+  // Xử lý admin pages (không phải API)
+  if (pathname.startsWith('/admin')) {
+    // Lấy token từ cookie hoặc header
+    const cookieToken = request.cookies.get('auth-token')?.value;
+    const fallbackToken = request.cookies.get('auth-token-fallback')?.value;
+    const headerToken = request.headers.get('authorization')?.replace('Bearer ', '');
+    
+    const token = cookieToken || fallbackToken || headerToken;
+    
+    console.log('[Middleware] Admin page token check:', {
+      pathname,
+      hasCookieToken: !!cookieToken,
+      hasFallbackToken: !!fallbackToken,
+      hasHeaderToken: !!headerToken,
+      finalToken: !!token,
     });
-    const payload = verifyToken(token);
-    isValidToken = !!payload;
-    console.log('[Middleware] Token verification result:', { 
-      pathname, 
-      isValidToken, 
-      payload 
-    });
-  } else {
-    console.log('[Middleware] No token found for path:', pathname);
-  }
-  
-  // Nếu truy cập trang admin mà chưa đăng nhập, chuyển hướng về trang login
-  if (pathname.startsWith('/admin') && !isValidToken) {
-    console.log('[Middleware] Redirecting to login (not authenticated):', { pathname, isValidToken });
-    const redirectResponse = NextResponse.redirect(new URL('/admin/login', request.url));
-    Object.entries(securityHeaders).forEach(([key, value]) => {
-      redirectResponse.headers.set(key, value);
-    });
-    return redirectResponse;
+    
+    // Verify token if exists
+    let isValidToken = false;
+    if (token) {
+      const payload = verifyToken(token);
+      isValidToken = !!payload;
+      console.log('[Middleware] Admin page token verification:', { 
+        pathname, 
+        isValidToken 
+      });
+    }
+    
+    // Nếu chưa đăng nhập, chuyển hướng về trang login
+    if (!isValidToken) {
+      console.log('[Middleware] Redirecting to login:', pathname);
+      const redirectResponse = NextResponse.redirect(new URL('/admin/login', request.url));
+      Object.entries(securityHeaders).forEach(([key, value]) => {
+        redirectResponse.headers.set(key, value);
+      });
+      return redirectResponse;
+    }
   }
 
   return response;
@@ -97,8 +144,7 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Temporarily disable middleware for /admin routes to test
-    // '/admin/:path*',
+    '/admin/:path*',
     '/api/:path*',
     '/debug-auth',
   ],

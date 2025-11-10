@@ -702,11 +702,15 @@ export default function AboutAdminPage() {
                                 }))
                                 setHasUnsavedChanges(true)
                               } else {
-                                alert(`❌ Lỗi upload ${file.name}: ${data.message}`)
+                                console.error('Upload failed:', data)
+                                const errorMsg = data.error || data.message || 'Unknown error'
+                                alert(`❌ Lỗi upload ${file.name}:\n${errorMsg}\n\nKiểm tra Console (F12) để xem chi tiết.`)
+                                break // Stop uploading remaining files
                               }
-                            } catch (error) {
+                            } catch (error: any) {
                               console.error('Upload error:', error)
-                              alert(`❌ Lỗi upload ${file.name}`)
+                              alert(`❌ Lỗi upload ${file.name}:\n${error.message}\n\nKiểm tra Console (F12) để xem chi tiết.`)
+                              break // Stop uploading remaining files
                             }
                           }
 
