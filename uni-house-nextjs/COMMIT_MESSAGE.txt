@@ -1,0 +1,9 @@
+fix: update ClientAuthCheck to read fallback cookie
+
+- ClientAuthCheck now checks both localStorage and auth-token-fallback cookie
+- Added getCookie helper function to read cookies from document.cookie
+- Added detailed logging for token sources
+- This fixes the issue where users couldn't access admin after login
+
+The fallback cookie is working (visible in browser), but ClientAuthCheck
+was only checking localStorage. Now it checks both sources.
