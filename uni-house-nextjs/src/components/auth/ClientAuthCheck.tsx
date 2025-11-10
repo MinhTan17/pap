@@ -17,10 +17,10 @@ export function ClientAuthCheck({ children }: { children: React.ReactNode }) {
                 return;
             }
 
-            // Check if we have token in localStorage or cookie
-            const localToken = localStorage.getItem('auth-token');
+            // Small delay to ensure localStorage is ready (especially after redirect from login)
+            await new Promise(resolve => setTimeout(resolve, 100));
 
-            // Also check for fallback cookie
+            // Helper to get cookie
             const getCookie = (name: string) => {
                 const value = `; ${document.cookie}`;
                 const parts = value.split(`; ${name}=`);
@@ -28,17 +28,32 @@ export function ClientAuthCheck({ children }: { children: React.ReactNode }) {
                 return null;
             };
 
-            const cookieToken = getCookie('auth-token-fallback');
-            const token = localToken || cookieToken;
+            // Try to get token with retry logic (for race condition after login)
+            let token: string | null = null;
+            let retries = 0;
+            const maxRetries = 3;
+
+            while (!token && retries < maxRetries) {
+                const localToken = localStorage.getItem('auth-token');
+                const cookieToken = getCookie('auth-token-fallback');
+                token = localToken || cookieToken || null;
+
+                if (!token && retries < maxRetries - 1) {
+                    // Wait a bit more and retry
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    retries++;
+                } else {
+                    break;
+                }
+            }
 
             console.log('[ClientAuthCheck] Token check:', {
-                hasLocalToken: !!localToken,
-                hasCookieToken: !!cookieToken,
-                finalToken: !!token,
+                hasToken: !!token,
+                retries,
             });
 
             if (!token) {
-                console.log('[ClientAuthCheck] No token found, redirecting to login');
+                console.log('[ClientAuthCheck] No token found after retries, redirecting to login');
                 router.push('/admin/login');
                 return;
             }

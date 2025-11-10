@@ -84,7 +84,7 @@ export async function POST(request: Request) {
     // Strategy 1: httpOnly cookie (most secure)
     response.cookies.set('auth-token', token, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
       maxAge: 86400,
@@ -93,7 +93,7 @@ export async function POST(request: Request) {
     // Strategy 2: Also set a non-httpOnly cookie as fallback
     response.cookies.set('auth-token-fallback', token, {
       httpOnly: false,
-      secure: true,
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
       maxAge: 86400,

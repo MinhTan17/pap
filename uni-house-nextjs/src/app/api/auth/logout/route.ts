@@ -9,11 +9,21 @@ export async function POST() {
       message: 'Đăng xuất thành công' 
     });
     
-    // Xóa cookie
+    // Xóa cả hai cookies
     response.cookies.set({
       name: 'auth-token',
       value: '',
       httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 0
+    });
+    
+    response.cookies.set({
+      name: 'auth-token-fallback',
+      value: '',
+      httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',

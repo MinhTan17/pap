@@ -1,14 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,20 +33,32 @@ export default function LoginPage() {
       const data = await response.json();
       console.log('[Login Page] Login response:', data);
 
-      // DEBUG: Show what we got
-      alert(`Response: ${response.ok}, Success: ${data.success}, Message: ${data.message || 'none'}`);
-
       if (response.ok && data.success) {
-        alert('Login OK! Redirecting...');
-        window.location.href = '/admin/pages/about';
+        console.log('[Login Page] Login successful, saving token');
+        
+        // Save token to localStorage for ClientAuthCheck
+        if (data.token) {
+          localStorage.setItem('auth-token', data.token);
+          console.log('[Login Page] Token saved to localStorage');
+        }
+        
+        // Wait a bit for localStorage to be saved
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Redirect to admin dashboard - use replace to prevent back button issues
+        console.log('[Login Page] Redirecting to admin dashboard');
+        window.location.replace('/admin');
+        
+        // Keep loading state to prevent form resubmission
+        return;
       } else {
         console.log('[Login Page] Login failed:', data.message);
         setError(data.message || 'Tên đăng nhập hoặc mật khẩu không đúng');
+        setIsLoading(false);
       }
     } catch (err) {
       console.error('[Login Page] Login error:', err);
       setError('Có lỗi xảy ra, vui lòng thử lại');
-    } finally {
       setIsLoading(false);
     }
   };

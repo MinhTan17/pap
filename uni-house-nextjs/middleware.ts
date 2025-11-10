@@ -129,7 +129,8 @@ export function middleware(request: NextRequest) {
     }
     
     // Nếu chưa đăng nhập, chuyển hướng về trang login
-    if (!isValidToken) {
+    // NHƯNG không redirect nếu đang ở trang /admin (dashboard) vì ClientAuthCheck sẽ xử lý
+    if (!isValidToken && pathname !== '/admin') {
       console.log('[Middleware] Redirecting to login:', pathname);
       const redirectResponse = NextResponse.redirect(new URL('/admin/login', request.url));
       Object.entries(securityHeaders).forEach(([key, value]) => {
@@ -142,11 +143,10 @@ export function middleware(request: NextRequest) {
   return response;
 }
 
-// TEMPORARILY DISABLE MIDDLEWARE - Just for testing
+// Enable middleware ONLY for protected APIs, NOT for admin pages
+// Admin pages will be protected by ClientAuthCheck component instead
 export const config = {
   matcher: [
-    // '/admin/:path*',  // Disabled
-    // '/api/:path*',     // Disabled
-    // '/debug-auth',     // Disabled
+    '/api/:path*',
   ],
 };

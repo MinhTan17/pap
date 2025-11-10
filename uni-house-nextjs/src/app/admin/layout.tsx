@@ -6,7 +6,6 @@ import { DataProvider } from '@/contexts/DataContext'
 import { Inter } from 'next/font/google'
 import { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
-import AuthProvider from '@/components/auth/AuthProvider';
 import { ClientAuthCheck } from '@/components/auth/ClientAuthCheck';
 
 const inter = Inter({ 
@@ -34,28 +33,24 @@ export default function AdminLayout({
     );
   }
 
-  // For other admin pages, use full layout WITHOUT auth check (temporarily)
+  // For other admin pages, use full layout with auth check
   return (
     <html lang="vi" suppressHydrationWarning>
       <body suppressHydrationWarning className={inter.className}>
         <DataProvider>
-          {/* AuthProvider DISABLED - It was redirecting back to login! */}
-          {/* <AuthProvider> */}
-            {/* ClientAuthCheck DISABLED temporarily to fix Vercel issues */}
-            {/* <ClientAuthCheck> */}
-              <div className="flex min-h-screen bg-gray-50">
-                <AdminSidebar />
-                <div className="flex-1 flex flex-col min-w-0">
-                  <AdminHeader />
-                  <main className="p-6">
-                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                      {children}
-                    </div>
-                  </main>
-                </div>
+          <ClientAuthCheck>
+            <div className="flex min-h-screen bg-gray-50">
+              <AdminSidebar />
+              <div className="flex-1 flex flex-col min-w-0">
+                <AdminHeader />
+                <main className="p-6">
+                  <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    {children}
+                  </div>
+                </main>
               </div>
-            {/* </ClientAuthCheck> */}
-          {/* </AuthProvider> */}
+            </div>
+          </ClientAuthCheck>
         </DataProvider>
       </body>
     </html>

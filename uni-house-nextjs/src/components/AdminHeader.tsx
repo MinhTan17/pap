@@ -9,6 +9,9 @@ export default function AdminHeader() {
     try {
       console.log('[AdminHeader] Logging out...');
       
+      // Clear localStorage first
+      localStorage.removeItem('auth-token');
+      
       const response = await fetch('/api/auth/logout', {
         method: 'POST',
         credentials: 'include',
@@ -23,11 +26,13 @@ export default function AdminHeader() {
         window.location.href = '/admin/login';
       } else {
         console.error('[AdminHeader] Logout failed:', data.message);
-        alert('Có lỗi xảy ra khi đăng xuất');
+        // Still redirect even if API fails since we cleared localStorage
+        window.location.href = '/admin/login';
       }
     } catch (error) {
       console.error('[AdminHeader] Logout error:', error);
-      alert('Có lỗi xảy ra khi đăng xuất');
+      // Still redirect even if error since we cleared localStorage
+      window.location.href = '/admin/login';
     }
   };
 
