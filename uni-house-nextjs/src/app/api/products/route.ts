@@ -1,28 +1,42 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getDatabase } from '@/lib/mongodb'
 import fs from 'fs'
 import path from 'path'
 
 export async function GET() {
   try {
-    const filePath = path.join(process.cwd(), 'src/data/products.ts')
-    const fileContent = fs.readFileSync(filePath, 'utf-8')
+    const db = await getDatabase()
+    const products = await db.collection('products').find({}).toArray()
     
-    const match = fileContent.match(/export const products: ProductItem\[\] = (\[[\s\S]*?\n\])/m)
-    if (match) {
-      const productsStr = match[1]
-      const products = eval(productsStr)
-      return NextResponse.json(products)
+    // If no products in DB, try to load from file (first time migration)
+    if (products.length === 0) {
+      try {
+        const filePath = path.join(process.cwd(), 'src/data/products.ts')
+        const fileContent = fs.readFileSync(filePath, 'utf-8')
+        const match = fileContent.match(/export const products: ProductItem\[\] = (\[[\s\S]*?\n\])/m)
+        if (match) {
+          const productsStr = match[1]
+          const productsData = eval(productsStr)
+          // Save to DB for future use
+          if (productsData.length > 0) {
+            await db.collection('products').insertMany(productsData)
+          }
+          return NextResponse.json(productsData)
+        }
+      } catch (fileError) {
+        console.log('[Products API] No file data to migrate')
+      }
     }
     
-    return NextResponse.json({ error: 'Could not parse products' }, { status: 500 })
+    return NextResponse.json(products)
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to read products' }, { status: 500 })
+    console.error('[Products API] Error:', error)
+    return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 })
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    // Clone request to avoid body already read errors
     const body = await request.text()
     if (!body || body.trim() === '') {
       return NextResponse.json({ error: 'Empty request body' }, { status: 400 })
@@ -30,49 +44,17 @@ export async function POST(request: NextRequest) {
     
     const products = JSON.parse(body)
     
-    const filePath = path.join(process.cwd(), 'src/data/products.ts')
-    const originalContent = fs.readFileSync(filePath, 'utf-8')
+    const db = await getDatabase()
     
-    // Keep categories unchanged
-    const categoriesMatch = originalContent.match(/export const categories: ProductCategory\[\] = (\[[\s\S]*?\n\])/m)
-    const categoriesStr = categoriesMatch ? categoriesMatch[1] : '[]'
+    // Clear existing products and insert new ones
+    await db.collection('products').deleteMany({})
+    if (products.length > 0) {
+      await db.collection('products').insertMany(products)
+    }
     
-    const fileContent = `export interface ProductItem {
-  id: number
-  name: string
-  category: string
-  description: string
-  image: string
-  images?: string[]
-  gallery?: string[]
-  color?: string
-  price?: string
-  specifications?: {
-    material?: string
-    thickness?: string
-    size?: string
-    standard?: string
-    origin?: string
-    [key: string]: string | undefined
-  }
-}
-
-export interface ProductCategory {
-  id: string
-  name: string
-  description?: string
-}
-
-export const products: ProductItem[] = ${JSON.stringify(products, null, 2)}
-
-export const categories: ProductCategory[] = ${categoriesStr}
-`
-    
-    fs.writeFileSync(filePath, fileContent, 'utf-8')
-    
-    return NextResponse.json({ success: true, message: 'Products saved!' })
+    return NextResponse.json({ success: true, message: 'Products saved to database!' })
   } catch (error) {
-    console.error('Error saving products:', error)
+    console.error('[Products API] Error saving:', error)
     return NextResponse.json({ error: 'Failed to save products' }, { status: 500 })
   }
 }

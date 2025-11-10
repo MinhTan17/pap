@@ -1,56 +1,56 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getDatabase } from '@/lib/mongodb'
 import fs from 'fs'
 import path from 'path'
 
 export async function GET() {
   try {
-    const filePath = path.join(process.cwd(), 'src/data/services.ts')
-    const fileContent = fs.readFileSync(filePath, 'utf-8')
+    const db = await getDatabase()
+    const services = await db.collection('services').find({}).toArray()
     
-    const match = fileContent.match(/export const services: ServiceItem\[\] = (\[[\s\S]*?\n\])/m)
-    if (match) {
-      const servicesStr = match[1]
-      const services = eval(servicesStr)
-      return NextResponse.json(services)
+    if (services.length === 0) {
+      try {
+        const filePath = path.join(process.cwd(), 'src/data/services.ts')
+        const fileContent = fs.readFileSync(filePath, 'utf-8')
+        const match = fileContent.match(/export const services: ServiceItem\[\] = (\[[\s\S]*?\n\])/m)
+        if (match) {
+          const servicesStr = match[1]
+          const servicesData = eval(servicesStr)
+          if (servicesData.length > 0) {
+            await db.collection('services').insertMany(servicesData)
+          }
+          return NextResponse.json(servicesData)
+        }
+      } catch (fileError) {
+        console.log('[Services API] No file data to migrate')
+      }
     }
     
-    return NextResponse.json({ error: 'Could not parse services' }, { status: 500 })
+    return NextResponse.json(services)
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to read services' }, { status: 500 })
+    console.error('[Services API] Error:', error)
+    return NextResponse.json({ error: 'Failed to fetch services' }, { status: 500 })
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    // Clone request to avoid body already read errors
     const body = await request.text()
     if (!body || body.trim() === '') {
       return NextResponse.json({ error: 'Empty request body' }, { status: 400 })
     }
     
     const services = JSON.parse(body)
+    const db = await getDatabase()
     
-    const filePath = path.join(process.cwd(), 'src/data/services.ts')
+    await db.collection('services').deleteMany({})
+    if (services.length > 0) {
+      await db.collection('services').insertMany(services)
+    }
     
-    const fileContent = `export interface ServiceItem {
-  id: number
-  title: string
-  description: string
-  icon?: string
-  image?: string
-  features?: string[]
-  color?: string
-  detailContent?: string
-}
-
-export const services: ServiceItem[] = ${JSON.stringify(services, null, 2)}
-`
-    
-    fs.writeFileSync(filePath, fileContent, 'utf-8')
-    
-    return NextResponse.json({ success: true, message: 'Services saved!' })
+    return NextResponse.json({ success: true, message: 'Services saved to database!' })
   } catch (error) {
-    console.error('Error saving services:', error)
+    console.error('[Services API] Error saving:', error)
     return NextResponse.json({ error: 'Failed to save services' }, { status: 500 })
   }
 }
