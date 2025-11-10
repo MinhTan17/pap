@@ -45,10 +45,9 @@ export default function LoginPage() {
           console.log('[Login Page] Token stored in localStorage');
         }
         
-        // Wait a bit for cookie to be set, then redirect
-        setTimeout(() => {
-          window.location.href = '/admin';
-        }, 100);
+        // Force reload to ensure cookies are sent with next request
+        console.log('[Login Page] Reloading to /admin...');
+        window.location.replace('/admin');
       } else {
         console.log('[Login Page] Login failed:', data.message);
         setError(data.message || 'Tên đăng nhập hoặc mật khẩu không đúng');
