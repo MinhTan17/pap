@@ -97,7 +97,8 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/admin/:path*',
+    // Temporarily disable middleware for /admin routes to test
+    // '/admin/:path*',
     '/api/:path*',
     '/debug-auth',
   ],
