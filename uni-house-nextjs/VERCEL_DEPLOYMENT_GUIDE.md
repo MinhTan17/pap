@@ -3,6 +3,8 @@
 ## Tổng Quan
 Hướng dẫn này sẽ giúp bạn deploy website Phú An Phát lên Vercel trong 15-20 phút.
 
+**Last updated:** 2025-01-10
+
 ---
 
 ## 📋 Chuẩn Bị Trước Khi Deploy
