@@ -142,10 +142,11 @@ export function middleware(request: NextRequest) {
   return response;
 }
 
+// TEMPORARILY DISABLE MIDDLEWARE - Just for testing
 export const config = {
   matcher: [
-    '/admin/:path*',
-    '/api/:path*',
-    '/debug-auth',
+    // '/admin/:path*',  // Disabled
+    // '/api/:path*',     // Disabled
+    // '/debug-auth',     // Disabled
   ],
 };
