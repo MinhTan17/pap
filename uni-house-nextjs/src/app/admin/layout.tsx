@@ -34,13 +34,14 @@ export default function AdminLayout({
     );
   }
 
-  // For other admin pages, use full layout with auth
+  // For other admin pages, use full layout WITHOUT auth check (temporarily)
   return (
     <html lang="vi" suppressHydrationWarning>
       <body suppressHydrationWarning className={inter.className}>
         <DataProvider>
           <AuthProvider>
-            <ClientAuthCheck>
+            {/* ClientAuthCheck DISABLED temporarily to fix Vercel issues */}
+            {/* <ClientAuthCheck> */}
               <div className="flex min-h-screen bg-gray-50">
                 <AdminSidebar />
                 <div className="flex-1 flex flex-col min-w-0">
@@ -52,7 +53,7 @@ export default function AdminLayout({
                   </main>
                 </div>
               </div>
-            </ClientAuthCheck>
+            {/* </ClientAuthCheck> */}
           </AuthProvider>
         </DataProvider>
       </body>
