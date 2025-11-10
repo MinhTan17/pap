@@ -8,13 +8,9 @@ export async function POST(request: Request) {
   try {
     // Read from environment variables inside the function
     const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
-    const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || '$2b$10$f03vntnM9W7VLylMU2PHSehFZHsS3hGgx4f2Lj4rM3EM8bqd0c7mO';
+    const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || '$2b$10$CUb2rbnCOGMPDmEx1nC50eDkk5O86J9qf8qnSZLufLWTocPWCq5R.';
 
-    console.log('[Auth] Environment check:', {
-      hasUsername: !!process.env.ADMIN_USERNAME,
-      hasHash: !!process.env.ADMIN_PASSWORD_HASH,
-      hashPreview: ADMIN_PASSWORD_HASH.substring(0, 15) + '...'
-    });
+
 
     const { username, password } = await request.json();
 
@@ -50,7 +46,6 @@ export async function POST(request: Request) {
     let isPasswordValid = false;
     try {
       isPasswordValid = bcrypt.compareSync(password, ADMIN_PASSWORD_HASH);
-      console.log('[Auth] Password check:', { valid: isPasswordValid });
     } catch (bcryptError) {
       console.error('[Auth] Bcrypt error:', bcryptError);
       return NextResponse.json(
