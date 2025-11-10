@@ -3,9 +3,6 @@ import type { NextRequest } from 'next/server';
 import { verifyToken } from '@/lib/auth';
 import { getSecurityHeaders } from '@/lib/security-headers';
 
-// Danh sách các route công khai (không cần đăng nhập)
-const publicPaths = ['/admin/login'];
-
 // Danh sách các route API công khai
 const publicApiPaths = ['/api/auth/login', '/api/auth/check', '/api/contact'];
 
@@ -20,6 +17,12 @@ export function middleware(request: NextRequest) {
     response.headers.set(key, value);
   });
   
+  // Cho phép truy cập trang login mà không cần check token
+  if (pathname === '/admin/login') {
+    console.log('[Middleware] Allowing access to login page');
+    return response;
+  }
+
   // Cho phép truy cập các file tĩnh
   if (
     pathname.startsWith('/_next') || 
@@ -61,18 +64,8 @@ export function middleware(request: NextRequest) {
     console.log('[Middleware] No token found for path:', pathname);
   }
   
-  // Nếu là trang login và đã có token hợp lệ, chuyển hướng về trang admin
-  if (pathname === '/admin/login' && isValidToken) {
-    console.log('[Middleware] Redirecting from login to admin (already authenticated)');
-    const redirectResponse = NextResponse.redirect(new URL('/admin', request.url));
-    Object.entries(securityHeaders).forEach(([key, value]) => {
-      redirectResponse.headers.set(key, value);
-    });
-    return redirectResponse;
-  }
-
-  // Nếu không phải là trang public và chưa đăng nhập hoặc token không hợp lệ, chuyển hướng về trang login
-  if (!publicPaths.includes(pathname) && pathname.startsWith('/admin') && !isValidToken) {
+  // Nếu truy cập trang admin mà chưa đăng nhập, chuyển hướng về trang login
+  if (pathname.startsWith('/admin') && !isValidToken) {
     console.log('[Middleware] Redirecting to login (not authenticated):', { pathname, isValidToken });
     const redirectResponse = NextResponse.redirect(new URL('/admin/login', request.url));
     Object.entries(securityHeaders).forEach(([key, value]) => {
@@ -87,6 +80,5 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/admin/:path*',
-    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };
