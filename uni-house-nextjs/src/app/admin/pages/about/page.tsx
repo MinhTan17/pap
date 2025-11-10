@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import { StyleSettings } from '@/types/styles'
 import { styleSettingsToCSS } from '@/utils/styleUtils'
+import { authenticatedFetch } from '@/lib/api-client'
 
 // Import RichTextEditor dynamically to avoid SSR issues
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), {
@@ -53,7 +54,7 @@ export default function AboutAdminPage() {
 
   const fetchAboutContent = async () => {
     try {
-      const response = await fetch('/api/about')
+      const response = await authenticatedFetch('/api/about')
       if (response.ok) {
         const data = await response.json()
         setAboutContent(data)
@@ -67,7 +68,7 @@ export default function AboutAdminPage() {
     setIsSaving(true)
     
     try {
-      const response = await fetch('/api/about', {
+      const response = await authenticatedFetch('/api/about', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +111,7 @@ export default function AboutAdminPage() {
             formData.append('section', 'about')
 
             // Upload to server
-            const response = await fetch('/api/upload', {
+            const response = await authenticatedFetch('/api/upload', {
               method: 'POST',
               body: formData
             })
@@ -537,7 +538,7 @@ export default function AboutAdminPage() {
                             uploadFormData.append('file', file)
                             uploadFormData.append('section', 'about')
 
-                            const response = await fetch('/api/upload', {
+                            const response = await authenticatedFetch('/api/upload', {
                               method: 'POST',
                               body: uploadFormData
                             })
@@ -682,7 +683,7 @@ export default function AboutAdminPage() {
                               uploadFormData.append('file', file)
                               uploadFormData.append('section', 'about')
 
-                              const response = await fetch('/api/upload', {
+                              const response = await authenticatedFetch('/api/upload', {
                                 method: 'POST',
                                 body: uploadFormData
                               })

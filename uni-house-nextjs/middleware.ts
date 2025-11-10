@@ -20,6 +20,10 @@ const protectedApiPaths = [
   '/api/about',
   '/api/services',
   '/api/products',
+  '/api/news',
+  '/api/banners',
+  '/api/categories',
+  '/api/media',
   '/api/auth/logout',
 ];
 
