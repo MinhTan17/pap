@@ -37,8 +37,12 @@ export default function LoginPage() {
 
       if (response.ok && data.success) {
         console.log('[Login Page] Login successful, redirecting...');
-        // Force a full page reload to ensure all auth state is properly set
-        window.location.href = '/admin';
+        console.log('[Login Page] Response data:', data);
+        
+        // Wait a bit for cookie to be set, then redirect
+        setTimeout(() => {
+          window.location.href = '/admin';
+        }, 100);
       } else {
         console.log('[Login Page] Login failed:', data.message);
         setError(data.message || 'Tên đăng nhập hoặc mật khẩu không đúng');

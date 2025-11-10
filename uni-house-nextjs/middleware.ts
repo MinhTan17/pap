@@ -4,7 +4,12 @@ import { verifyToken } from '@/lib/auth';
 import { getSecurityHeaders } from '@/lib/security-headers';
 
 // Danh sách các route API công khai
-const publicApiPaths = ['/api/auth/login', '/api/auth/check', '/api/contact'];
+const publicApiPaths = [
+  '/api/auth/login',
+  '/api/auth/check',
+  '/api/contact',
+  '/api/debug/auth-status',
+];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -17,9 +22,9 @@ export function middleware(request: NextRequest) {
     response.headers.set(key, value);
   });
   
-  // Cho phép truy cập trang login mà không cần check token
-  if (pathname === '/admin/login') {
-    console.log('[Middleware] Allowing access to login page');
+  // Cho phép truy cập trang login và debug mà không cần check token
+  if (pathname === '/admin/login' || pathname === '/debug-auth') {
+    console.log('[Middleware] Allowing access to public page:', pathname);
     return response;
   }
 
@@ -86,5 +91,7 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/admin/:path*',
+    '/api/:path*',
+    '/debug-auth',
   ],
 };

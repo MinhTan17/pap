@@ -76,21 +76,19 @@ export async function POST(request: Request) {
     // Tạo response và set cookie
     const response = NextResponse.json({
       success: true,
-      user: { username }
+      user: { username },
     });
 
-    // Set cookie with proper settings for Vercel
-    response.cookies.set({
-      name: 'auth-token',
-      value: token,
+    // Set cookie - try with strict settings first
+    response.cookies.set('auth-token', token, {
       httpOnly: true,
-      secure: true, // Always use secure on Vercel
-      sameSite: 'lax',
+      secure: true,
+      sameSite: 'strict',
       path: '/',
-      maxAge: 86400, // 24 hours
+      maxAge: 86400,
     });
 
-    console.log('[Auth] Cookie set with token');
+    console.log('[Auth] Cookie set successfully');
 
     return response;
 
