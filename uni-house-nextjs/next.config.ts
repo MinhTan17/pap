@@ -19,6 +19,13 @@ const nextConfig: NextConfig = {
     ],
   },
 
+  // API route config for file uploads
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
+
   // Enable compression
   compress: true,
 

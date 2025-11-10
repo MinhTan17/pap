@@ -8,8 +8,22 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 })
 
+// Disable body parser for this route to handle large files
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+}
+
 export async function POST(request: NextRequest) {
   try {
+    // Log environment variables (without exposing secrets)
+    console.log('[Upload] Cloudinary config:', {
+      cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+      hasApiKey: !!process.env.CLOUDINARY_API_KEY,
+      hasApiSecret: !!process.env.CLOUDINARY_API_SECRET,
+    })
+
     const formData = await request.formData()
     const file = formData.get('file') as File
     const section = formData.get('section') as string || 'general'
@@ -72,9 +86,24 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error: any) {
-    console.error('Upload error:', error)
+    console.error('[Upload] Error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name,
+    })
+    
+    // Provide more specific error messages
+    let errorMessage = 'Upload failed'
+    if (error.message?.includes('Invalid API key')) {
+      errorMessage = 'Lỗi cấu hình Cloudinary API Key'
+    } else if (error.message?.includes('Invalid cloud name')) {
+      errorMessage = 'Lỗi cấu hình Cloudinary Cloud Name'
+    } else if (error.message) {
+      errorMessage = error.message
+    }
+    
     return NextResponse.json(
-      { success: false, message: error.message || 'Upload failed' },
+      { success: false, message: errorMessage, error: error.message },
       { status: 500 }
     )
   }
