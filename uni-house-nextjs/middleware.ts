@@ -46,6 +46,12 @@ export function middleware(request: NextRequest) {
   // Lấy token từ cookie
   const token = request.cookies.get('auth-token')?.value;
   
+  console.log('[Middleware] Cookie check:', {
+    pathname,
+    hasToken: !!token,
+    allCookies: Array.from(request.cookies.getAll()).map(c => c.name),
+  });
+  
   // Verify token if exists
   let isValidToken = false;
   if (token) {

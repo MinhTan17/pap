@@ -79,14 +79,18 @@ export async function POST(request: Request) {
       user: { username }
     });
 
+    // Set cookie with proper settings for Vercel
     response.cookies.set({
       name: 'auth-token',
       value: token,
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: true, // Always use secure on Vercel
       sameSite: 'lax',
       path: '/',
+      maxAge: 86400, // 24 hours
     });
+
+    console.log('[Auth] Cookie set with token');
 
     return response;
 
