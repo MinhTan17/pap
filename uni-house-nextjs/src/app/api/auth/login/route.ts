@@ -4,9 +4,9 @@ import { generateToken } from '@/lib/auth';
 import { checkRateLimit, resetRateLimit } from '@/lib/rate-limit';
 
 
-const ADMIN_USERNAME = 'admin';
-// Password: admin123
-const ADMIN_PASSWORD_HASH = '$2b$10$mH.saPf2K4ZpHBs7llxNFeFWANblzh4YJF9lxkqdgQ5t.bcw0u9mC';
+// Read from environment variables
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || '$2b$10$mH.saPf2K4ZpHBs7llxNFeFWANblzh4YJF9lxkqdgQ5t.bcw0u9mC';
 
 export async function POST(request: Request) {
   try {
