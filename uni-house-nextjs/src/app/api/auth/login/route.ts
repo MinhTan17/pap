@@ -6,11 +6,11 @@ import { checkRateLimit, resetRateLimit } from '@/lib/rate-limit';
 
 export async function POST(request: Request) {
   try {
-    // Read from environment variables inside the function
+    // Read from environment variables
     const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
-    const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || '$2b$10$CUb2rbnCOGMPDmEx1nC50eDkk5O86J9qf8qnSZLufLWTocPWCq5R.';
+    const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || '$2b$10$qaCjkm1No/OzJ0o1qUBKsO1p.lcePPUb6nmeFoFuIm335QAdtLw.O';
 
-
+    console.log('[Auth] Using password hash from environment');
 
     const { username, password } = await request.json();
 

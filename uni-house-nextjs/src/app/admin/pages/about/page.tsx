@@ -43,6 +43,8 @@ export default function AboutAdminPage() {
   const [isPreviewMode, setIsPreviewMode] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -490,51 +492,86 @@ export default function AboutAdminPage() {
                       ))}
                     </div>
                     
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 items-center">
                       <button
                         onClick={() => document.getElementById(`image-upload-${section.key}`)?.click()}
-                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        disabled={isUploading}
                       >
-                        Thêm ảnh
+                        {isUploading ? (
+                          <>
+                            <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Đang upload...
+                          </>
+                        ) : (
+                          '📷 Thêm ảnh'
+                        )}
                       </button>
-                      <span className="text-sm text-gray-600 py-2">Hoặc chọn nhiều file cùng lúc</span>
+                      {isUploading ? (
+                        <span className="text-sm text-blue-600 font-medium">{uploadProgress}</span>
+                      ) : (
+                        <span className="text-sm text-gray-600">Chọn nhiều file cùng lúc (JPG, PNG, WEBP, GIF - tối đa 10MB/file)</span>
+                      )}
                     </div>
                     <input
                       id={`image-upload-${section.key}`}
                       type="file"
                       accept="image/*"
                       multiple
-                      onChange={(e) => {
+                      onChange={async (e) => {
                         const files = Array.from(e.target.files || [])
-                        files.forEach(file => {
-                          const formData = new FormData()
-                          formData.append('file', file)
-                          formData.append('section', 'about')
+                        if (files.length === 0) return
 
-                          fetch('/api/upload', {
-                            method: 'POST',
-                            body: formData
-                          }).then(response => response.json())
-                            .then(data => {
-                              if (data.success) {
-                                const newImage: ImageItem = {
-                                  url: data.path,
-                                  caption: '',
-                                  width: 300,
-                                  height: 200
-                                }
-                                // Thêm ảnh mới vào cuối danh sách
-                                // Thứ tự: [Ảnh cũ 1, Ảnh cũ 2, ..., Ảnh mới]
-                                setFormData(prev => ({
-                                  ...prev,
-                                  images: [...prev.images, newImage]
-                                }))
-                              }
+                        setIsUploading(true)
+                        setUploadProgress(`Đang upload 0/${files.length} ảnh...`)
+
+                        for (let i = 0; i < files.length; i++) {
+                          const file = files[i]
+                          setUploadProgress(`Đang upload ${i + 1}/${files.length} ảnh...`)
+
+                          try {
+                            const uploadFormData = new FormData()
+                            uploadFormData.append('file', file)
+                            uploadFormData.append('section', 'about')
+
+                            const response = await fetch('/api/upload', {
+                              method: 'POST',
+                              body: uploadFormData
                             })
-                            .catch(console.error)
-                        })
+
+                            const data = await response.json()
+                            
+                            if (data.success) {
+                              const newImage: ImageItem = {
+                                url: data.path,
+                                caption: '',
+                                width: 300,
+                                height: 200
+                              }
+                              setFormData(prev => ({
+                                ...prev,
+                                images: [...prev.images, newImage]
+                              }))
+                              setHasUnsavedChanges(true)
+                            } else {
+                              alert(`❌ Lỗi upload ${file.name}: ${data.message}`)
+                            }
+                          } catch (error) {
+                            console.error('Upload error:', error)
+                            alert(`❌ Lỗi upload ${file.name}`)
+                          }
+                        }
+
+                        setIsUploading(false)
+                        setUploadProgress('')
+                        // Reset input
+                        e.target.value = ''
                       }}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="hidden"
+                      disabled={isUploading}
                     />
                   </div>
 
@@ -592,15 +629,27 @@ export default function AboutAdminPage() {
                         ))}
                       </div>
                       
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 items-center">
                         <button
                           onClick={() => document.getElementById(`grid-image-upload-${section.key}`)?.click()}
-                          className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
-                          disabled={formData.gridImages.length >= 6}
+                          className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                          disabled={formData.gridImages.length >= 6 || isUploading}
                         >
-                          {formData.gridImages.length >= 6 ? 'Đã đủ 6 ảnh' : 'Thêm ảnh grid'}
+                          {isUploading ? (
+                            <>
+                              <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                              </svg>
+                              Đang upload...
+                            </>
+                          ) : formData.gridImages.length >= 6 ? (
+                            '✅ Đã đủ 6 ảnh'
+                          ) : (
+                            '🖼️ Thêm ảnh grid'
+                          )}
                         </button>
-                        <span className="text-sm text-gray-600 py-2">
+                        <span className="text-sm text-gray-600">
                           {formData.gridImages.length}/6 ảnh
                         </span>
                       </div>
@@ -609,38 +658,64 @@ export default function AboutAdminPage() {
                         type="file"
                         accept="image/*"
                         multiple
-                        onChange={(e) => {
+                        onChange={async (e) => {
                           const files = Array.from(e.target.files || [])
+                          if (files.length === 0) return
+
                           const remainingSlots = 6 - formData.gridImages.length
                           const filesToUpload = files.slice(0, remainingSlots)
                           
-                          filesToUpload.forEach(file => {
-                            const uploadFormData = new FormData()
-                            uploadFormData.append('file', file)
-                            uploadFormData.append('section', 'about')
+                          if (filesToUpload.length === 0) {
+                            alert('Đã đủ 6 ảnh grid!')
+                            return
+                          }
 
-                            fetch('/api/upload', {
-                              method: 'POST',
-                              body: uploadFormData
-                            }).then(response => response.json())
-                              .then(data => {
-                                if (data.success) {
-                                  const newImage: ImageItem = {
-                                    url: data.path,
-                                    caption: '',
-                                    width: 300,
-                                    height: 200
-                                  }
-                                  setFormData(prev => ({
-                                    ...prev,
-                                    gridImages: [...prev.gridImages, newImage]
-                                  }))
-                                }
+                          setIsUploading(true)
+                          setUploadProgress(`Đang upload 0/${filesToUpload.length} ảnh grid...`)
+
+                          for (let i = 0; i < filesToUpload.length; i++) {
+                            const file = filesToUpload[i]
+                            setUploadProgress(`Đang upload ${i + 1}/${filesToUpload.length} ảnh grid...`)
+
+                            try {
+                              const uploadFormData = new FormData()
+                              uploadFormData.append('file', file)
+                              uploadFormData.append('section', 'about')
+
+                              const response = await fetch('/api/upload', {
+                                method: 'POST',
+                                body: uploadFormData
                               })
-                              .catch(console.error)
-                          })
+
+                              const data = await response.json()
+                              
+                              if (data.success) {
+                                const newImage: ImageItem = {
+                                  url: data.path,
+                                  caption: '',
+                                  width: 300,
+                                  height: 200
+                                }
+                                setFormData(prev => ({
+                                  ...prev,
+                                  gridImages: [...prev.gridImages, newImage]
+                                }))
+                                setHasUnsavedChanges(true)
+                              } else {
+                                alert(`❌ Lỗi upload ${file.name}: ${data.message}`)
+                              }
+                            } catch (error) {
+                              console.error('Upload error:', error)
+                              alert(`❌ Lỗi upload ${file.name}`)
+                            }
+                          }
+
+                          setIsUploading(false)
+                          setUploadProgress('')
+                          e.target.value = ''
                         }}
                         className="hidden"
+                        disabled={isUploading}
                       />
                     </div>
                   )}

@@ -1,89 +1,81 @@
 import { NextRequest, NextResponse } from 'next/server'
-import fs from 'fs'
-import path from 'path'
+import { v2 as cloudinary } from 'cloudinary'
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+})
 
 export async function POST(request: NextRequest) {
   try {
-    // Check if it's formData or JSON
-    const contentType = request.headers.get('content-type') || ''
+    const formData = await request.formData()
+    const file = formData.get('file') as File
+    const section = formData.get('section') as string || 'general'
 
-    let file: File | null = null
-    let section: string = 'about'
-    let base64: string = ''
-
-    if (contentType.includes('multipart/form-data')) {
-      // Handle formData
-      const formData = await request.formData()
-      file = formData.get('file') as File
-      section = (formData.get('section') as string) || 'about'
-    } else if (contentType.includes('application/json')) {
-      // Handle JSON with base64
-      const body = await request.json()
-      base64 = body.base64
-      section = body.folder || 'about'
-    } else {
-      return NextResponse.json({
-        success: false,
-        message: 'Unsupported content type'
-      }, { status: 400 })
+    if (!file) {
+      return NextResponse.json(
+        { success: false, message: 'No file provided' },
+        { status: 400 }
+      )
     }
 
-    if (!file && !base64) {
-      return NextResponse.json({
-        success: false,
-        message: 'No file or base64 provided'
-      }, { status: 400 })
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
+    if (!validTypes.includes(file.type)) {
+      return NextResponse.json(
+        { success: false, message: 'Chỉ chấp nhận file ảnh (JPG, PNG, WEBP, GIF)' },
+        { status: 400 }
+      )
     }
 
-    // Generate filename
-    const timestamp = Date.now()
-    const extension = file ? (file.name.split('.').pop() || 'jpg') : 'png' // Default for base64
-    const finalFilename = `${section.replace('/', '-')}-${timestamp}.${extension}`
-
-    // Create directory if not exists
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', section)
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true })
+    // Validate file size (10MB)
+    const maxSize = 10 * 1024 * 1024 // 10MB
+    if (file.size > maxSize) {
+      return NextResponse.json(
+        { success: false, message: 'Kích thước file không được vượt quá 10MB' },
+        { status: 400 }
+      )
     }
 
-    let buffer: Buffer
+    // Convert file to buffer
+    const bytes = await file.arrayBuffer()
+    const buffer = Buffer.from(bytes)
 
-    if (file) {
-      // Handle file upload
-      const bytes = await file.arrayBuffer()
-      buffer = Buffer.from(bytes)
-    } else {
-      // Handle base64
-      const matches = base64.match(/^data:image\/([a-zA-Z]*);base64,([^"]*)$/)
-      if (!matches) {
-        return NextResponse.json({
-          success: false,
-          message: 'Invalid base64 format'
-        }, { status: 400 })
-      }
-      const base64Data = matches[2]
-      buffer = Buffer.from(base64Data, 'base64')
-    }
+    // Upload to Cloudinary
+    const result = await new Promise<any>((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: `uni-house/${section}`,
+          resource_type: 'image',
+          transformation: [
+            { quality: 'auto', fetch_format: 'auto' }
+          ]
+        },
+        (error, result) => {
+          if (error) reject(error)
+          else resolve(result)
+        }
+      )
 
-    // Save file
-    const filePath = path.join(uploadDir, finalFilename)
-    fs.writeFileSync(filePath, buffer)
-
-    // Return public path
-    const publicPath = `/uploads/${section}/${finalFilename}`
+      uploadStream.end(buffer)
+    })
 
     return NextResponse.json({
       success: true,
-      path: publicPath,
-      url: publicPath,
-      message: 'Image uploaded successfully!'
+      path: result.secure_url,
+      publicId: result.public_id,
+      width: result.width,
+      height: result.height,
+      format: result.format
     })
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Upload error:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Upload failed'
-    }, { status: 500 })
+    return NextResponse.json(
+      { success: false, message: error.message || 'Upload failed' },
+      { status: 500 }
+    )
   }
 }
