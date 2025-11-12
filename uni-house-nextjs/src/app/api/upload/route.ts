@@ -9,14 +9,24 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 })
 
-// Disable body parser for this route to handle large files
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-}
+// Note: export const config doesn't work in App Router
+// Vercel has a hard 4.5MB limit for serverless functions
+// For larger files, use direct upload to Cloudinary via /api/upload/signature
+
+export const maxDuration = 60
+export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
+  const environment = process.env.VERCEL ? 'Vercel' : 'Local'
+  const contentLength = request.headers.get('content-length')
+  
+  console.log(`[Upload API] ${environment} - Request:`, {
+    contentLength: contentLength ? `${(parseInt(contentLength) / 1024 / 1024).toFixed(2)}MB` : 'unknown',
+    vercelLimit: '4.5MB',
+    recommendation: contentLength && parseInt(contentLength) > 4 * 1024 * 1024 
+      ? 'Use direct Cloudinary upload for files > 4MB' 
+      : 'OK'
+  })
   try {
     // Check authentication
     const authHeader = request.headers.get('authorization')
@@ -97,12 +107,21 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      // Validate file size (10MB)
-      const maxSize = 10 * 1024 * 1024 // 10MB
+      // Validate file size (3MB for Vercel compatibility)
+      // Base64 encoding increases size by ~33%, so 3MB file becomes ~4MB
+      // For larger files, use direct Cloudinary upload via /api/upload/signature
+      const maxSize = 3 * 1024 * 1024 // 3MB (safe for Vercel after base64 encoding)
       if (file.size > maxSize) {
+        const actualSizeMB = (file.size / 1024 / 1024).toFixed(2)
         return NextResponse.json(
-          { success: false, message: 'Kích thước file không được vượt quá 10MB' },
-          { status: 400 }
+          { 
+            success: false, 
+            message: `File quá lớn (${actualSizeMB}MB). Giới hạn: 3MB. Sử dụng direct upload cho file lớn hơn.`,
+            actualSize: `${actualSizeMB}MB`,
+            maxSize: '3MB',
+            recommendation: 'Use direct Cloudinary upload for files > 3MB'
+          },
+          { status: 413 }
         )
       }
 
@@ -111,6 +130,12 @@ export async function POST(request: NextRequest) {
       const buffer = Buffer.from(bytes)
       const mimeType = file.type
       base64Data = `data:${mimeType};base64,${buffer.toString('base64')}`
+      
+      console.log(`[Upload] File converted to base64:`, {
+        originalSize: `${(file.size / 1024 / 1024).toFixed(2)}MB`,
+        base64Size: `${(base64Data.length / 1024 / 1024).toFixed(2)}MB`,
+        increase: `${((base64Data.length / file.size - 1) * 100).toFixed(1)}%`
+      })
     }
 
     // Upload to Cloudinary using base64
