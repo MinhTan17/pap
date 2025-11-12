@@ -94,7 +94,7 @@ export default function AboutAdminPage() {
     }
   }
 
-  // Upload image function for RichTextEditor
+  // Upload image function for RichTextEditor - Direct Cloudinary upload
   const handleImageUpload = useCallback(async (): Promise<string> => {
     return new Promise((resolve, reject) => {
       if (fileInputRef.current) {
@@ -105,25 +105,20 @@ export default function AboutAdminPage() {
         const file = (event.target as HTMLInputElement).files?.[0]
         if (file) {
           try {
-            // Use FormData instead of base64
-            const formData = new FormData()
-            formData.append('file', file)
-            formData.append('section', 'about')
-
-            // Upload to server
-            const response = await authenticatedFetch('/api/upload', {
-              method: 'POST',
-              body: formData
-            })
-
-            const data = await response.json()
-            if (data.success) {
-              resolve(data.path)
-              console.log('✅ Uploaded image for editor:', data.path)
+            // Import upload function dynamically
+            const { uploadToCloudinary } = await import('@/lib/cloudinary-upload')
+            
+            // Upload directly to Cloudinary
+            const result = await uploadToCloudinary(file, 'about')
+            
+            if (result.success && result.url) {
+              resolve(result.url)
+              console.log('✅ Uploaded image for editor:', result.url)
             } else {
-              reject(new Error(data.message))
+              reject(new Error(result.error || 'Upload failed'))
             }
-          } catch (error) {
+          } catch (error: any) {
+            console.error('Upload error:', error)
             reject(error)
           }
         } else {

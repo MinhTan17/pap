@@ -79,33 +79,37 @@ export default function BannersManagement() {
     setIsAdding(false)
   }
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
-    if (file) {
-      const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2)
-      
-      // Check file size (max 5MB for base64)
-      if (file.size > 5 * 1024 * 1024) {
-        alert(`⚠️ File quá lớn (${fileSizeMB}MB)!\n\nVui lòng chọn ảnh nhỏ hơn 5MB hoặc:\n1. Nén ảnh trước khi upload\n2. Hoặc dùng đường dẫn file trong thư mục public/`)
-        event.target.value = '' // Reset input
-        return
-      }
+    if (!file) return
 
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        if (editingBanner && e.target?.result) {
+    const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2)
+    
+    // Import upload function dynamically
+    const { uploadToCloudinary } = await import('@/lib/cloudinary-upload')
+    
+    try {
+      showNotification(`⏳ Đang upload ảnh (${fileSizeMB}MB)...`)
+      
+      // Upload directly to Cloudinary
+      const result = await uploadToCloudinary(file, 'banners')
+      
+      if (result.success && result.url) {
+        if (editingBanner) {
           setEditingBanner({ 
             ...editingBanner, 
-            image: e.target.result as string
+            image: result.url
           })
-          showNotification(`📷 Đã tải ảnh lên thành công! (${fileSizeMB}MB)`)
+          showNotification(`✅ Đã upload ảnh thành công! (${fileSizeMB}MB)`)
         }
-      }
-      reader.onerror = () => {
-        alert('❌ Lỗi khi đọc file. Vui lòng thử lại!')
+      } else {
+        alert(`❌ Lỗi upload: ${result.error}`)
         event.target.value = ''
       }
-      reader.readAsDataURL(file)
+    } catch (error: any) {
+      console.error('Upload error:', error)
+      alert(`❌ Lỗi upload: ${error.message}`)
+      event.target.value = ''
     }
   }
 

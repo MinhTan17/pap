@@ -57,38 +57,24 @@ export default function ProductsManagement() {
     const file = event.target.files?.[0]
     if (file && editingProduct) {
       try {
-        // Convert to base64 first
-        const reader = new FileReader()
-        reader.onload = async (e) => {
-          if (e.target?.result) {
-            const base64 = e.target.result as string
-            
-            // Upload to server
-            const response = await authenticatedFetch('/api/upload', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ 
-                base64, 
-                folder: 'icons/products'
-              })
-            })
-            
-            const data = await response.json()
-            if (data.success) {
-              setEditingProduct({ 
-                ...editingProduct, 
-                image: data.path
-              })
-              console.log('✅ Uploaded image:', data.path)
-            } else {
-              alert('❌ Lỗi upload ảnh: ' + data.message)
-            }
-          }
+        // Import upload function dynamically
+        const { uploadToCloudinary } = await import('@/lib/cloudinary-upload')
+        
+        // Upload directly to Cloudinary
+        const result = await uploadToCloudinary(file, 'products')
+        
+        if (result.success && result.url) {
+          setEditingProduct({ 
+            ...editingProduct, 
+            image: result.url
+          })
+          console.log('✅ Uploaded image:', result.url)
+        } else {
+          alert('❌ Lỗi upload ảnh: ' + (result.error || 'Unknown error'))
         }
-        reader.readAsDataURL(file)
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error uploading image:', error)
-        alert('❌ Lỗi khi upload ảnh')
+        alert('❌ Lỗi khi upload ảnh: ' + error.message)
       }
     }
   }
@@ -98,39 +84,19 @@ export default function ProductsManagement() {
     if (!files || !editingProduct) return
 
     try {
+      // Import upload function dynamically
+      const { uploadToCloudinary } = await import('@/lib/cloudinary-upload')
+      
       const uploadPromises: Promise<string>[] = []
       
       for (let i = 0; i < files.length; i++) {
         const file = files[i]
-        const promise = new Promise<string>((resolve, reject) => {
-          const reader = new FileReader()
-          reader.onload = async (e) => {
-            if (e.target?.result) {
-              const base64 = e.target.result as string
-              
-              try {
-                // Upload to server
-                const response = await authenticatedFetch('/api/upload', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ 
-                    base64, 
-                    folder: 'icons/products'
-                  })
-                })
-                
-                const data = await response.json()
-                if (data.success) {
-                  resolve(data.path)
-                } else {
-                  reject(new Error(data.message))
-                }
-              } catch (error) {
-                reject(error)
-              }
-            }
+        const promise = uploadToCloudinary(file, 'products').then(result => {
+          if (result.success && result.url) {
+            return result.url
+          } else {
+            throw new Error(result.error || 'Upload failed')
           }
-          reader.readAsDataURL(file)
         })
         uploadPromises.push(promise)
       }
@@ -142,9 +108,9 @@ export default function ProductsManagement() {
         images: [...currentImages, ...uploadedPaths]
       })
       console.log(`✅ Uploaded ${uploadedPaths.length} images`)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading images:', error)
-      alert('❌ Lỗi khi upload ảnh')
+      alert('❌ Lỗi khi upload ảnh: ' + error.message)
     }
   }
 
