@@ -12,6 +12,7 @@ const publicApiPaths = [
   '/api/test-cloudinary',
   '/api/debug-env',
   '/api/debug-jwt',
+  '/api/debug/health',
 ];
 
 // Danh sách các route API cần authentication

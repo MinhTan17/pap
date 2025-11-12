@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDatabase } from '@/lib/mongodb'
 
+// Configure body size limit for this route
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
+}
+
+export const maxDuration = 60 // Maximum execution time in seconds
+
 interface ImageItem {
   url: string
   caption: string
@@ -31,7 +42,18 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+    // Check content length
+    const contentLength = request.headers.get('content-length')
+    if (contentLength && parseInt(contentLength) > 10 * 1024 * 1024) {
+      return NextResponse.json({ error: 'Request body too large' }, { status: 413 })
+    }
+
+    const bodyText = await request.text()
+    if (!bodyText || bodyText.trim() === '') {
+      return NextResponse.json({ error: 'Empty request body' }, { status: 400 })
+    }
+
+    const body = JSON.parse(bodyText)
     const { section, title, content, images, gridImages } = body
 
     if (!section) {
@@ -60,7 +82,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newContent)
   } catch (error) {
     console.error('[About API] Error saving:', error)
-    return NextResponse.json({ error: 'Failed to save about data', details: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 })
+    if (error instanceof SyntaxError) {
+      return NextResponse.json({ error: 'Invalid JSON format' }, { status: 400 })
+    }
+    return NextResponse.json({ 
+      error: 'Failed to save about data', 
+      details: error instanceof Error ? error.message : 'Unknown error' 
+    }, { status: 500 })
   }
 }
 

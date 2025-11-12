@@ -19,12 +19,8 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  // API route config for file uploads
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb',
-    },
-  },
+  // Note: App Router uses different body size config
+  // Body size is configured per route using export const config
 
   // Enable compression
   compress: true,
