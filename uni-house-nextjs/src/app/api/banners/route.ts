@@ -5,12 +5,13 @@ import { getDatabase } from '@/lib/mongodb'
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: '10mb',
+      sizeLimit: '50mb',
     },
   },
 }
 
 export const maxDuration = 60 // Maximum execution time in seconds
+export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {
@@ -26,10 +27,10 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    // Check content length
+    // Check content length - increased to 50MB
     const contentLength = request.headers.get('content-length')
-    if (contentLength && parseInt(contentLength) > 10 * 1024 * 1024) {
-      return NextResponse.json({ error: 'Request body too large' }, { status: 413 })
+    if (contentLength && parseInt(contentLength) > 50 * 1024 * 1024) {
+      return NextResponse.json({ error: 'Request body too large (max 50MB)' }, { status: 413 })
     }
 
     const body = await request.text()

@@ -5,6 +5,7 @@ import { services as initialServices, ServiceItem } from '@/data/services'
 import { products as initialProducts, categories as initialCategories, ProductItem, ProductCategory } from '@/data/products'
 import { newsArticles as initialNews, NewsItem } from '@/data/news'
 import { initialBanners, BannerSlide } from '@/data/banners'
+import { authenticatedFetch } from '@/lib/auth-client'
 
 interface DataContextType {
   // Services
@@ -126,7 +127,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         isSavingServicesRef.current = true
         
         try {
-          const response = await fetch('/api/services', {
+          const response = await authenticatedFetch('/api/services', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(services)
@@ -159,7 +160,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         isSavingProductsRef.current = true
         
         try {
-          const response = await fetch('/api/products', {
+          const response = await authenticatedFetch('/api/products', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(products)
@@ -197,7 +198,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         isSavingNewsRef.current = true
 
         try {
-          const response = await fetch('/api/news', {
+          const response = await authenticatedFetch('/api/news', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ articles: newsArticles })
@@ -230,7 +231,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         isSavingBannersRef.current = true
         
         try {
-          const response = await fetch('/api/banners', {
+          const response = await authenticatedFetch('/api/banners', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(banners)

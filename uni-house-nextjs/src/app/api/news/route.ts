@@ -5,12 +5,13 @@ import { getDatabase } from '@/lib/mongodb'
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: '10mb',
+      sizeLimit: '50mb',
     },
   },
 }
 
 export const maxDuration = 60 // Maximum execution time in seconds
+export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {

@@ -15,7 +15,8 @@ const publicApiPaths = [
   '/api/debug/health',
 ];
 
-// Danh sách các route API cần authentication
+// Danh sách các route API cần authentication CHỈ cho write operations (POST/PUT/DELETE/PATCH)
+// GET requests sẽ luôn được cho phép để đọc dữ liệu công khai
 const protectedApiPaths = [
   '/api/upload',
   '/api/about',
