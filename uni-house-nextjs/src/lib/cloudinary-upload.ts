@@ -5,10 +5,31 @@
  * directly from the browser to Cloudinary using signed uploads.
  */
 
+import { compressImage as advancedCompress } from './image-compressor'
+
 /**
  * Compress image to fit within size limit
+ * Uses aggressive compression with multiple passes
  */
 async function compressImage(file: File, maxSize: number): Promise<File> {
+    try {
+        const result = await advancedCompress(file, {
+            maxSizeMB: maxSize / (1024 * 1024),
+            maxWidthOrHeight: 1920,
+            quality: 0.75,
+        })
+        return result.file
+    } catch (error) {
+        console.error('[Compression] Advanced compression failed, falling back to basic:', error)
+        // Fallback to basic compression
+        return basicCompressImage(file, maxSize)
+    }
+}
+
+/**
+ * Basic compression fallback
+ */
+async function basicCompressImage(file: File, maxSize: number): Promise<File> {
     return new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.readAsDataURL(file)
@@ -20,20 +41,48 @@ async function compressImage(file: File, maxSize: number): Promise<File> {
                 let width = img.width
                 let height = img.height
 
-                // Calculate new dimensions (reduce by 50% each time until under limit)
-                const ratio = Math.sqrt(maxSize / file.size)
-                width = Math.floor(width * ratio * 0.9) // 0.9 for safety margin
-                height = Math.floor(height * ratio * 0.9)
+                // More aggressive size reduction
+                // Target 80% of max size to have safety margin
+                const targetSize = maxSize * 0.8
+                const sizeRatio = targetSize / file.size
+                
+                // If file is much larger, reduce dimensions more aggressively
+                let scale = 1
+                if (sizeRatio < 0.5) {
+                    // File is more than 2x too large, reduce dimensions significantly
+                    scale = Math.sqrt(sizeRatio) * 0.7
+                } else {
+                    scale = Math.sqrt(sizeRatio) * 0.85
+                }
+
+                width = Math.floor(width * scale)
+                height = Math.floor(height * scale)
+
+                // Ensure minimum dimensions
+                if (width < 800) width = Math.min(800, img.width)
+                if (height < 600) height = Math.min(600, img.height)
 
                 canvas.width = width
                 canvas.height = height
 
                 const ctx = canvas.getContext('2d')
-                ctx?.drawImage(img, 0, 0, width, height)
+                if (!ctx) {
+                    reject(new Error('Failed to get canvas context'))
+                    return
+                }
 
-                // Try different quality levels
-                let quality = 0.8
+                // Use better image smoothing
+                ctx.imageSmoothingEnabled = true
+                ctx.imageSmoothingQuality = 'high'
+                ctx.drawImage(img, 0, 0, width, height)
+
+                // Try different quality levels, starting lower for large files
+                let quality = file.size > maxSize * 2 ? 0.6 : 0.75
+                let attempts = 0
+                const maxAttempts = 10
+
                 const tryCompress = () => {
+                    attempts++
                     canvas.toBlob(
                         (blob) => {
                             if (!blob) {
@@ -41,18 +90,29 @@ async function compressImage(file: File, maxSize: number): Promise<File> {
                                 return
                             }
 
-                            if (blob.size <= maxSize || quality <= 0.3) {
+                            console.log(`[Compress] Attempt ${attempts}: ${(blob.size / 1024 / 1024).toFixed(2)}MB at quality ${quality.toFixed(2)}`)
+
+                            if (blob.size <= maxSize) {
+                                // Success!
                                 const compressedFile = new File([blob], file.name, {
-                                    type: file.type,
+                                    type: 'image/jpeg', // Force JPEG for better compression
+                                    lastModified: Date.now(),
+                                })
+                                resolve(compressedFile)
+                            } else if (attempts >= maxAttempts || quality <= 0.1) {
+                                // Give up, return best effort
+                                const compressedFile = new File([blob], file.name, {
+                                    type: 'image/jpeg',
                                     lastModified: Date.now(),
                                 })
                                 resolve(compressedFile)
                             } else {
+                                // Try again with lower quality
                                 quality -= 0.1
                                 tryCompress()
                             }
                         },
-                        file.type,
+                        'image/jpeg', // Always use JPEG for better compression
                         quality
                     )
                 }
@@ -103,6 +163,15 @@ export async function uploadToCloudinary(
             }
         }
 
+        // Warn if file is very large
+        const warnSize = 20 * 1024 * 1024 // 20MB
+        if (file.size > warnSize) {
+            console.warn('[Cloudinary Upload] Very large file detected:', {
+                size: `${(file.size / 1024 / 1024).toFixed(2)}MB`,
+                recommendation: 'Consider resizing image before upload'
+            })
+        }
+
         // Validate file size (10MB - Cloudinary FREE plan limit)
         const maxSize = 10 * 1024 * 1024
         
@@ -110,20 +179,36 @@ export async function uploadToCloudinary(
         let fileToUpload = file
         if (file.size > maxSize) {
             console.log('[Cloudinary Upload] File too large, compressing...', {
-                originalSize: file.size,
-                maxSize,
+                originalSize: `${(file.size / 1024 / 1024).toFixed(2)}MB`,
+                maxSize: `${(maxSize / 1024 / 1024).toFixed(2)}MB`,
             })
             
             try {
                 fileToUpload = await compressImage(file, maxSize)
-                console.log('[Cloudinary Upload] Compressed:', {
-                    originalSize: file.size,
-                    compressedSize: fileToUpload.size,
+                console.log('[Cloudinary Upload] Compression result:', {
+                    originalSize: `${(file.size / 1024 / 1024).toFixed(2)}MB`,
+                    compressedSize: `${(fileToUpload.size / 1024 / 1024).toFixed(2)}MB`,
+                    reduction: `${(((file.size - fileToUpload.size) / file.size) * 100).toFixed(1)}%`,
                 })
-            } catch (error) {
+                
+                // Final check
+                if (fileToUpload.size > maxSize) {
+                    const compressedSizeMB = (fileToUpload.size / 1024 / 1024).toFixed(2)
+                    return {
+                        success: false,
+                        error: `❌ Không thể nén ảnh xuống dưới 10MB (hiện tại: ${compressedSizeMB}MB).\n\n` +
+                               `💡 Vui lòng resize ảnh trước khi upload:\n` +
+                               `• TinyPNG: https://tinypng.com/\n` +
+                               `• Squoosh: https://squoosh.app/\n` +
+                               `• iLoveIMG: https://www.iloveimg.com/compress-image\n\n` +
+                               `Khuyến nghị: Width 1920px, Quality 75-80%`
+                    }
+                }
+            } catch (error: any) {
+                console.error('[Cloudinary Upload] Compression error:', error)
                 return {
                     success: false,
-                    error: 'Không thể nén ảnh. Vui lòng chọn ảnh nhỏ hơn 10MB'
+                    error: `Lỗi khi nén ảnh: ${error.message}`
                 }
             }
         }
