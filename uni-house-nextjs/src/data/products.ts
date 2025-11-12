@@ -34,8 +34,8 @@ export const products: ProductItem[] = [
     "color": "from-orange-500 to-red-600",
     "image": "/icons/products/image-1761476431689.png",
     "images": [
-      "/uploads/icons/products/icons-products-1762180257792.png",
-      "/uploads/icons/products/icons-products-1762180299112.png"
+      "/icons/products/C304.png",
+      "/icons/products/C1100.png"
     ]
   },
   {

@@ -142,6 +142,38 @@ export default function AboutAdminPage() {
     setHasUnsavedChanges(true)
   }, [])
 
+  // Helper function to upload multiple files to Cloudinary
+  const uploadFilesToCloudinary = async (files: File[], folder: string = 'about') => {
+    const { uploadToCloudinary } = await import('@/lib/cloudinary-upload')
+    const results: ImageItem[] = []
+    
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+      setUploadProgress(`Đang upload ${i + 1}/${files.length} ảnh...`)
+      
+      try {
+        const result = await uploadToCloudinary(file, folder)
+        
+        if (result.success && result.url) {
+          results.push({
+            url: result.url,
+            caption: '',
+            width: result.width || 300,
+            height: result.height || 200
+          })
+        } else {
+          throw new Error(result.error || 'Upload failed')
+        }
+      } catch (error: any) {
+        console.error('Upload error:', error)
+        alert(`❌ Lỗi upload ${file.name}: ${error.message}`)
+        break
+      }
+    }
+    
+    return results
+  }
+
   const handleCancel = () => {
     const content = getSectionContent(editingSection!)
     setFormData({
@@ -524,46 +556,18 @@ export default function AboutAdminPage() {
                         setIsUploading(true)
                         setUploadProgress(`Đang upload 0/${files.length} ảnh...`)
 
-                        for (let i = 0; i < files.length; i++) {
-                          const file = files[i]
-                          setUploadProgress(`Đang upload ${i + 1}/${files.length} ảnh...`)
-
-                          try {
-                            const uploadFormData = new FormData()
-                            uploadFormData.append('file', file)
-                            uploadFormData.append('section', 'about')
-
-                            const response = await authenticatedFetch('/api/upload', {
-                              method: 'POST',
-                              body: uploadFormData
-                            })
-
-                            const data = await response.json()
-                            
-                            if (data.success) {
-                              const newImage: ImageItem = {
-                                url: data.path,
-                                caption: '',
-                                width: 300,
-                                height: 200
-                              }
-                              setFormData(prev => ({
-                                ...prev,
-                                images: [...prev.images, newImage]
-                              }))
-                              setHasUnsavedChanges(true)
-                            } else {
-                              alert(`❌ Lỗi upload ${file.name}: ${data.message}`)
-                            }
-                          } catch (error) {
-                            console.error('Upload error:', error)
-                            alert(`❌ Lỗi upload ${file.name}`)
-                          }
+                        const uploadedImages = await uploadFilesToCloudinary(files, 'about')
+                        
+                        if (uploadedImages.length > 0) {
+                          setFormData(prev => ({
+                            ...prev,
+                            images: [...prev.images, ...uploadedImages]
+                          }))
+                          setHasUnsavedChanges(true)
                         }
 
                         setIsUploading(false)
                         setUploadProgress('')
-                        // Reset input
                         e.target.value = ''
                       }}
                       className="hidden"
@@ -669,45 +673,14 @@ export default function AboutAdminPage() {
                           setIsUploading(true)
                           setUploadProgress(`Đang upload 0/${filesToUpload.length} ảnh grid...`)
 
-                          for (let i = 0; i < filesToUpload.length; i++) {
-                            const file = filesToUpload[i]
-                            setUploadProgress(`Đang upload ${i + 1}/${filesToUpload.length} ảnh grid...`)
-
-                            try {
-                              const uploadFormData = new FormData()
-                              uploadFormData.append('file', file)
-                              uploadFormData.append('section', 'about')
-
-                              const response = await authenticatedFetch('/api/upload', {
-                                method: 'POST',
-                                body: uploadFormData
-                              })
-
-                              const data = await response.json()
-                              
-                              if (data.success) {
-                                const newImage: ImageItem = {
-                                  url: data.path,
-                                  caption: '',
-                                  width: 300,
-                                  height: 200
-                                }
-                                setFormData(prev => ({
-                                  ...prev,
-                                  gridImages: [...prev.gridImages, newImage]
-                                }))
-                                setHasUnsavedChanges(true)
-                              } else {
-                                console.error('Upload failed:', data)
-                                const errorMsg = data.error || data.message || 'Unknown error'
-                                alert(`❌ Lỗi upload ${file.name}:\n${errorMsg}\n\nKiểm tra Console (F12) để xem chi tiết.`)
-                                break // Stop uploading remaining files
-                              }
-                            } catch (error: any) {
-                              console.error('Upload error:', error)
-                              alert(`❌ Lỗi upload ${file.name}:\n${error.message}\n\nKiểm tra Console (F12) để xem chi tiết.`)
-                              break // Stop uploading remaining files
-                            }
+                          const uploadedImages = await uploadFilesToCloudinary(filesToUpload, 'about/grid')
+                          
+                          if (uploadedImages.length > 0) {
+                            setFormData(prev => ({
+                              ...prev,
+                              gridImages: [...prev.gridImages, ...uploadedImages]
+                            }))
+                            setHasUnsavedChanges(true)
                           }
 
                           setIsUploading(false)
