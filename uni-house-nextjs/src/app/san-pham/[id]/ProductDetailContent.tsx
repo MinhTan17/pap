@@ -269,10 +269,10 @@ export default function ProductDetailContent({ productId }: ProductDetailContent
                 rel="noopener noreferrer"
                 className="group inline-flex items-center gap-3 bg-red-600 text-white px-8 py-4 rounded-lg font-bold text-lg shadow-xl hover:bg-red-700 hover:shadow-2xl hover:scale-105 transition-all duration-300"
               >
-                <svg className="w-8 h-8" viewBox="0 0 48 48" fill="none">
+                {/* <svg className="w-8 h-8" viewBox="0 0 48 48" fill="none">
                   <circle cx="24" cy="24" r="20" fill="white" />
                   <path d="M15 31.5C15 31.5 18.5 28 24 28C29.5 28 33 31.5 33 31.5M18 21H18.01M30 21H30.01M24 38C31.732 38 38 31.732 38 24C38 16.268 31.732 10 24 10C16.268 10 10 16.268 10 24C10 31.732 16.268 38 24 38Z" stroke="#0068FF" strokeWidth="2" strokeLinecap="round" />
-                </svg>
+                </svg> */}
                 <span>Chat Zalo ngay</span>
                 <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
