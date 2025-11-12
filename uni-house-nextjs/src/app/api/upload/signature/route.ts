@@ -44,26 +44,33 @@ export async function POST(request: NextRequest) {
     // Generate timestamp
     const timestamp = Math.round(new Date().getTime() / 1000)
 
-    // Parameters for upload
-    const params = {
+    // Parameters for upload - only include what will be signed
+    // IMPORTANT: All parameters here MUST be sent in the upload request
+    const uploadFolder = `uni-house/${folder}`
+    const params: Record<string, any> = {
       timestamp,
-      folder: `uni-house/${folder}`,
-      transformation: 'q_auto,f_auto',
+      folder: uploadFolder,
     }
 
-    // Generate signature
+    // Generate signature using Cloudinary's method
     const signature = cloudinary.utils.api_sign_request(
       params,
       process.env.CLOUDINARY_API_SECRET!
     )
 
+    console.log('[Upload Signature] Generated:', {
+      params,
+      signature: signature.substring(0, 10) + '...',
+      cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+      apiKey: process.env.CLOUDINARY_API_KEY?.substring(0, 5) + '...',
+    })
+
     return NextResponse.json({
-      success: true,
       signature,
       timestamp,
       cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
       apiKey: process.env.CLOUDINARY_API_KEY,
-      folder: params.folder,
+      folder: uploadFolder,
     })
 
   } catch (error: any) {

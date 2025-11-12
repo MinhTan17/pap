@@ -77,14 +77,26 @@ export async function uploadToCloudinary(
 
         const signature: UploadSignature = await signatureResponse.json()
 
+        console.log('[Cloudinary Upload] Signature received:', {
+            cloudName: signature.cloudName,
+            folder: signature.folder,
+            timestamp: signature.timestamp,
+            hasSignature: !!signature.signature,
+            hasApiKey: !!signature.apiKey,
+        })
+
         // Prepare form data for Cloudinary
+        // IMPORTANT: Only include parameters that were signed + file
+        // Order matters for some Cloudinary implementations
         const formData = new FormData()
         formData.append('file', file)
-        formData.append('signature', signature.signature)
-        formData.append('timestamp', signature.timestamp.toString())
         formData.append('api_key', signature.apiKey)
+        formData.append('timestamp', signature.timestamp.toString())
         formData.append('folder', signature.folder)
-        formData.append('transformation', 'q_auto,f_auto')
+        formData.append('signature', signature.signature)
+
+        console.log('[Cloudinary Upload] Uploading to:', 
+            `https://api.cloudinary.com/v1_1/${signature.cloudName}/image/upload`)
 
         // Upload directly to Cloudinary
         const uploadResponse = await fetch(
@@ -95,11 +107,23 @@ export async function uploadToCloudinary(
             }
         )
 
+        console.log('[Cloudinary Upload] Response status:', uploadResponse.status)
+
         if (!uploadResponse.ok) {
-            const error = await uploadResponse.json()
+            const errorText = await uploadResponse.text()
+            console.error('[Cloudinary Upload] Error response:', errorText)
+            
+            let errorMessage = 'Upload to Cloudinary failed'
+            try {
+                const error = JSON.parse(errorText)
+                errorMessage = error.error?.message || errorMessage
+            } catch (e) {
+                errorMessage = errorText || errorMessage
+            }
+            
             return {
                 success: false,
-                error: error.error?.message || 'Upload to Cloudinary failed'
+                error: errorMessage
             }
         }
 
