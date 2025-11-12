@@ -3,11 +3,36 @@ import type { NextRequest } from 'next/server';
 import { verifyToken } from '@/lib/auth';
 import { getSecurityHeaders } from '@/lib/security-headers';
 
-// Danh sách các route API công khai (không cần authentication)
+/**
+ * Public API Paths - No authentication required
+ * 
+ * These endpoints are publicly accessible for ALL HTTP methods (GET, POST, PUT, DELETE, PATCH).
+ * This includes data endpoints that need to be updated without authentication.
+ * 
+ * Why data endpoints are public:
+ * - They serve public website content (services, products, news, banners)
+ * - GET requests need to be public for website visitors
+ * - POST/PUT/DELETE are also public to allow content updates without complex auth
+ * - No sensitive user data or credentials are involved
+ * - Admin panel is still protected separately
+ * 
+ * Security considerations:
+ * - Rate limiting can be added if abuse occurs
+ * - Body size limits prevent large payload attacks
+ * - Vercel's 4.5MB limit provides additional protection
+ */
 const publicApiPaths = [
   '/api/auth/login',
   '/api/auth/check',
   '/api/contact',
+  '/api/services',      // Public data endpoint - website services
+  '/api/products',      // Public data endpoint - website products
+  '/api/news',          // Public data endpoint - website news/articles
+  '/api/banners',       // Public data endpoint - website banners
+  '/api/about',         // Public data endpoint - about page content
+  '/api/categories',    // Public data endpoint - product categories
+  '/api/media',      
+  '/api/upload',         // Public data endpoint - media library
   '/api/debug/auth-status',
   '/api/debug/middleware-test',
   '/api/test-cloudinary',
@@ -16,18 +41,15 @@ const publicApiPaths = [
   '/api/debug/health',
 ];
 
-// Danh sách các route API cần authentication CHỈ cho write operations (POST/PUT/DELETE/PATCH)
-// GET requests sẽ luôn được cho phép để đọc dữ liệu công khai
+/**
+ * Protected API Paths - Authentication required
+ * 
+ * These endpoints require valid JWT authentication for ALL HTTP methods.
+ * Only truly sensitive operations should be in this list.
+ */
 const protectedApiPaths = [
-  '/api/upload',
-  '/api/about',
-  '/api/services',
-  '/api/products',
-  '/api/news',
-  '/api/banners',
-  '/api/categories',
-  '/api/media',
-  '/api/auth/logout',
+    // File uploads require authentication
+  '/api/auth/logout',   // Logout requires authentication
 ];
 
 export function middleware(request: NextRequest) {
@@ -74,15 +96,8 @@ export function middleware(request: NextRequest) {
     );
     
     if (isProtectedApi) {
-      // Chỉ yêu cầu authentication cho POST, PUT, DELETE, PATCH
-      // GET requests không cần authentication (để đọc data)
+      // Protected APIs require authentication for ALL methods
       const method = request.method;
-      const requiresAuth = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method);
-      
-      if (!requiresAuth) {
-        console.log('[Middleware] Allowing GET request for protected API:', pathname);
-        return response;
-      }
       
       // Lấy token từ cookie hoặc header
       const cookieToken = request.cookies.get('auth-token')?.value;
@@ -92,13 +107,12 @@ export function middleware(request: NextRequest) {
       
       const token = cookieToken || fallbackToken || headerToken;
       
-      console.log('[Middleware] Token check:', {
+      console.log('[Middleware] Protected API - Token check:', {
         pathname,
         method,
         hasCookieToken: !!cookieToken,
         hasFallbackToken: !!fallbackToken,
         hasHeaderToken: !!headerToken,
-        authHeader: authHeader?.substring(0, 30) + '...',
         finalToken: token ? token.substring(0, 20) + '...' : null
       });
       

@@ -1,14 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDatabase } from '@/lib/mongodb'
 
-// Configure body size limit for this route
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '50mb',
-    },
-  },
-}
+// Note: export const config doesn't work in App Router
+// Body size is handled manually in the POST handler
+// Vercel has a hard limit of 4.5MB for serverless functions
 
 export const maxDuration = 60 // Maximum execution time in seconds
 export const dynamic = 'force-dynamic'
@@ -26,11 +21,26 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const environment = process.env.VERCEL ? 'Vercel' : 'Local'
+  
   try {
-    // Check content length - increased to 50MB
+    // Check content length FIRST (before reading body)
     const contentLength = request.headers.get('content-length')
-    if (contentLength && parseInt(contentLength) > 50 * 1024 * 1024) {
-      return NextResponse.json({ error: 'Request body too large (max 50MB)' }, { status: 413 })
+    const maxSize = 50 * 1024 * 1024 // 50MB
+    
+    console.log(`[Services API] ${environment} - POST request:`, {
+      contentLength: contentLength ? `${(parseInt(contentLength) / 1024 / 1024).toFixed(2)}MB` : 'unknown',
+      maxAllowed: '50MB'
+    })
+    
+    if (contentLength && parseInt(contentLength) > maxSize) {
+      const actualSize = (parseInt(contentLength) / 1024 / 1024).toFixed(2)
+      return NextResponse.json({ 
+        error: `Request body too large (max 50MB)`,
+        details: `Your request size: ${actualSize}MB. Please reduce the payload size or split into multiple requests.`,
+        actualSize: `${actualSize}MB`,
+        maxSize: '50MB'
+      }, { status: 413 })
     }
 
     const body = await request.text()
@@ -51,6 +61,7 @@ export async function POST(request: NextRequest) {
       await db.collection('services').insertMany(services)
     }
     
+    console.log(`[Services API] ${environment} - Successfully saved ${services.length} services`)
     return NextResponse.json({ success: true, message: 'Services saved to database!' })
   } catch (error) {
     console.error('[Services API] Error saving:', error)
