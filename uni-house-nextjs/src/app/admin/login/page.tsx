@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { setAuthToken } from '@/lib/auth-client';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -38,7 +39,7 @@ export default function LoginPage() {
         
         // Save token to localStorage for ClientAuthCheck
         if (data.token) {
-          localStorage.setItem('auth-token', data.token);
+          setAuthToken(data.token);
           console.log('[Login Page] Token saved to localStorage');
         }
         

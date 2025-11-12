@@ -1,16 +1,14 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { removeAuthToken } from '@/lib/auth-client';
 
 export default function AdminHeader() {
-  const router = useRouter();
-
   const handleLogout = async () => {
     try {
       console.log('[AdminHeader] Logging out...');
       
       // Clear localStorage first
-      localStorage.removeItem('auth-token');
+      removeAuthToken();
       
       const response = await fetch('/api/auth/logout', {
         method: 'POST',

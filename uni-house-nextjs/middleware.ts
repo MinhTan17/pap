@@ -9,6 +9,7 @@ const publicApiPaths = [
   '/api/auth/check',
   '/api/contact',
   '/api/debug/auth-status',
+  '/api/debug/middleware-test',
   '/api/test-cloudinary',
   '/api/debug-env',
   '/api/debug-jwt',
@@ -86,9 +87,20 @@ export function middleware(request: NextRequest) {
       // Lấy token từ cookie hoặc header
       const cookieToken = request.cookies.get('auth-token')?.value;
       const fallbackToken = request.cookies.get('auth-token-fallback')?.value;
-      const headerToken = request.headers.get('authorization')?.replace('Bearer ', '');
+      const authHeader = request.headers.get('authorization');
+      const headerToken = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : authHeader;
       
       const token = cookieToken || fallbackToken || headerToken;
+      
+      console.log('[Middleware] Token check:', {
+        pathname,
+        method,
+        hasCookieToken: !!cookieToken,
+        hasFallbackToken: !!fallbackToken,
+        hasHeaderToken: !!headerToken,
+        authHeader: authHeader?.substring(0, 30) + '...',
+        finalToken: token ? token.substring(0, 20) + '...' : null
+      });
       
       if (!token) {
         console.log('[Middleware] No token for protected API:', pathname, method);
