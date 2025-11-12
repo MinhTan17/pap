@@ -16,10 +16,19 @@ export default function TestUploadPage() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0])
+      const selectedFile = e.target.files[0]
+      setFile(selectedFile)
       setResult(null)
       setLogs([])
-      addLog(`File selected: ${e.target.files[0].name} (${(e.target.files[0].size / 1024).toFixed(2)} KB)`)
+      
+      const sizeMB = (selectedFile.size / 1024 / 1024).toFixed(2)
+      const maxSizeMB = 10
+      const needsCompression = selectedFile.size > maxSizeMB * 1024 * 1024
+      
+      addLog(`File selected: ${selectedFile.name} (${sizeMB} MB)`)
+      if (needsCompression) {
+        addLog(`⚠️ File is larger than ${maxSizeMB}MB, will be compressed automatically`)
+      }
     }
   }
 

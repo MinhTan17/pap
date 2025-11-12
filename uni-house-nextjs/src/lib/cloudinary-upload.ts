@@ -5,6 +5,66 @@
  * directly from the browser to Cloudinary using signed uploads.
  */
 
+/**
+ * Compress image to fit within size limit
+ */
+async function compressImage(file: File, maxSize: number): Promise<File> {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = (e) => {
+            const img = new Image()
+            img.src = e.target?.result as string
+            img.onload = () => {
+                const canvas = document.createElement('canvas')
+                let width = img.width
+                let height = img.height
+
+                // Calculate new dimensions (reduce by 50% each time until under limit)
+                const ratio = Math.sqrt(maxSize / file.size)
+                width = Math.floor(width * ratio * 0.9) // 0.9 for safety margin
+                height = Math.floor(height * ratio * 0.9)
+
+                canvas.width = width
+                canvas.height = height
+
+                const ctx = canvas.getContext('2d')
+                ctx?.drawImage(img, 0, 0, width, height)
+
+                // Try different quality levels
+                let quality = 0.8
+                const tryCompress = () => {
+                    canvas.toBlob(
+                        (blob) => {
+                            if (!blob) {
+                                reject(new Error('Failed to compress image'))
+                                return
+                            }
+
+                            if (blob.size <= maxSize || quality <= 0.3) {
+                                const compressedFile = new File([blob], file.name, {
+                                    type: file.type,
+                                    lastModified: Date.now(),
+                                })
+                                resolve(compressedFile)
+                            } else {
+                                quality -= 0.1
+                                tryCompress()
+                            }
+                        },
+                        file.type,
+                        quality
+                    )
+                }
+
+                tryCompress()
+            }
+            img.onerror = () => reject(new Error('Failed to load image'))
+        }
+        reader.onerror = () => reject(new Error('Failed to read file'))
+    })
+}
+
 interface UploadSignature {
     signature: string
     timestamp: number
@@ -43,12 +103,28 @@ export async function uploadToCloudinary(
             }
         }
 
-        // Validate file size (50MB - Cloudinary's limit)
-        const maxSize = 50 * 1024 * 1024
+        // Validate file size (10MB - Cloudinary FREE plan limit)
+        const maxSize = 10 * 1024 * 1024
+        
+        // If file is too large, compress it
+        let fileToUpload = file
         if (file.size > maxSize) {
-            return {
-                success: false,
-                error: 'Kích thước file không được vượt quá 50MB'
+            console.log('[Cloudinary Upload] File too large, compressing...', {
+                originalSize: file.size,
+                maxSize,
+            })
+            
+            try {
+                fileToUpload = await compressImage(file, maxSize)
+                console.log('[Cloudinary Upload] Compressed:', {
+                    originalSize: file.size,
+                    compressedSize: fileToUpload.size,
+                })
+            } catch (error) {
+                return {
+                    success: false,
+                    error: 'Không thể nén ảnh. Vui lòng chọn ảnh nhỏ hơn 10MB'
+                }
             }
         }
 
@@ -89,7 +165,7 @@ export async function uploadToCloudinary(
         // IMPORTANT: Only include parameters that were signed + file
         // Order matters for some Cloudinary implementations
         const formData = new FormData()
-        formData.append('file', file)
+        formData.append('file', fileToUpload)
         formData.append('api_key', signature.apiKey)
         formData.append('timestamp', signature.timestamp.toString())
         formData.append('folder', signature.folder)
