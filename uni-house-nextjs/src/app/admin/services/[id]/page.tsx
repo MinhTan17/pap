@@ -85,51 +85,74 @@ export default function ServiceDetailEditor() {
     setIsSaving(true)
 
     try {
-      // Update service in DataContext - auto-save will handle API call
       const updatedService = {
         ...service,
         detailContent
       }
 
       console.log('🔄 Đang lưu service:', updatedService.id)
-      console.log('📄 HTML Content:', detailContent)
-      console.log('🔍 Has <strong> tag?', detailContent.includes('<strong>'))
-      console.log('🔍 Has <em> tag?', detailContent.includes('<em>'))
+      console.log('📄 HTML Content:', detailContent.substring(0, 200) + '...')
 
+      // DIRECT API CALL instead of relying on auto-save
+      const response = await fetch('/api/services', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
+        },
+        body: JSON.stringify(services.map(s => 
+          s.id === service.id ? updatedService : s
+        ))
+      })
+
+      console.log('📡 Save API response status:', response.status)
+      
+      if (!response.ok) {
+        throw new Error(`API call failed: ${response.status}`)
+      }
+
+      const result = await response.json()
+      console.log('📄 Save API result:', result)
+
+      if (!result.success) {
+        throw new Error(result.error || 'Save failed')
+      }
+
+      // Update DataContext state
       updateService(service.id, updatedService)
 
-      // Wait for auto-save to complete (500ms debounce + 500ms for API)
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      // Wait a bit for database to update
+      await new Promise(resolve => setTimeout(resolve, 1000))
 
-      // Reload data from API to ensure consistency
-      try {
-        await reloadFromStorage()
-        console.log('✅ Đã reload data từ API')
-      } catch (reloadError) {
-        console.error('❌ Lỗi khi reload:', reloadError)
+      // Verify save by reloading from API
+      console.log('🔄 Verifying save by reloading...')
+      const verifyResponse = await fetch('/api/services', {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache' }
+      })
+      
+      if (verifyResponse.ok) {
+        const verifyData = await verifyResponse.json()
+        const savedService = verifyData.find((s: any) => s.id === service.id)
+        
+        if (savedService && savedService.detailContent === detailContent) {
+          console.log('✅ Verified: Data saved correctly to database')
+          
+          // Update local state
+          setService(savedService)
+          setHasUnsavedChanges(false)
+          setIsEditing(false)
+          
+          alert('✅ Đã lưu thành công! Data đã được lưu vào database.')
+        } else {
+          console.warn('⚠️ Warning: Saved data might not match')
+          alert('⚠️ Đã lưu nhưng có thể chưa đồng bộ hoàn toàn. Hãy kiểm tra lại.')
+        }
       }
 
-      // Wait for React state to update after reload
-      await new Promise(resolve => setTimeout(resolve, 500))
-
-      // Check if data was saved correctly
-      const reloadedService = services.find(s => s.id === service.id)
-      console.log('🔍 Reloaded service:', reloadedService)
-      console.log('🔍 Reloaded detailContent:', reloadedService?.detailContent?.substring(0, 200))
-
-      // Update local state with reloaded data (not updatedService)
-      if (reloadedService) {
-        setService(reloadedService)
-        setDetailContent(reloadedService.detailContent || '')
-      }
-      setHasUnsavedChanges(false)
-      setIsEditing(false)
-
-      // Show success message
-      alert('✅ Đã lưu thành công! Bạn có thể xem kết quả bằng nút "Xem trên site".')
     } catch (error) {
       console.error('❌ Lỗi khi lưu:', error)
-      alert('❌ Có lỗi xảy ra khi lưu. Vui lòng thử lại!')
+      alert(`❌ Có lỗi xảy ra khi lưu: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setIsSaving(false)
     }
@@ -209,11 +232,23 @@ export default function ServiceDetailEditor() {
                 Hủy
               </button>
               <button
+                onClick={async () => {
+                  // Quick test save
+                  const testContent = detailContent + ' [TEST SAVE]'
+                  setDetailContent(testContent)
+                  setHasUnsavedChanges(true)
+                }}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 mr-2"
+                disabled={isSaving}
+              >
+                🧪 Test
+              </button>
+              <button
                 onClick={handleSave}
                 className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isSaving}
               >
-                {isSaving ? '⏳ Đang lưu...' : hasUnsavedChanges ? 'Lưu thay đổi' : 'Lưu'}
+                {isSaving ? '⏳ Đang lưu...' : hasUnsavedChanges ? '💾 Lưu thay đổi' : '💾 Lưu'}
               </button>
             </>
           )}

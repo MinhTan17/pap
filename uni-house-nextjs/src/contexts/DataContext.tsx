@@ -153,38 +153,11 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
   const [banners, setBanners] = useState<BannerSlide[]>(initialBanners)
 
-  // Save to file whenever state changes (debounced)
+  // DISABLED AUTO-SAVE for services to prevent conflicts
+  // Services will be saved manually from admin pages
   useEffect(() => {
-    // Clear existing timeout
-    if (servicesSaveTimeoutRef.current) {
-      clearTimeout(servicesSaveTimeoutRef.current)
-    }
-    
-    // Debounce API calls to prevent multiple simultaneous requests
-    if (typeof window !== 'undefined' && !isSavingServicesRef.current) {
-      servicesSaveTimeoutRef.current = setTimeout(async () => {
-        isSavingServicesRef.current = true
-        
-        try {
-          const response = await authenticatedFetch('/api/services', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(services)
-          })
-          
-          const data = await response.json()
-          if (data.success) {
-            console.log('✅ Đã lưu services vào file!')
-          } else {
-            console.error('❌ Lỗi khi lưu services:', data.error)
-          }
-        } catch (err) {
-          console.error('Error saving services:', err)
-        } finally {
-          isSavingServicesRef.current = false
-        }
-      }, 500) // 0.5 second debounce
-    }
+    console.log('📊 Services state updated:', services.length, 'services')
+    // Auto-save disabled for services - manual save only
   }, [services])
 
   useEffect(() => {
