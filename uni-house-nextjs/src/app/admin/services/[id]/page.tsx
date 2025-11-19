@@ -176,6 +176,20 @@ export default function ServiceDetailEditor() {
                 👁️ Xem trên site
               </a>
               <button
+                onClick={async () => {
+                  console.log('🔄 Force reloading data...')
+                  try {
+                    await reloadFromStorage()
+                    window.location.reload()
+                  } catch (error) {
+                    console.error('❌ Error reloading:', error)
+                  }
+                }}
+                className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 mr-2"
+              >
+                🔄 Reload
+              </button>
+              <button
                 onClick={() => {
                   console.log('🔧 Switching to edit mode')
                   setIsEditing(true)

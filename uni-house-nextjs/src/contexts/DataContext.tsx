@@ -67,39 +67,78 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Load products from API
-        const productsRes = await fetch('/api/products', { cache: 'no-store' })
-        if (productsRes.ok) {
-          const productsData = await productsRes.json()
-          setProducts(productsData)
-          console.log('✅ Loaded products from API')
+        console.log('🔄 DataContext: Starting initial data load...')
+        
+        // Load services from API FIRST (most important)
+        try {
+          const servicesRes = await fetch('/api/services', { 
+            cache: 'no-store',
+            headers: {
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              'Pragma': 'no-cache'
+            }
+          })
+          console.log('📡 Services API response status:', servicesRes.status)
+          
+          if (servicesRes.ok) {
+            const servicesData = await servicesRes.json()
+            console.log('📊 Raw services data:', servicesData)
+            
+            if (Array.isArray(servicesData)) {
+              setServices(servicesData)
+              console.log('✅ Loaded services from API:', servicesData.length, 'services')
+            } else {
+              console.error('❌ Services data is not an array:', typeof servicesData)
+              setServices(initialServices) // Fallback to initial data
+            }
+          } else {
+            console.error('❌ Services API failed:', servicesRes.status)
+            setServices(initialServices) // Fallback to initial data
+          }
+        } catch (servicesError) {
+          console.error('❌ Services API error:', servicesError)
+          setServices(initialServices) // Fallback to initial data
         }
         
-        // Load services from API
-        const servicesRes = await fetch('/api/services', { cache: 'no-store' })
-        if (servicesRes.ok) {
-          const servicesData = await servicesRes.json()
-          setServices(servicesData)
-          console.log('✅ Loaded services from API:', servicesData.length, 'services')
+        // Load products from API
+        try {
+          const productsRes = await fetch('/api/products', { cache: 'no-store' })
+          if (productsRes.ok) {
+            const productsData = await productsRes.json()
+            setProducts(productsData)
+            console.log('✅ Loaded products from API')
+          }
+        } catch (productsError) {
+          console.error('❌ Products API error:', productsError)
         }
         
         // Load banners from API
-        const bannersRes = await fetch('/api/banners', { cache: 'no-store' })
-        if (bannersRes.ok) {
-          const bannersData = await bannersRes.json()
-          setBanners(bannersData)
-          console.log('✅ Loaded banners from API')
+        try {
+          const bannersRes = await fetch('/api/banners', { cache: 'no-store' })
+          if (bannersRes.ok) {
+            const bannersData = await bannersRes.json()
+            setBanners(bannersData)
+            console.log('✅ Loaded banners from API')
+          }
+        } catch (bannersError) {
+          console.error('❌ Banners API error:', bannersError)
         }
         
         // Load news from API
-        const newsRes = await fetch('/api/news', { cache: 'no-store' })
-        if (newsRes.ok) {
-          const newsData = await newsRes.json()
-          if (newsData.articles) setNewsArticles(newsData.articles)
-          console.log('✅ Loaded news from API')
+        try {
+          const newsRes = await fetch('/api/news', { cache: 'no-store' })
+          if (newsRes.ok) {
+            const newsData = await newsRes.json()
+            if (newsData.articles) setNewsArticles(newsData.articles)
+            console.log('✅ Loaded news from API')
+          }
+        } catch (newsError) {
+          console.error('❌ News API error:', newsError)
         }
+        
+        console.log('✅ DataContext: Initial data load completed')
       } catch (error) {
-        console.error('❌ Error loading data from API:', error)
+        console.error('❌ DataContext: Critical error loading data from API:', error)
       }
     }
     
