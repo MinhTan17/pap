@@ -68,7 +68,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     const loadData = async () => {
       try {
         // Load products from API
-        const productsRes = await fetch('/api/products')
+        const productsRes = await fetch('/api/products', { cache: 'no-store' })
         if (productsRes.ok) {
           const productsData = await productsRes.json()
           setProducts(productsData)
@@ -76,15 +76,15 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         }
         
         // Load services from API
-        const servicesRes = await fetch('/api/services')
+        const servicesRes = await fetch('/api/services', { cache: 'no-store' })
         if (servicesRes.ok) {
           const servicesData = await servicesRes.json()
           setServices(servicesData)
-          console.log('✅ Loaded services from API')
+          console.log('✅ Loaded services from API:', servicesData.length, 'services')
         }
         
         // Load banners from API
-        const bannersRes = await fetch('/api/banners')
+        const bannersRes = await fetch('/api/banners', { cache: 'no-store' })
         if (bannersRes.ok) {
           const bannersData = await bannersRes.json()
           setBanners(bannersData)
@@ -92,7 +92,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         }
         
         // Load news from API
-        const newsRes = await fetch('/api/news')
+        const newsRes = await fetch('/api/news', { cache: 'no-store' })
         if (newsRes.ok) {
           const newsData = await newsRes.json()
           if (newsData.articles) setNewsArticles(newsData.articles)
@@ -341,7 +341,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const reloadFromStorage = useCallback(async () => {
     try {
       // Load products from API
-      const productsRes = await fetch('/api/products')
+      const productsRes = await fetch('/api/products', { cache: 'no-store' })
       if (productsRes.ok) {
         const productsData = await productsRes.json()
         setProducts(productsData)
@@ -349,15 +349,15 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       }
       
       // Load services from API
-      const servicesRes = await fetch('/api/services')
+      const servicesRes = await fetch('/api/services', { cache: 'no-store' })
       if (servicesRes.ok) {
         const servicesData = await servicesRes.json()
         setServices(servicesData)
-        console.log('🔄 Reloaded services from API')
+        console.log('🔄 Reloaded services from API:', servicesData.length, 'services')
       }
       
       // Load banners from API
-      const bannersRes = await fetch('/api/banners')
+      const bannersRes = await fetch('/api/banners', { cache: 'no-store' })
       if (bannersRes.ok) {
         const bannersData = await bannersRes.json()
         setBanners(bannersData)
@@ -365,7 +365,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       }
       
       // Load news from API
-      const newsRes = await fetch('/api/news')
+      const newsRes = await fetch('/api/news', { cache: 'no-store' })
       if (newsRes.ok) {
         const newsData = await newsRes.json()
         if (newsData.articles) setNewsArticles(newsData.articles)

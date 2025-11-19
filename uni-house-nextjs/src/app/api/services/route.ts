@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDatabase } from '@/lib/mongodb'
+import { revalidatePath } from 'next/cache'
 
 // Note: export const config doesn't work in App Router
 // Body size is handled manually in the POST handler
@@ -7,6 +8,7 @@ import { getDatabase } from '@/lib/mongodb'
 
 export const maxDuration = 60 // Maximum execution time in seconds
 export const dynamic = 'force-dynamic'
+export const revalidate = 0 // Disable caching for this route
 
 export async function GET() {
   try {
@@ -66,6 +68,16 @@ export async function POST(request: NextRequest) {
     await db.collection('services').deleteMany({})
     if (services.length > 0) {
       await db.collection('services').insertMany(services)
+    }
+    
+    // Revalidate all pages that use services data
+    try {
+      revalidatePath('/dich-vu')
+      revalidatePath('/dich-vu/[id]', 'page')
+      revalidatePath('/')
+      console.log('[Services API] Cache revalidated for services pages')
+    } catch (revalidateError) {
+      console.error('[Services API] Revalidation error:', revalidateError)
     }
     
     console.log(`[Services API] ${environment} - Successfully saved ${services.length} services`)
