@@ -64,9 +64,9 @@ export default function Header() {
   return (
     <header className="bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="header-container py-3">
+        <div className="flex justify-between items-center py-3 gap-2 flex-nowrap">
           {/* Logo Section */}
-          <div className="logo-section">
+          <div className="flex-shrink-0 min-w-fit max-w-[50%] lg:max-w-none">
             <Link href="/" className="flex items-center space-x-2 lg:space-x-3 group min-w-fit">
               <div className="relative flex-shrink-0">
                 <img
@@ -77,11 +77,11 @@ export default function Header() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-red-600/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
               </div>
-              <div className="hidden sm:block min-w-0 max-w-xs lg:max-w-sm xl:max-w-none">
-                <div className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent keep-text">
+              <div className="hidden sm:block min-w-0">
+                <div className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent whitespace-nowrap">
                   PHÚ AN PHÁT
                 </div>
-                <div className="text-xs lg:text-sm text-slate-500 font-medium tracking-wide keep-text hidden md:block">
+                <div className="text-xs lg:text-sm text-slate-500 font-medium tracking-wide whitespace-nowrap hidden md:block">
                   STEEL & PRECISION ENGINEERING
                 </div>
               </div>
@@ -89,17 +89,17 @@ export default function Header() {
           </div>
 
           {/* Navigation Section */}
-          <nav className="navigation-section hidden lg:flex items-center justify-center">
-            <div className="flex items-center space-x-0.5 xl:space-x-1">
+          <nav className="hidden lg:flex items-center justify-center flex-1 min-w-0">
+            <div className="flex items-center space-x-0.5 xl:space-x-1 flex-nowrap">
               <Link
                 href="/"
-                className="px-2 xl:px-3 py-2 text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide whitespace-nowrap"
+                className="px-1 xl:px-2 py-2 text-xs xl:text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide whitespace-nowrap"
               >
                 {t('home')}
               </Link>
               <Link
                 href="/gioi-thieu"
-                className="px-2 xl:px-3 py-2 text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide whitespace-nowrap"
+                className="px-1 xl:px-2 py-2 text-xs xl:text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide whitespace-nowrap"
               >
                 {t('about')}
               </Link>
@@ -107,7 +107,7 @@ export default function Header() {
               {/* Products Dropdown */}
               <div className="relative" ref={productsDropdownRef}>
                 <button
-                  className="px-2 xl:px-3 py-2 text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide flex items-center space-x-1 group whitespace-nowrap"
+                  className="px-1 xl:px-2 py-2 text-xs xl:text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide flex items-center space-x-1 group whitespace-nowrap"
                   onClick={() => setIsProductsDropdownOpen(!isProductsDropdownOpen)}
                 >
                   <span>{t('product')}</span>
@@ -155,7 +155,7 @@ export default function Header() {
               {/* Services Dropdown */}
               <div className="relative" ref={servicesDropdownRef}>
                 <button
-                  className="px-2 xl:px-3 py-2 text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide flex items-center space-x-1 group whitespace-nowrap"
+                  className="px-1 xl:px-2 py-2 text-xs xl:text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide flex items-center space-x-1 group whitespace-nowrap"
                   onClick={() => setIsServicesDropdownOpen(!isServicesDropdownOpen)}
                 >
                   <span>{t('service')}</span>
@@ -202,13 +202,13 @@ export default function Header() {
 
               <Link
                 href="/tin-tuc"
-                className="px-2 xl:px-3 py-2 text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide whitespace-nowrap"
+                className="px-1 xl:px-2 py-2 text-xs xl:text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide whitespace-nowrap"
               >
                 {t('news')}
               </Link>
               <Link
                 href="/lien-he"
-                className="px-2 xl:px-3 py-2 text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide whitespace-nowrap"
+                className="px-1 xl:px-2 py-2 text-xs xl:text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide whitespace-nowrap"
               >
                 {t('contact')}
               </Link>
@@ -216,38 +216,48 @@ export default function Header() {
           </nav>
 
           {/* Actions Section */}
-          <div className="actions-section">
-            {/* Language Switcher */}
-            <div className="hidden md:flex items-center bg-slate-100 rounded-lg p-0.5 flex-shrink-0 min-w-fit">
+          <div className="flex-shrink-0 flex items-center gap-1 min-w-fit">
+            {/* Mobile Language Switcher (very compact) */}
+            <div className="flex sm:hidden items-center">
+              <button
+                onClick={() => switchLanguage(locale === 'vi' ? 'en' : 'vi')}
+                disabled={isPending}
+                className="w-8 h-8 flex items-center justify-center bg-slate-100 rounded-md text-xs font-medium transition-all duration-200 hover:bg-slate-200 disabled:opacity-50"
+                title={locale === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt'}
+              >
+                <span className="text-sm">{locale === 'vi' ? '🇬🇧' : '🇻🇳'}</span>
+              </button>
+            </div>
+
+            {/* Desktop Language Switcher */}
+            <div className="hidden sm:flex items-center bg-slate-100 rounded-lg p-0.5 flex-shrink-0">
               <button
                 onClick={() => switchLanguage('vi')}
                 disabled={isPending || locale === 'vi'}
-                className={`flex items-center justify-center w-8 h-8 lg:w-10 lg:h-8 lg:px-2 rounded-md text-sm font-medium transition-all duration-200 ${locale === 'vi'
+                className={`flex items-center justify-center w-7 h-7 xl:w-8 xl:h-8 rounded-md text-sm font-medium transition-all duration-200 ${locale === 'vi'
                   ? 'bg-white text-slate-800 shadow-sm'
                   : 'text-slate-600 hover:text-slate-800'
                   } disabled:opacity-50`}
                 title="Tiếng Việt"
               >
-                <span className="text-sm lg:text-base">🇻🇳</span>
-                <span className="hidden lg:inline ml-1 text-xs">VI</span>
+                <span className="text-xs xl:text-sm">🇻🇳</span>
               </button>
               <button
                 onClick={() => switchLanguage('en')}
                 disabled={isPending || locale === 'en'}
-                className={`flex items-center justify-center w-8 h-8 lg:w-10 lg:h-8 lg:px-2 rounded-md text-sm font-medium transition-all duration-200 ${locale === 'en'
+                className={`flex items-center justify-center w-7 h-7 xl:w-8 xl:h-8 rounded-md text-sm font-medium transition-all duration-200 ${locale === 'en'
                   ? 'bg-white text-slate-800 shadow-sm'
                   : 'text-slate-600 hover:text-slate-800'
                   } disabled:opacity-50`}
                 title="English"
               >
-                <span className="text-sm lg:text-base">🇬🇧</span>
-                <span className="hidden lg:inline ml-1 text-xs">EN</span>
+                <span className="text-xs xl:text-sm">🇬🇧</span>
               </button>
             </div>
 
             {/* Mobile menu button */}
             <button
-              className="lg:hidden p-2 rounded-lg text-slate-600 hover:text-slate-800 hover:bg-slate-100 transition-colors flex-shrink-0"
+              className="lg:hidden p-1.5 rounded-lg text-slate-600 hover:text-slate-800 hover:bg-slate-100 transition-colors flex-shrink-0"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               <svg className={`w-6 h-6 transition-transform duration-200 ${isMenuOpen ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
