@@ -14,8 +14,22 @@ export default function ServiceDetailPage({ params }: ServiceDetailProps) {
   const { services } = useData()
   const service = services.find(s => String(s.id) === resolvedParams.id)
 
-  // Nếu có detailContent từ admin, hiển thị nó
-  if (service?.detailContent) {
+  // Debug logging
+  console.log('[Service Detail] ID:', resolvedParams.id)
+  console.log('[Service Detail] Service found:', service)
+  console.log('[Service Detail] Has detailContent:', !!service?.detailContent)
+  console.log('[Service Detail] detailContent length:', service?.detailContent?.length || 0)
+  console.log('[Service Detail] detailContent preview:', service?.detailContent?.substring(0, 100))
+
+  // Check if detailContent has actual content (not just empty HTML tags)
+  const hasRealContent = service?.detailContent && 
+    service.detailContent.trim().length > 0 &&
+    service.detailContent.replace(/<[^>]*>/g, '').trim().length > 0
+
+  console.log('[Service Detail] Has real content:', hasRealContent)
+
+  // Nếu có detailContent từ admin với nội dung thực sự, hiển thị nó
+  if (hasRealContent) {
     return (
       <>
         <Header />
@@ -67,7 +81,7 @@ export default function ServiceDetailPage({ params }: ServiceDetailProps) {
             <div className="bg-white rounded-lg shadow-lg p-8">
               <div
                 className="prose prose-lg max-w-none"
-                dangerouslySetInnerHTML={{ __html: service.detailContent }}
+                dangerouslySetInnerHTML={{ __html: service.detailContent || '' }}
               />
             </div>
           </div>
