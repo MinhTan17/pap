@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { Header, Footer } from '@/components'
+import PageHeader from '@/components/PageHeader'
 import { useData } from '@/contexts/DataContext'
 
 export default function NewsPage() {
@@ -12,19 +13,16 @@ export default function NewsPage() {
     <div className="min-h-screen bg-white">
       <Header />
       
-      {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-blue-50 to-blue-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-5xl font-bold text-gray-800 mb-6">
-              TIN TỨC
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Cập nhật những thông tin mới nhất về ngành xây dựng và vật liệu xây dựng
-            </p>
-          </div>
-        </div>
-      </section>
+      <PageHeader
+        title="TIN TỨC & SỰ KIỆN"
+        description="Cập nhật những thông tin mới nhất về ngành thép, công nghệ gia công và các dự án của Phú An Phát. Theo dõi để không bỏ lỡ thông tin quan trọng."
+        stats={[
+          { value: '50+', label: 'Bài viết', color: 'text-blue-600' },
+          { value: '10+', label: 'Chủ đề', color: 'text-red-600' },
+          { value: '1000+', label: 'Lượt xem', color: 'text-green-600' },
+          { value: 'Hàng tuần', label: 'Cập nhật', color: 'text-purple-600' }
+        ]}
+      />
 
       {/* Featured News */}
       <section className="py-20 bg-white">

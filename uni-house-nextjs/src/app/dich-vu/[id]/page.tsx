@@ -1,10 +1,10 @@
 'use client'
 
 import { Header, Footer } from '@/components'
+import Breadcrumb from '@/components/Breadcrumb'
 import { useData } from '@/contexts/DataContext'
 import { use } from 'react'
 import React from 'react'
-import { styleSettingsToCSS } from '@/utils/styleUtils'
 
 interface ServiceDetailProps {
   params: Promise<{ id: string }>
@@ -48,9 +48,23 @@ export default function ServiceDetailPage({ params }: ServiceDetailProps) {
       <>
         <Header />
         <div className="min-h-screen bg-gray-50">
-          {/* Header */}
+          {/* Breadcrumb & Header */}
           <div className={`bg-gradient-to-r ${service.color || 'from-blue-600 to-blue-800'} text-white py-20`}>
             <div className="container mx-auto px-4">
+              {/* Breadcrumb */}
+              <div className="flex justify-center mb-6 px-4">
+                <div className="bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 border border-white/20">
+                  <Breadcrumb 
+                    items={[
+                      { label: 'Trang chủ', href: '/' },
+                      { label: 'Dịch vụ', href: '/dich-vu' },
+                      { label: service.title }
+                    ]}
+                    className="text-white/80"
+                  />
+                </div>
+              </div>
+              
               <h1 className="text-4xl md:text-5xl font-bold mb-4">{service.title}</h1>
               <p className="text-xl text-white/90 max-w-3xl">{service.description}</p>
             </div>
@@ -177,6 +191,19 @@ export default function ServiceDetailPage({ params }: ServiceDetailProps) {
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center">
+            {/* Breadcrumb */}
+            <div className="flex justify-center mb-8 px-4">
+              <div className="bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 border border-slate-200 shadow-sm">
+                <Breadcrumb 
+                  items={[
+                    { label: 'Trang chủ', href: '/' },
+                    { label: 'Dịch vụ', href: '/dich-vu' },
+                    { label: service?.title || 'Chi tiết dịch vụ' }
+                  ]}
+                />
+              </div>
+            </div>
+            
             <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6 relative">
               <span className="bg-gradient-to-r from-blue-800 to-blue-900 bg-clip-text text-transparent">
                 {service?.title || 'DỊCH VỤ'}

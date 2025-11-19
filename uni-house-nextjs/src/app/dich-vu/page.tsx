@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { Header, Footer } from '@/components'
+import PageHeader from '@/components/PageHeader'
 import { useData } from '@/contexts/DataContext'
 import { processSteps } from '@/data/common'
 
@@ -16,25 +17,16 @@ export default function ServicesPage() {
     <div className="min-h-screen bg-white">
       <Header />
 
-      {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
-        {/* Industrial Background Pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="metal-texture w-full h-full"></div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="text-center">
-            <h1 className="text-5xl font-bold text-gray-800 mb-6 relative">
-              <span className="bg-gradient-to-r from-blue-800 to-blue-900 bg-clip-text text-transparent">DỊCH VỤ CUNG CẤP</span>
-              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-blue-600 to-red-600 rounded-full"></div>
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Các dịch vụ gia công cơ khí – xử lý – cung ứng vật liệu cho ngành công nghiệp
-            </p>
-          </div>
-        </div>
-      </section>
+      <PageHeader
+        title="DỊCH VỤ GIA CÔNG"
+        description="Các dịch vụ gia công cơ khí – xử lý – cung ứng vật liệu cho ngành công nghiệp với công nghệ hiện đại và đội ngũ chuyên nghiệp."
+        stats={[
+          { value: '6+', label: 'Dịch vụ chính', color: 'text-red-600' },
+          { value: '10+', label: 'Năm kinh nghiệm', color: 'text-blue-600' },
+          { value: '500+', label: 'Dự án hoàn thành', color: 'text-green-600' },
+          { value: '99%', label: 'Khách hàng hài lòng', color: 'text-purple-600' }
+        ]}
+      />
 
       {/* Services Grid */}
       <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">

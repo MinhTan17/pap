@@ -111,11 +111,9 @@ export default function Hero() {
   const offset = -(currentSlide * 100)
 
   return (
-    <section className="relative h-96 md:h-[600px] overflow-hidden">
-      {/* Industrial Background Pattern */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none">
-        <div className="metal-texture w-full h-full"></div>
-      </div>
+    <section className="relative h-[70vh] md:h-[85vh] overflow-hidden">
+      {/* Modern Background Pattern */}
+      <div className="absolute inset-0 modern-industrial"></div>
 
       {/* Slider Container */}
       <div
@@ -124,7 +122,7 @@ export default function Hero() {
         {...dragHandlers}
       >
         <div
-          className="flex h-full transition-transform duration-500 ease-in-out"
+          className="flex h-full transition-transform duration-700 ease-out"
           style={{
             transform: `translateX(${offset}%)`,
             willChange: 'transform',
@@ -136,82 +134,127 @@ export default function Hero() {
               className="flex-shrink-0 w-full h-full"
             >
               <div className={`h-full relative overflow-hidden bg-gradient-to-br ${slide.gradient}`}>
-                {/* Background Image (optional) */}
+                {/* Background Image with modern overlay */}
                 {slide.image && !imgErrorIds.has(slide.id) && (
-                  <img
-                    src={slide.image}
-                    alt={slide.imageAlt || slide.title}
-                    className="w-full h-full object-cover"
-                    onLoad={() => {
-                      console.log('✅ Ảnh load thành công:', slide.image)
-                    }}
-                    onError={(e) => {
-                      console.error('❌ Lỗi load ảnh:', slide.image)
-                      console.error('Kiểm tra: File có tồn tại trong public/ không?')
-                      setImgErrorIds((prev) => new Set(prev).add(slide.id))
-                    }}
-                  />
+                  <>
+                    <img
+                      src={slide.image}
+                      alt={slide.imageAlt || slide.title}
+                      className="hero-image w-full h-full object-cover scale-105 transition-transform duration-[10s] ease-out"
+                      onLoad={() => {
+                        console.log('✅ Ảnh load thành công:', slide.image)
+                      }}
+                      onError={(e) => {
+                        console.error('❌ Lỗi load ảnh:', slide.image)
+                        setImgErrorIds((prev) => new Set(prev).add(slide.id))
+                      }}
+                    />
+                    {/* Much lighter overlay for clearer image visibility */}
+                    <div className="absolute inset-0 hero-overlay-light z-[1]"></div>
+                    <div className="absolute inset-0 hero-overlay-bottom z-[1]"></div>
+                  </>
                 )}
 
-                {/* Dark overlay for better text readability */}
-                {slide.image && (
-                  <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/50 z-[1]"></div>
-                )}
+                {/* Content Container */}
+                <div className="relative z-10 h-full flex items-center px-4 sm:px-6 lg:px-8">
+                  <div className="max-w-7xl mx-auto w-full">
+                    <div className="max-w-3xl">
+                      {/* Subtitle with modern styling */}
+                      <div className="flex items-center mb-6 animate-slide-in-right" style={{ animationDelay: '0.2s' }}>
+                        <div className="w-12 h-0.5 bg-gradient-to-r from-blue-500 to-red-500 mr-4"></div>
+                        <p className="text-blue-400 font-semibold text-sm md:text-base uppercase tracking-[0.2em]">
+                          {slide.subtitle}
+                        </p>
+                      </div>
 
-                {/* Content */}
-                <div className="relative z-10 h-full flex items-center justify-center px-4">
-                  <div className="text-center text-white max-w-4xl">
+                      {/* Main Title with modern typography */}
+                      <h1 className="heading-primary text-white mb-6 animate-slide-in-right" 
+                          style={{ animationDelay: '0.4s' }}>
+                        <span className="block">{slide.title}</span>
+                      </h1>
 
-                    {/* Subtitle */}
-                    <p className="text-lg md:text-xl font-bold mb-4 tracking-wide uppercase animate-fade-in-up"
-                      style={{
-                        animationDelay: '0.2s',
-                        textShadow: '2px 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)'
-                      }}>
-                      {slide.subtitle}
-                    </p>
+                      {/* Description with better readability */}
+                      <p className="text-xl md:text-2xl text-gray-200 font-light leading-relaxed mb-8 animate-slide-in-right max-w-2xl"
+                         style={{ animationDelay: '0.6s' }}>
+                        {slide.description}
+                      </p>
 
-                    {/* Main Title */}
-                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-black mb-6 leading-tight animate-fade-in-up"
-                      style={{
-                        animationDelay: '0.4s',
-                        textShadow: '3px 3px 10px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.6)'
-                      }}>
-                      {slide.title}
-                    </h1>
-
-                    {/* Description */}
-                    <p className="text-lg md:text-xl font-medium max-w-2xl mx-auto animate-fade-in-up"
-                      style={{
-                        animationDelay: '0.6s',
-                        textShadow: '2px 2px 6px rgba(0,0,0,0.8), 0 0 15px rgba(0,0,0,0.5)'
-                      }}>
-                      {slide.description}
-                    </p>
+                      {/* CTA Buttons */}
+                      <div className="flex flex-col sm:flex-row gap-4 animate-slide-in-right" style={{ animationDelay: '0.8s' }}>
+                        <a
+                          href="/san-pham"
+                          className="btn-primary inline-flex items-center justify-center px-8 py-4 text-lg font-semibold hover-lift"
+                        >
+                          <span>Khám phá sản phẩm</span>
+                          <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                          </svg>
+                        </a>
+                        <a
+                          href="/dich-vu"
+                          className="btn-secondary inline-flex items-center justify-center px-8 py-4 text-lg font-semibold hover-lift"
+                        >
+                          <span>Dịch vụ gia công</span>
+                          <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {/* Industrial corner accents */}
-                <div className="absolute top-0 right-0 w-0 h-0 border-l-[60px] border-l-transparent border-t-[60px] border-t-black opacity-20"></div>
-                <div className="absolute bottom-0 left-0 w-0 h-0 border-r-[60px] border-r-transparent border-b-[60px] border-b-black opacity-20"></div>
+                {/* Modern geometric accents */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-500/20 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-red-500/20 to-transparent"></div>
+                
+                {/* Floating elements */}
+                <div className="absolute top-1/4 right-1/4 w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                <div className="absolute bottom-1/3 right-1/3 w-1 h-1 bg-red-400 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Navigation Dots */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
-        {banners.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => handleDotClick(index)}
-            className={`w-4 h-4 rounded-full transition-all duration-300 steel-glow ${index === currentSlide ? 'bg-orange-500 scale-125' : 'bg-white bg-opacity-50 hover:bg-opacity-75'
+      {/* Modern Navigation Dots */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
+        <div className="flex items-center space-x-3 bg-white/10 backdrop-blur-md rounded-full px-6 py-3 border border-white/20">
+          {banners.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => handleDotClick(index)}
+              className={`transition-all duration-300 ${
+                index === currentSlide 
+                  ? 'w-8 h-2 bg-white rounded-full' 
+                  : 'w-2 h-2 bg-white/50 rounded-full hover:bg-white/75'
               }`}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
       </div>
+
+      {/* Navigation Arrows */}
+      <button
+        onClick={handlePrevious}
+        className="absolute left-4 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all duration-200 hover-lift"
+        aria-label="Previous slide"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      
+      <button
+        onClick={handleNext}
+        className="absolute right-4 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all duration-200 hover-lift"
+        aria-label="Next slide"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
     </section>
   )
 }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Header, Footer } from '@/components'
+import PageHeader from '@/components/PageHeader'
 import { loadContactInfo } from '@/lib/contactStorage'
 import { ContactInfo } from '@/types/contact'
 
@@ -76,23 +77,16 @@ export default function ContactPage() {
     <div className="min-h-screen bg-white">
       <Header />
 
-      {/* Page Title Bar */}
-      <section className="py-8 bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-bold text-white text-center uppercase">
-            LIÊN HỆ
-          </h1>
-        </div>
-      </section>
-
-      {/* Company Title */}
-      <section className="py-8 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-800 text-center">
-            {contactInfo?.company.name || 'CÔNG TY TNHH PHÚ AN PHÁT'}
-          </h2>
-        </div>
-      </section>
+      <PageHeader
+        title="LIÊN HỆ VỚI CHÚNG TÔI"
+        description="Hãy liên hệ với chúng tôi để được tư vấn miễn phí về các sản phẩm thép và dịch vụ gia công cơ khí. Đội ngũ chuyên gia sẵn sàng hỗ trợ bạn 24/7."
+        stats={[
+          { value: '24/7', label: 'Hỗ trợ', color: 'text-blue-600' },
+          { value: '<1h', label: 'Phản hồi', color: 'text-red-600' },
+          { value: '3', label: 'Chi nhánh', color: 'text-green-600' },
+          { value: '100%', label: 'Tư vấn miễn phí', color: 'text-purple-600' }
+        ]}
+      />
 
       {/* Contact Info & Form */}
       <section className="py-20 bg-white">

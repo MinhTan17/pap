@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Header, Footer } from '@/components'
+import Breadcrumb from '@/components/Breadcrumb'
 import { useData } from '@/contexts/DataContext'
 
 interface ProductDetailContentProps {
@@ -71,9 +72,23 @@ export default function ProductDetailContent({ productId }: ProductDetailContent
     <div className="min-h-screen bg-white">
       <Header />
 
-      {/* Product Title */}
+      {/* Breadcrumb & Product Title */}
       <section className="py-8 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Breadcrumb */}
+          <div className="flex justify-center mb-6 px-4">
+            <div className="bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 border border-slate-200 shadow-sm">
+              <Breadcrumb 
+                items={[
+                  { label: 'Trang chủ', href: '/' },
+                  { label: 'Sản phẩm', href: '/san-pham' },
+                  { label: product?.name || 'Chi tiết sản phẩm' }
+                ]}
+              />
+            </div>
+          </div>
+          
+          {/* Product Title */}
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 text-center">
             {product?.name || 'SẢN PHẨM'}
           </h1>

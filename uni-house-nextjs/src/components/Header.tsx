@@ -11,12 +11,12 @@ export default function Header() {
   const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false)
   const [isMobileProductsOpen, setIsMobileProductsOpen] = useState(false)
   const [isMobileServicesOpen, setIsMobileServicesOpen] = useState(false)
-  
+
   const t = useTranslations('nav')
   const locale = useLocale()
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
-  
+
   const productsDropdownRef = useRef<HTMLDivElement>(null)
   const servicesDropdownRef = useRef<HTMLDivElement>(null)
 
@@ -62,191 +62,258 @@ export default function Header() {
   ]
 
   return (
-    <header className="construction-header-bg sticky top-0 z-50">
+    <header className="bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
-          {/* Logo */}
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-3">
-              <img
-                src="/icons/banners/logo.png"
-                alt="Phú An Phát logo"
-                className="h-14 md:h-20 w-auto object-contain"
-              />
-              <span className="text-2xl font-bold construction-text"></span>
+        <div className="header-container py-3">
+          {/* Logo Section */}
+          <div className="logo-section">
+            <Link href="/" className="flex items-center space-x-2 lg:space-x-3 group min-w-fit">
+              <div className="relative flex-shrink-0">
+                <img
+                  src="/icons/banners/logo.png"
+                  alt="Phú An Phát logo"
+                  className="h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                  style={{ minWidth: '32px', minHeight: '32px' }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-red-600/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+              </div>
+              <div className="hidden sm:block min-w-0 max-w-xs lg:max-w-sm xl:max-w-none">
+                <div className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent keep-text">
+                  PHÚ AN PHÁT
+                </div>
+                <div className="text-xs lg:text-sm text-slate-500 font-medium tracking-wide keep-text hidden md:block">
+                  STEEL & PRECISION ENGINEERING
+                </div>
+              </div>
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            <Link href="/" className="construction-link font-medium uppercase">
-              {t('home')}
-            </Link>
-            <Link href="/gioi-thieu" className="construction-link font-medium uppercase">
-              {t('about')}
-            </Link>
-            
-            {/* Products Dropdown */}
-            <div className="relative" ref={productsDropdownRef}>
-              <button
-                className="construction-link font-medium uppercase flex items-center space-x-1"
-                onMouseEnter={() => setIsProductsDropdownOpen(true)}
-                onClick={() => setIsProductsDropdownOpen(!isProductsDropdownOpen)}
+          {/* Navigation Section */}
+          <nav className="navigation-section hidden lg:flex items-center justify-center">
+            <div className="flex items-center space-x-0.5 xl:space-x-1">
+              <Link
+                href="/"
+                className="px-2 xl:px-3 py-2 text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide whitespace-nowrap"
               >
-                <span>{t('product')}</span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              
-              {isProductsDropdownOpen && (
-                <div 
-                  className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border z-50"
-                  onMouseLeave={() => setIsProductsDropdownOpen(false)}
+                {t('home')}
+              </Link>
+              <Link
+                href="/gioi-thieu"
+                className="px-2 xl:px-3 py-2 text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide whitespace-nowrap"
+              >
+                {t('about')}
+              </Link>
+
+              {/* Products Dropdown */}
+              <div className="relative" ref={productsDropdownRef}>
+                <button
+                  className="px-2 xl:px-3 py-2 text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide flex items-center space-x-1 group whitespace-nowrap"
+                  onClick={() => setIsProductsDropdownOpen(!isProductsDropdownOpen)}
                 >
-                  <div className="py-2">
-                    <Link
-                      href="/san-pham"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium border-b"
-                      onClick={() => setIsProductsDropdownOpen(false)}
-                    >
-                      TẤT CẢ SẢN PHẨM
-                    </Link>
-                    {productCategories.map((category) => (
+                  <span>{t('product')}</span>
+                  <svg className={`w-4 h-4 transition-transform duration-200 ${isProductsDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {isProductsDropdownOpen && (
+                  <div
+                    className="dropdown-menu products"
+                  >
+                    <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3">
+                      <h3 className="text-white font-semibold text-sm uppercase tracking-wide">Sản phẩm thép</h3>
+                    </div>
+                    <div className="py-2">
                       <Link
-                        key={category.id}
-                        href={category.href}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        href="/san-pham"
+                        className="block px-4 py-3 text-sm font-medium text-slate-800 hover:bg-blue-50 hover:text-blue-600 transition-colors border-b border-gray-100"
                         onClick={() => setIsProductsDropdownOpen(false)}
                       >
-                        {category.name}
+                        <div className="flex items-center space-x-3">
+                          <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                          <span>TẤT CẢ SẢN PHẨM</span>
+                        </div>
                       </Link>
-                    ))}
+                      {productCategories.map((category) => (
+                        <Link
+                          key={category.id}
+                          href={category.href}
+                          className="block px-4 py-2.5 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                          onClick={() => setIsProductsDropdownOpen(false)}
+                        >
+                          <div className="flex items-center space-x-3">
+                            <div className="w-1.5 h-1.5 bg-slate-400 rounded-full"></div>
+                            <span>{category.name}</span>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
 
-            {/* Services Dropdown */}
-            <div className="relative" ref={servicesDropdownRef}>
-              <button
-                className="construction-link font-medium uppercase flex items-center space-x-1"
-                onMouseEnter={() => setIsServicesDropdownOpen(true)}
-                onClick={() => setIsServicesDropdownOpen(!isServicesDropdownOpen)}
-              >
-                <span>{t('service')}</span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              
-              {isServicesDropdownOpen && (
-                <div 
-                  className="absolute top-full left-0 mt-2 w-72 bg-white rounded-lg shadow-lg border z-50"
-                  onMouseLeave={() => setIsServicesDropdownOpen(false)}
+              {/* Services Dropdown */}
+              <div className="relative" ref={servicesDropdownRef}>
+                <button
+                  className="px-2 xl:px-3 py-2 text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide flex items-center space-x-1 group whitespace-nowrap"
+                  onClick={() => setIsServicesDropdownOpen(!isServicesDropdownOpen)}
                 >
-                  <div className="py-2">
-                    <Link
-                      href="/dich-vu"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium border-b"
-                      onClick={() => setIsServicesDropdownOpen(false)}
-                    >
-                      TẤT CẢ DỊCH VỤ
-                    </Link>
-                    {servicesList.map((service) => (
+                  <span>{t('service')}</span>
+                  <svg className={`w-4 h-4 transition-transform duration-200 ${isServicesDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {isServicesDropdownOpen && (
+                  <div
+                    className="dropdown-menu services"
+                  >
+                    <div className="bg-gradient-to-r from-red-600 to-red-700 px-4 py-3">
+                      <h3 className="text-white font-semibold text-sm uppercase tracking-wide">Dịch vụ gia công</h3>
+                    </div>
+                    <div className="py-2">
                       <Link
-                        key={service.id}
-                        href={service.href}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        href="/dich-vu"
+                        className="block px-4 py-3 text-sm font-medium text-slate-800 hover:bg-red-50 hover:text-red-600 transition-colors border-b border-gray-100"
                         onClick={() => setIsServicesDropdownOpen(false)}
                       >
-                        {service.name}
+                        <div className="flex items-center space-x-3">
+                          <div className="w-2 h-2 bg-red-600 rounded-full"></div>
+                          <span>TẤT CẢ DỊCH VỤ</span>
+                        </div>
                       </Link>
-                    ))}
+                      {servicesList.map((service) => (
+                        <Link
+                          key={service.id}
+                          href={service.href}
+                          className="block px-4 py-2.5 text-sm text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors"
+                          onClick={() => setIsServicesDropdownOpen(false)}
+                        >
+                          <div className="flex items-center space-x-3">
+                            <div className="w-1.5 h-1.5 bg-slate-400 rounded-full"></div>
+                            <span className="line-clamp-1">{service.name}</span>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
 
-            <Link href="/tin-tuc" className="construction-link font-medium uppercase">
-              {t('news')}
-            </Link>
-            <Link href="/lien-he" className="construction-link font-medium uppercase">
-              {t('contact')}
-            </Link>
+              <Link
+                href="/tin-tuc"
+                className="px-2 xl:px-3 py-2 text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide whitespace-nowrap"
+              >
+                {t('news')}
+              </Link>
+              <Link
+                href="/lien-he"
+                className="px-2 xl:px-3 py-2 text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide whitespace-nowrap"
+              >
+                {t('contact')}
+              </Link>
+            </div>
           </nav>
 
-        
-          {/* Language Switcher */}
-          <div className="hidden md:flex items-center space-x-2">
+          {/* Actions Section */}
+          <div className="actions-section">
+            {/* Language Switcher */}
+            <div className="hidden md:flex items-center bg-slate-100 rounded-lg p-0.5 flex-shrink-0 min-w-fit">
+              <button
+                onClick={() => switchLanguage('vi')}
+                disabled={isPending || locale === 'vi'}
+                className={`flex items-center justify-center w-8 h-8 lg:w-10 lg:h-8 lg:px-2 rounded-md text-sm font-medium transition-all duration-200 ${locale === 'vi'
+                  ? 'bg-white text-slate-800 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-800'
+                  } disabled:opacity-50`}
+                title="Tiếng Việt"
+              >
+                <span className="text-sm lg:text-base">🇻🇳</span>
+                <span className="hidden lg:inline ml-1 text-xs">VI</span>
+              </button>
+              <button
+                onClick={() => switchLanguage('en')}
+                disabled={isPending || locale === 'en'}
+                className={`flex items-center justify-center w-8 h-8 lg:w-10 lg:h-8 lg:px-2 rounded-md text-sm font-medium transition-all duration-200 ${locale === 'en'
+                  ? 'bg-white text-slate-800 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-800'
+                  } disabled:opacity-50`}
+                title="English"
+              >
+                <span className="text-sm lg:text-base">🇬🇧</span>
+                <span className="hidden lg:inline ml-1 text-xs">EN</span>
+              </button>
+            </div>
+
+            {/* Mobile menu button */}
             <button
-              onClick={() => switchLanguage('vi')}
-              disabled={isPending || locale === 'vi'}
-              className={`flex items-center space-x-1 px-2 py-1 rounded hover:bg-gray-100 ${locale === 'vi' ? 'font-semibold' : ''} disabled:opacity-50`}
+              className="lg:hidden p-2 rounded-lg text-slate-600 hover:text-slate-800 hover:bg-slate-100 transition-colors flex-shrink-0"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              <span className="text-lg">🇻🇳</span>
-              <span className="text-sm">VI</span>
-            </button>
-            <button
-              onClick={() => switchLanguage('en')}
-              disabled={isPending || locale === 'en'}
-              className={`flex items-center space-x-1 px-2 py-1 rounded hover:bg-gray-100 ${locale === 'en' ? 'font-semibold' : ''} disabled:opacity-50`}
-            >
-              <span className="text-lg">🇬🇧</span>
-              <span className="text-sm">EN</span>
+              <svg className={`w-6 h-6 transition-transform duration-200 ${isMenuOpen ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {isMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
             </button>
           </div>
-
-          {/* Mobile menu button */}
-          <button
-            className="md:hidden p-2 rounded-md construction-link hover:bg-gray-100"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
         </div>
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t">
-            <div className="flex flex-col space-y-2">
-              <Link href="/" className="construction-link font-medium py-2 uppercase" onClick={() => setIsMenuOpen(false)}>
+          <div className="lg:hidden border-t border-gray-100 bg-white/95 backdrop-blur-md transition-all duration-300 ease-in-out">
+            <div className="px-4 py-6 space-y-4">
+              <Link
+                href="/"
+                className="block px-4 py-3 text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-semibold uppercase tracking-wide transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 {t('home')}
               </Link>
-              <Link href="/gioi-thieu" className="construction-link font-medium py-2 uppercase" onClick={() => setIsMenuOpen(false)}>
+              <Link
+                href="/gioi-thieu"
+                className="block px-4 py-3 text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-semibold uppercase tracking-wide transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 {t('about')}
               </Link>
-              
+
               {/* Mobile Products Dropdown */}
-              <div>
+              <div className="bg-slate-50 rounded-lg overflow-hidden">
                 <button
-                  className="construction-link font-medium py-2 uppercase flex items-center justify-between w-full"
+                  className="w-full px-4 py-3 text-slate-700 hover:text-blue-600 font-semibold uppercase tracking-wide flex items-center justify-between transition-colors"
                   onClick={() => setIsMobileProductsOpen(!isMobileProductsOpen)}
                 >
                   <span>{t('product')}</span>
-                  <svg className={`w-4 h-4 transform transition-transform ${isMobileProductsOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className={`w-5 h-5 transform transition-transform duration-200 ${isMobileProductsOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
                 {isMobileProductsOpen && (
-                  <div className="pl-4 mt-2 space-y-2">
+                  <div className="bg-white border-t border-gray-200">
                     <Link
                       href="/san-pham"
-                      className="block construction-link text-sm py-1"
+                      className="block px-6 py-3 text-sm font-medium text-slate-800 hover:bg-blue-50 hover:text-blue-600 transition-colors border-b border-gray-100"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      TẤT CẢ SẢN PHẨM
+                      <div className="flex items-center space-x-3">
+                        <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                        <span>TẤT CẢ SẢN PHẨM</span>
+                      </div>
                     </Link>
                     {productCategories.map((category) => (
                       <Link
                         key={category.id}
                         href={category.href}
-                        className="block construction-link text-sm py-1"
+                        className="block px-6 py-2.5 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors"
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        {category.name}
+                        <div className="flex items-center space-x-3">
+                          <div className="w-1.5 h-1.5 bg-slate-400 rounded-full"></div>
+                          <span>{category.name}</span>
+                        </div>
                       </Link>
                     ))}
                   </div>
@@ -254,45 +321,89 @@ export default function Header() {
               </div>
 
               {/* Mobile Services Dropdown */}
-              <div>
+              <div className="bg-slate-50 rounded-lg overflow-hidden">
                 <button
-                  className="construction-link font-medium py-2 uppercase flex items-center justify-between w-full"
+                  className="w-full px-4 py-3 text-slate-700 hover:text-red-600 font-semibold uppercase tracking-wide flex items-center justify-between transition-colors"
                   onClick={() => setIsMobileServicesOpen(!isMobileServicesOpen)}
                 >
                   <span>{t('service')}</span>
-                  <svg className={`w-4 h-4 transform transition-transform ${isMobileServicesOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className={`w-5 h-5 transform transition-transform duration-200 ${isMobileServicesOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
                 {isMobileServicesOpen && (
-                  <div className="pl-4 mt-2 space-y-2">
+                  <div className="bg-white border-t border-gray-200">
                     <Link
                       href="/dich-vu"
-                      className="block construction-link text-sm py-1"
+                      className="block px-6 py-3 text-sm font-medium text-slate-800 hover:bg-red-50 hover:text-red-600 transition-colors border-b border-gray-100"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      TẤT CẢ DỊCH VỤ
+                      <div className="flex items-center space-x-3">
+                        <div className="w-2 h-2 bg-red-600 rounded-full"></div>
+                        <span>TẤT CẢ DỊCH VỤ</span>
+                      </div>
                     </Link>
                     {servicesList.map((service) => (
                       <Link
                         key={service.id}
                         href={service.href}
-                        className="block construction-link text-sm py-1"
+                        className="block px-6 py-2.5 text-sm text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors"
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        {service.name}
+                        <div className="flex items-center space-x-3">
+                          <div className="w-1.5 h-1.5 bg-slate-400 rounded-full"></div>
+                          <span className="line-clamp-2">{service.name}</span>
+                        </div>
                       </Link>
                     ))}
                   </div>
                 )}
               </div>
 
-              <Link href="/tin-tuc" className="construction-link font-medium py-2 uppercase" onClick={() => setIsMenuOpen(false)}>
+              <Link
+                href="/tin-tuc"
+                className="block px-4 py-3 text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-semibold uppercase tracking-wide transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 {t('news')}
               </Link>
-              <Link href="/lien-he" className="construction-link font-medium py-2 uppercase" onClick={() => setIsMenuOpen(false)}>
+              <Link
+                href="/lien-he"
+                className="block px-4 py-3 text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-semibold uppercase tracking-wide transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 {t('contact')}
               </Link>
+
+              {/* Mobile Language Switcher */}
+              <div className="pt-4 border-t border-gray-200">
+                <div className="flex items-center justify-center bg-slate-100 rounded-lg p-1">
+                  <button
+                    onClick={() => switchLanguage('vi')}
+                    disabled={isPending || locale === 'vi'}
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${locale === 'vi'
+                      ? 'bg-white text-slate-800 shadow-sm'
+                      : 'text-slate-600 hover:text-slate-800'
+                      } disabled:opacity-50`}
+                  >
+                    <span className="text-base">🇻🇳</span>
+                    <span>Tiếng Việt</span>
+                  </button>
+                  <button
+                    onClick={() => switchLanguage('en')}
+                    disabled={isPending || locale === 'en'}
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${locale === 'en'
+                      ? 'bg-white text-slate-800 shadow-sm'
+                      : 'text-slate-600 hover:text-slate-800'
+                      } disabled:opacity-50`}
+                  >
+                    <span className="text-base">🇬🇧</span>
+                    <span>English</span>
+                  </button>
+                </div>
+              </div>
+
+
             </div>
           </div>
         )}

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Header, Footer } from '@/components'
+import PageHeader from '@/components/PageHeader'
 import { useData } from '@/contexts/DataContext'
 
 export default function ProductsPage() {
@@ -27,38 +28,34 @@ export default function ProductsPage() {
     <div className="min-h-screen bg-white">
       <Header />
       
-      {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
-        {/* Industrial Background Pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="metal-texture w-full h-full"></div>
-        </div>
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="text-center">
-            <h1 className="text-5xl font-bold text-gray-800 mb-6 relative">
-              <span className="bg-gradient-to-r from-blue-800 to-blue-900 bg-clip-text text-transparent">SẢN PHẨM</span>
-              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-blue-600 to-red-600 rounded-full"></div>
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Cung cấp đầy đủ các loại sắt thép, hợp kim chất lượng cao nhập khẩu từ các nước tiên tiến
-            </p>
-          </div>
-        </div>
-      </section>
+      <PageHeader
+        title="SẢN PHẨM THÉP"
+        description="Cung cấp đầy đủ các loại sắt thép, hợp kim chất lượng cao nhập khẩu từ các nước tiên tiến. Đảm bảo chất lượng và độ tin cậy cho mọi dự án công nghiệp."
+        stats={[
+          { value: '500+', label: 'Sản phẩm', color: 'text-blue-600' },
+          { value: '15+', label: 'Năm kinh nghiệm', color: 'text-red-600' },
+          { value: '1000+', label: 'Khách hàng', color: 'text-green-600' },
+          { value: '24/7', label: 'Hỗ trợ', color: 'text-purple-600' }
+        ]}
+      />
 
-      {/* Category Filter */}
-      <section className="py-8 bg-white border-b">
+      {/* Modern Category Filter */}
+      <section className="py-12 bg-white/80 backdrop-blur-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-slate-800 mb-2">Danh mục sản phẩm</h2>
+            <p className="text-slate-600">Chọn danh mục để xem sản phẩm phù hợp</p>
+          </div>
+          
+          <div className="flex flex-wrap justify-center gap-3">
             {categories.map((category) => (
               <button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
-                className={`px-6 py-2 rounded-full font-medium transition-colors ${
+                className={`px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-200 hover-lift ${
                   selectedCategory === category.id
-                    ? 'bg-blue-800 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg'
+                    : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 hover:border-slate-300'
                 }`}
               >
                 {category.name}

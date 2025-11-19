@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Header, Footer } from '@/components'
+import PageHeader from '@/components/PageHeader'
 
 interface ImageItem {
   url: string
@@ -65,14 +66,16 @@ export default function AboutPage() {
     <div className="min-h-screen bg-white">
       <Header />
       
-      {/* Page Title Bar */}
-      <section className="py-8 bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-bold text-white text-center uppercase">
-            GIỚI THIỆU
-          </h1>
-        </div>
-      </section>
+      <PageHeader
+        title="GIỚI THIỆU CÔNG TY"
+        description="Công ty TNHH Phú An Phát - Đối tác tin cậy trong lĩnh vực cung cấp thép và gia công cơ khí chính xác với hơn 15 năm kinh nghiệm."
+        stats={[
+          { value: '2009', label: 'Thành lập', color: 'text-blue-600' },
+          { value: '15+', label: 'Năm kinh nghiệm', color: 'text-red-600' },
+          { value: '80%', label: 'Khách hàng Nhật', color: 'text-green-600' },
+          { value: '1000+', label: 'Dự án hoàn thành', color: 'text-purple-600' }
+        ]}
+      />
 
       {/* Company Info */}
       <section className="py-20 bg-white">
