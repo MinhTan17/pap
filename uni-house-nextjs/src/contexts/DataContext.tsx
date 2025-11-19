@@ -340,12 +340,16 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   // Reload all data from API
   const reloadFromStorage = useCallback(async () => {
     try {
+      console.log('🔄 Starting reload from storage...')
+      
       // Load products from API
       const productsRes = await fetch('/api/products', { cache: 'no-store' })
       if (productsRes.ok) {
         const productsData = await productsRes.json()
         setProducts(productsData)
         console.log('🔄 Reloaded products from API')
+      } else {
+        console.error('❌ Failed to reload products:', productsRes.status)
       }
       
       // Load services from API
@@ -354,6 +358,8 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         const servicesData = await servicesRes.json()
         setServices(servicesData)
         console.log('🔄 Reloaded services from API:', servicesData.length, 'services')
+      } else {
+        console.error('❌ Failed to reload services:', servicesRes.status)
       }
       
       // Load banners from API
@@ -362,6 +368,8 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         const bannersData = await bannersRes.json()
         setBanners(bannersData)
         console.log('🔄 Reloaded banners from API')
+      } else {
+        console.error('❌ Failed to reload banners:', bannersRes.status)
       }
       
       // Load news from API
@@ -370,9 +378,14 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         const newsData = await newsRes.json()
         if (newsData.articles) setNewsArticles(newsData.articles)
         console.log('🔄 Reloaded news from API')
+      } else {
+        console.error('❌ Failed to reload news:', newsRes.status)
       }
+      
+      console.log('✅ Reload from storage completed')
     } catch (error) {
-      console.error('Error reloading from API:', error)
+      console.error('❌ Error reloading from API:', error)
+      throw error // Re-throw so caller can handle
     }
   }, [])
 

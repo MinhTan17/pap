@@ -33,13 +33,16 @@ export async function POST(request: NextRequest) {
   const environment = process.env.VERCEL ? 'Vercel' : 'Local'
   
   try {
+    console.log(`[Services API] ${environment} - POST request started`)
+    
     // Check content length FIRST (before reading body)
     const contentLength = request.headers.get('content-length')
     const maxSize = 50 * 1024 * 1024 // 50MB
     
     console.log(`[Services API] ${environment} - POST request:`, {
       contentLength: contentLength ? `${(parseInt(contentLength) / 1024 / 1024).toFixed(2)}MB` : 'unknown',
-      maxAllowed: '50MB'
+      maxAllowed: '50MB',
+      headers: Object.fromEntries(request.headers.entries())
     })
     
     if (contentLength && parseInt(contentLength) > maxSize) {
@@ -63,11 +66,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid data format' }, { status: 400 })
     }
     
+    console.log(`[Services API] ${environment} - Connecting to database...`)
     const db = await getDatabase()
+    console.log(`[Services API] ${environment} - Database connected successfully`)
     
-    await db.collection('services').deleteMany({})
+    console.log(`[Services API] ${environment} - Deleting existing services...`)
+    const deleteResult = await db.collection('services').deleteMany({})
+    console.log(`[Services API] ${environment} - Deleted ${deleteResult.deletedCount} existing services`)
+    
     if (services.length > 0) {
-      await db.collection('services').insertMany(services)
+      console.log(`[Services API] ${environment} - Inserting ${services.length} new services...`)
+      const insertResult = await db.collection('services').insertMany(services)
+      console.log(`[Services API] ${environment} - Inserted ${insertResult.insertedCount} services`)
     }
     
     // Revalidate all pages that use services data

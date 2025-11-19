@@ -102,8 +102,12 @@ export default function ServiceDetailEditor() {
       await new Promise(resolve => setTimeout(resolve, 1500))
 
       // Reload data from API to ensure consistency
-      await reloadFromStorage()
-      console.log('✅ Đã reload data từ API')
+      try {
+        await reloadFromStorage()
+        console.log('✅ Đã reload data từ API')
+      } catch (reloadError) {
+        console.error('❌ Lỗi khi reload:', reloadError)
+      }
 
       // Wait for React state to update after reload
       await new Promise(resolve => setTimeout(resolve, 500))
