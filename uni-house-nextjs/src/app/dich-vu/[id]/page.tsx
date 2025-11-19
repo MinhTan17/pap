@@ -27,9 +27,13 @@ export default function ServiceDetailPage({ params }: ServiceDetailProps) {
     service.detailContent.replace(/<[^>]*>/g, '').trim().length > 0
 
   console.log('[Service Detail] Has real content:', hasRealContent)
+  console.log('[Service Detail] Text content:', service?.detailContent?.replace(/<[^>]*>/g, '').trim())
+
+  // TEMPORARY: Always show detailContent if it exists (for debugging)
+  const shouldShowDetailContent = service?.detailContent && service.detailContent.trim().length > 10
 
   // Nếu có detailContent từ admin với nội dung thực sự, hiển thị nó
-  if (hasRealContent) {
+  if (shouldShowDetailContent) {
     return (
       <>
         <Header />
