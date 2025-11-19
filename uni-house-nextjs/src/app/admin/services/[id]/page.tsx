@@ -105,12 +105,19 @@ export default function ServiceDetailEditor() {
       await reloadFromStorage()
       console.log('✅ Đã reload data từ API')
 
+      // Wait for React state to update after reload
+      await new Promise(resolve => setTimeout(resolve, 500))
+
       // Check if data was saved correctly
       const reloadedService = services.find(s => s.id === service.id)
+      console.log('🔍 Reloaded service:', reloadedService)
       console.log('🔍 Reloaded detailContent:', reloadedService?.detailContent?.substring(0, 200))
 
-      // Update local state to reflect changes
-      setService(updatedService)
+      // Update local state with reloaded data (not updatedService)
+      if (reloadedService) {
+        setService(reloadedService)
+        setDetailContent(reloadedService.detailContent || '')
+      }
       setHasUnsavedChanges(false)
       setIsEditing(false)
 
