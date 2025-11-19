@@ -1,11 +1,10 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useData } from '@/contexts/DataContext'
 import dynamic from 'next/dynamic'
 import { ServiceItem } from '@/data/services'
-import { authenticatedFetch } from '@/lib/api-client'
 
 // Import RichTextEditor dynamically to avoid SSR issues
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), {
@@ -22,7 +21,6 @@ export default function ServiceDetailEditor() {
   const [detailContent, setDetailContent] = useState('')
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Load service from DataContext
   useEffect(() => {
@@ -37,43 +35,40 @@ export default function ServiceDetailEditor() {
   // Upload image function for RichTextEditor - Direct Cloudinary upload
   const handleImageUpload = useCallback(async (): Promise<string> => {
     return new Promise((resolve, reject) => {
-      if (fileInputRef.current) {
-        fileInputRef.current.click()
-      }
-
-      const handleFileChange = async (event: Event) => {
-        const file = (event.target as HTMLInputElement).files?.[0]
-        if (file) {
-          try {
-            // Import upload function dynamically
-            const { uploadToCloudinary } = await import('@/lib/cloudinary-upload')
-            
-            // Upload directly to Cloudinary
-            const result = await uploadToCloudinary(file, 'services')
-            
-            if (result.success && result.url) {
-              resolve(result.url)
-              console.log('✅ Uploaded image for editor:', result.url)
-            } else {
-              reject(new Error(result.error || 'Upload failed'))
-            }
-          } catch (error: any) {
-            console.error('Upload error:', error)
-            reject(error)
-          }
-        } else {
+      const input = document.createElement('input')
+      input.type = 'file'
+      input.accept = 'image/*'
+      
+      input.onchange = async (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0]
+        if (!file) {
           reject(new Error('No file selected'))
+          return
         }
 
-        // Remove event listener
-        if (fileInputRef.current) {
-          fileInputRef.current.removeEventListener('change', handleFileChange)
+        try {
+          console.log('📤 Uploading image:', file.name, file.size, 'bytes')
+          
+          // Import upload function dynamically
+          const { uploadToCloudinary } = await import('@/lib/cloudinary-upload')
+          
+          // Upload directly to Cloudinary
+          const result = await uploadToCloudinary(file, 'services')
+          
+          if (result.success && result.url) {
+            console.log('✅ Uploaded image successfully:', result.url)
+            resolve(result.url)
+          } else {
+            console.error('❌ Upload failed:', result.error)
+            reject(new Error(result.error || 'Upload failed'))
+          }
+        } catch (error: any) {
+          console.error('❌ Upload error:', error)
+          reject(error)
         }
       }
 
-      if (fileInputRef.current) {
-        fileInputRef.current.addEventListener('change', handleFileChange)
-      }
+      input.click()
     })
   }, [])
 
@@ -270,14 +265,7 @@ export default function ServiceDetailEditor() {
         </div>
       )}
 
-      {/* Hidden file input for image upload */}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        style={{ display: 'none' }}
-        onChange={() => { }} // Handled by handleImageUpload
-      />
+
     </div>
   )
 }
