@@ -3,6 +3,7 @@
 import { Header, Footer } from '@/components'
 import { useData } from '@/contexts/DataContext'
 import { use } from 'react'
+import React from 'react'
 import { styleSettingsToCSS } from '@/utils/styleUtils'
 
 interface ServiceDetailProps {
@@ -11,8 +12,13 @@ interface ServiceDetailProps {
 
 export default function ServiceDetailPage({ params }: ServiceDetailProps) {
   const resolvedParams = use(params)
-  const { services } = useData()
+  const { services, reloadFromStorage } = useData()
   const service = services.find(s => String(s.id) === resolvedParams.id)
+
+  // Force reload data when page loads
+  React.useEffect(() => {
+    reloadFromStorage()
+  }, [resolvedParams.id, reloadFromStorage])
 
   // Debug logging
   console.log('[Service Detail] ID:', resolvedParams.id)
@@ -29,8 +35,12 @@ export default function ServiceDetailPage({ params }: ServiceDetailProps) {
   console.log('[Service Detail] Has real content:', hasRealContent)
   console.log('[Service Detail] Text content:', service?.detailContent?.replace(/<[^>]*>/g, '').trim())
 
-  // TEMPORARY: Always show detailContent if it exists (for debugging)
-  const shouldShowDetailContent = service?.detailContent && service.detailContent.trim().length > 10
+  // Show detailContent if it has meaningful content (more than just HTML tags)
+  const textContent = service?.detailContent?.replace(/<[^>]*>/g, '').trim() || ''
+  const shouldShowDetailContent = service?.detailContent && textContent.length > 5
+  
+  console.log('[Service Detail] Text content length:', textContent.length)
+  console.log('[Service Detail] Should show:', shouldShowDetailContent)
 
   // Nếu có detailContent từ admin với nội dung thực sự, hiển thị nó
   if (shouldShowDetailContent) {
