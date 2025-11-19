@@ -13,7 +13,14 @@ export async function GET() {
     const db = await getDatabase()
     const services = await db.collection('services').find({}).toArray()
     
-    return NextResponse.json(services)
+    // Transform MongoDB documents to remove _id and ensure proper format
+    const transformedServices = services.map(service => {
+      const { _id, ...rest } = service
+      return rest
+    })
+    
+    console.log('[Services API] Returning', transformedServices.length, 'services')
+    return NextResponse.json(transformedServices)
   } catch (error) {
     console.error('[Services API] Error:', error)
     return NextResponse.json({ error: 'Failed to fetch services', details: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 })
