@@ -8,6 +8,10 @@ import { processSteps } from '@/data/common'
 export default function ServicesPage() {
   const { services } = useData()
 
+  // Debug logging
+  console.log('[Services Page] Services count:', services?.length || 0)
+  console.log('[Services Page] Services data:', services)
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -40,8 +44,14 @@ export default function ServicesPage() {
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service, index) => (
+          {!services || services.length === 0 ? (
+            <div className="text-center py-20">
+              <h3 className="text-2xl font-bold text-gray-800 mb-4">Đang tải dịch vụ...</h3>
+              <p className="text-gray-600">Vui lòng đợi trong giây lát</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {services.map((service, index) => (
               <div key={service.id} className="group cursor-pointer precision-cut" style={{ animationDelay: `${index * 0.2}s` }}>
                 <Link href={`/dich-vu/${service.id}`} className="block">
                   <div className="relative overflow-hidden rounded-lg shadow-xl hover:shadow-2xl transition-all duration-500 steel-glow bg-white border border-gray-200">
@@ -100,8 +110,9 @@ export default function ServicesPage() {
                   </div>
                 </Link>
               </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
