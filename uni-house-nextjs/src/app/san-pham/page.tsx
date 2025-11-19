@@ -1,13 +1,23 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Header, Footer } from '@/components'
 import { useData } from '@/contexts/DataContext'
 
 export default function ProductsPage() {
   const { categories, products } = useData()
+  const searchParams = useSearchParams()
   const [selectedCategory, setSelectedCategory] = useState('all')
+
+  // Set initial category from URL parameter
+  useEffect(() => {
+    const categoryParam = searchParams.get('category')
+    if (categoryParam && categories.some(cat => cat.id === categoryParam)) {
+      setSelectedCategory(categoryParam)
+    }
+  }, [searchParams, categories])
 
   const filteredProducts = selectedCategory === 'all' 
     ? products 

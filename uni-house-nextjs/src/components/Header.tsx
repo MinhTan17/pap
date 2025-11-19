@@ -1,16 +1,24 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslations, useLocale } from 'next-intl'
 import { useRouter } from 'next/navigation'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isProductsDropdownOpen, setIsProductsDropdownOpen] = useState(false)
+  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false)
+  const [isMobileProductsOpen, setIsMobileProductsOpen] = useState(false)
+  const [isMobileServicesOpen, setIsMobileServicesOpen] = useState(false)
+  
   const t = useTranslations('nav')
   const locale = useLocale()
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
+  
+  const productsDropdownRef = useRef<HTMLDivElement>(null)
+  const servicesDropdownRef = useRef<HTMLDivElement>(null)
 
   const switchLanguage = (newLocale: string) => {
     startTransition(() => {
@@ -18,6 +26,40 @@ export default function Header() {
       router.refresh()
     })
   }
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (productsDropdownRef.current && !productsDropdownRef.current.contains(event.target as Node)) {
+        setIsProductsDropdownOpen(false)
+      }
+      if (servicesDropdownRef.current && !servicesDropdownRef.current.contains(event.target as Node)) {
+        setIsServicesDropdownOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  // Product categories for dropdown
+  const productCategories = [
+    { id: 'alloy', name: 'HỢP KIM', href: '/san-pham?category=alloy' },
+    { id: 'mold-steel', name: 'THÉP LÀM KHUÔN', href: '/san-pham?category=mold-steel' },
+    { id: 'machine-steel', name: 'THÉP CHẾ TẠO MÁY', href: '/san-pham?category=machine-steel' },
+    { id: 'carbon-steel', name: 'THÉP CARBON', href: '/san-pham?category=carbon-steel' },
+    { id: 'stainless-steel', name: 'THÉP KHÔNG RỈ', href: '/san-pham?category=stainless-steel' }
+  ]
+
+  // Services for dropdown
+  const servicesList = [
+    { id: 1, name: 'GIA CÔNG CẮT LASER CNC', href: '/dich-vu/1' },
+    { id: 2, name: 'GIA CÔNG PHAY VÀ MÀI 6 MẶT', href: '/dich-vu/2' },
+    { id: 3, name: 'GIA CÔNG CẮT CƯA THÉP', href: '/dich-vu/3' },
+    { id: 4, name: 'XỬ LÝ NHIỆT - NHIỆT LUYỆN', href: '/dich-vu/4' },
+    { id: 5, name: 'GIA CÔNG CẮT PLASMA', href: '/dich-vu/5' },
+    { id: 6, name: 'GIA CÔNG OXY GAS - CNC', href: '/dich-vu/6' }
+  ]
 
   return (
     <header className="construction-header-bg sticky top-0 z-50">
@@ -43,12 +85,89 @@ export default function Header() {
             <Link href="/gioi-thieu" className="construction-link font-medium uppercase">
               {t('about')}
             </Link>
-            <Link href="/san-pham" className="construction-link font-medium uppercase">
-              {t('product')}
-            </Link>
-            <Link href="/dich-vu" className="construction-link font-medium uppercase">
-              {t('service')}
-            </Link>
+            
+            {/* Products Dropdown */}
+            <div className="relative" ref={productsDropdownRef}>
+              <button
+                className="construction-link font-medium uppercase flex items-center space-x-1"
+                onMouseEnter={() => setIsProductsDropdownOpen(true)}
+                onClick={() => setIsProductsDropdownOpen(!isProductsDropdownOpen)}
+              >
+                <span>{t('product')}</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {isProductsDropdownOpen && (
+                <div 
+                  className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border z-50"
+                  onMouseLeave={() => setIsProductsDropdownOpen(false)}
+                >
+                  <div className="py-2">
+                    <Link
+                      href="/san-pham"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium border-b"
+                      onClick={() => setIsProductsDropdownOpen(false)}
+                    >
+                      TẤT CẢ SẢN PHẨM
+                    </Link>
+                    {productCategories.map((category) => (
+                      <Link
+                        key={category.id}
+                        href={category.href}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setIsProductsDropdownOpen(false)}
+                      >
+                        {category.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Services Dropdown */}
+            <div className="relative" ref={servicesDropdownRef}>
+              <button
+                className="construction-link font-medium uppercase flex items-center space-x-1"
+                onMouseEnter={() => setIsServicesDropdownOpen(true)}
+                onClick={() => setIsServicesDropdownOpen(!isServicesDropdownOpen)}
+              >
+                <span>{t('service')}</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {isServicesDropdownOpen && (
+                <div 
+                  className="absolute top-full left-0 mt-2 w-72 bg-white rounded-lg shadow-lg border z-50"
+                  onMouseLeave={() => setIsServicesDropdownOpen(false)}
+                >
+                  <div className="py-2">
+                    <Link
+                      href="/dich-vu"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium border-b"
+                      onClick={() => setIsServicesDropdownOpen(false)}
+                    >
+                      TẤT CẢ DỊCH VỤ
+                    </Link>
+                    {servicesList.map((service) => (
+                      <Link
+                        key={service.id}
+                        href={service.href}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setIsServicesDropdownOpen(false)}
+                      >
+                        {service.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
             <Link href="/tin-tuc" className="construction-link font-medium uppercase">
               {t('news')}
             </Link>
@@ -99,12 +218,75 @@ export default function Header() {
               <Link href="/gioi-thieu" className="construction-link font-medium py-2 uppercase" onClick={() => setIsMenuOpen(false)}>
                 {t('about')}
               </Link>
-              <Link href="/san-pham" className="construction-link font-medium py-2 uppercase" onClick={() => setIsMenuOpen(false)}>
-                {t('product')}
-              </Link>
-              <Link href="/dich-vu" className="construction-link font-medium py-2 uppercase" onClick={() => setIsMenuOpen(false)}>
-                {t('service')}
-              </Link>
+              
+              {/* Mobile Products Dropdown */}
+              <div>
+                <button
+                  className="construction-link font-medium py-2 uppercase flex items-center justify-between w-full"
+                  onClick={() => setIsMobileProductsOpen(!isMobileProductsOpen)}
+                >
+                  <span>{t('product')}</span>
+                  <svg className={`w-4 h-4 transform transition-transform ${isMobileProductsOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {isMobileProductsOpen && (
+                  <div className="pl-4 mt-2 space-y-2">
+                    <Link
+                      href="/san-pham"
+                      className="block construction-link text-sm py-1"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      TẤT CẢ SẢN PHẨM
+                    </Link>
+                    {productCategories.map((category) => (
+                      <Link
+                        key={category.id}
+                        href={category.href}
+                        className="block construction-link text-sm py-1"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {category.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Mobile Services Dropdown */}
+              <div>
+                <button
+                  className="construction-link font-medium py-2 uppercase flex items-center justify-between w-full"
+                  onClick={() => setIsMobileServicesOpen(!isMobileServicesOpen)}
+                >
+                  <span>{t('service')}</span>
+                  <svg className={`w-4 h-4 transform transition-transform ${isMobileServicesOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {isMobileServicesOpen && (
+                  <div className="pl-4 mt-2 space-y-2">
+                    <Link
+                      href="/dich-vu"
+                      className="block construction-link text-sm py-1"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      TẤT CẢ DỊCH VỤ
+                    </Link>
+                    {servicesList.map((service) => (
+                      <Link
+                        key={service.id}
+                        href={service.href}
+                        className="block construction-link text-sm py-1"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {service.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               <Link href="/tin-tuc" className="construction-link font-medium py-2 uppercase" onClick={() => setIsMenuOpen(false)}>
                 {t('news')}
               </Link>
