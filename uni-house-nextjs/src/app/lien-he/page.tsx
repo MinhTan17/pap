@@ -83,7 +83,7 @@ export default function ContactPage() {
         stats={[
           { value: '24/7', label: 'Hỗ trợ', color: 'text-blue-600' },
           { value: '<1h', label: 'Phản hồi', color: 'text-red-600' },
-          { value: '3', label: 'Chi nhánh', color: 'text-green-600' },
+          { value: '4', label: 'Chi nhánh', color: 'text-green-600' },
           { value: '100%', label: 'Tư vấn miễn phí', color: 'text-purple-600' }
         ]}
       />

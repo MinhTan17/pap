@@ -82,7 +82,7 @@ export default function Header() {
                   PHÚ AN PHÁT
                 </div>
                 <div className="text-xs lg:text-sm text-slate-500 font-medium tracking-wide whitespace-nowrap hidden md:block">
-                  STEEL & PRECISION ENGINEERING
+                  PROFESSIONAL STEEL SUPPLIER
                 </div>
               </div>
             </Link>
