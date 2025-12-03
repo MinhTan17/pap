@@ -37,7 +37,7 @@ const FloatingContactIcons: React.FC = () => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY
-      
+
       if (currentScrollY < 100) {
         setIsVisible(true)
       } else if (currentScrollY > lastScrollY && currentScrollY > 200) {
@@ -45,7 +45,7 @@ const FloatingContactIcons: React.FC = () => {
       } else if (currentScrollY < lastScrollY) {
         setIsVisible(true)
       }
-      
+
       setLastScrollY(currentScrollY)
     }
 
@@ -54,18 +54,53 @@ const FloatingContactIcons: React.FC = () => {
   }, [lastScrollY])
 
   return (
-    <div className={`fixed right-4 sm:right-6 top-1/2 transform translate-y-8 z-50 space-y-4 hidden md:block transition-all duration-500 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-50 translate-x-4'}`}>
-      {icons.map((icon, index) => (
-        <FloatingContactIcon
-          key={icon.type}
-          type={icon.type}
-          href={icon.href}
-          color={icon.color}
-          label={icon.label}
-          delay={index * 0.2}
-        />
-      ))}
-    </div>
+    <>
+      {/* Desktop - Vertical layout on right side */}
+      <div className={`fixed right-4 sm:right-6 top-1/2 transform -translate-y-1/2 z-50 space-y-4 hidden md:block transition-all duration-500 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-50 translate-x-4'}`}>
+        {icons.map((icon, index) => (
+          <FloatingContactIcon
+            key={icon.type}
+            type={icon.type}
+            href={icon.href}
+            color={icon.color}
+            label={icon.label}
+            delay={index * 0.2}
+          />
+        ))}
+      </div>
+
+      {/* Mobile - Horizontal layout at bottom */}
+      <div className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 flex gap-4 md:hidden transition-all duration-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+        {icons.map((icon, index) => (
+          <a
+            key={icon.type}
+            href={icon.href}
+            target={icon.type === 'phone' ? '_self' : '_blank'}
+            rel={icon.type === 'phone' ? '' : 'noopener noreferrer'}
+            className="w-12 h-12 rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform"
+            style={{ backgroundColor: icon.color }}
+          >
+            {icon.type === 'zalo' && (
+              <svg viewBox="0 0 24 24" className="w-6 h-6" fill="white">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
+                <path d="M7.5 8.5h9v7h-9v-7z" fill="#0068FF" />
+                <path d="M9 10.5h6v1h-6v-1zM9 12.5h4v1h-4v-1z" fill="white" />
+              </svg>
+            )}
+            {icon.type === 'fanpage' && (
+              <svg viewBox="0 0 24 24" className="w-6 h-6" fill="white">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+              </svg>
+            )}
+            {icon.type === 'phone' && (
+              <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="white" strokeWidth="2">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+            )}
+          </a>
+        ))}
+      </div>
+    </>
   )
 }
 
@@ -81,21 +116,21 @@ const FloatingContactIcon: React.FC<FloatingContactIconProps & { delay: number }
       case 'zalo':
         return (
           <svg viewBox="0 0 24 24" className="w-6 h-6" fill="white">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-            <path d="M7.5 8.5h9v7h-9v-7z" fill="#0068FF"/>
-            <path d="M9 10.5h6v1h-6v-1zM9 12.5h4v1h-4v-1z" fill="white"/>
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
+            <path d="M7.5 8.5h9v7h-9v-7z" fill="#0068FF" />
+            <path d="M9 10.5h6v1h-6v-1zM9 12.5h4v1h-4v-1z" fill="white" />
           </svg>
         )
       case 'fanpage':
         return (
           <svg viewBox="0 0 24 24" className="w-6 h-6" fill="white">
-            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
           </svg>
         )
       case 'phone':
         return (
           <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="white" strokeWidth="2">
-            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
           </svg>
         )
       default:
@@ -104,9 +139,9 @@ const FloatingContactIcon: React.FC<FloatingContactIconProps & { delay: number }
   }
 
   return (
-    <div 
+    <div
       className="relative group animate-fade-in-up"
-      style={{ 
+      style={{
         animationDelay: `${delay}s`,
         animationFillMode: 'both'
       }}
@@ -121,7 +156,7 @@ const FloatingContactIcon: React.FC<FloatingContactIconProps & { delay: number }
         {/* Expanding wave effect */}
         <div className="absolute inset-0 rounded-full">
           {/* Wave Ring 1 */}
-          <div 
+          <div
             className="absolute inset-0 rounded-full border-2 opacity-70"
             style={{
               borderColor: color,
@@ -129,7 +164,7 @@ const FloatingContactIcon: React.FC<FloatingContactIconProps & { delay: number }
             }}
           />
           {/* Wave Ring 2 */}
-          <div 
+          <div
             className="absolute inset-0 rounded-full border-2 opacity-50"
             style={{
               borderColor: color,
@@ -138,7 +173,7 @@ const FloatingContactIcon: React.FC<FloatingContactIconProps & { delay: number }
             }}
           />
           {/* Wave Ring 3 */}
-          <div 
+          <div
             className="absolute inset-0 rounded-full border-2 opacity-30"
             style={{
               borderColor: color,
@@ -149,7 +184,7 @@ const FloatingContactIcon: React.FC<FloatingContactIconProps & { delay: number }
         </div>
 
         {/* Main icon */}
-        <div 
+        <div
           className="relative w-12 h-12 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 group-hover:scale-110 group-hover:shadow-2xl group-hover:rotate-6"
           style={{ backgroundColor: color }}
         >
