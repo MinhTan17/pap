@@ -157,14 +157,31 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="mt-8 pt-6 border-t border-white/10">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
-            <span>{t('copyright')}</span>
-            <div className="flex items-center gap-4">
-              <span className="flex items-center gap-1">
-                Design by <span className="text-gray-300">Võ Minh Tân</span>
-              </span>
-              <a href="https://zalo.me/0337854179" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+            <span className="text-gray-500">{t('copyright')}</span>
+            
+            {/* Developer Credit - Professional Style */}
+            <div className="flex items-center gap-3 px-4 py-2 bg-white/5 rounded-full border border-white/10">
+              <div className="flex items-center gap-2">
+                
+                <span className="text-gray-400">Design by</span>
+                <span className="text-white font-medium">Võ Minh Tân</span>
+              </div>
+              <span className="text-gray-600">|</span>
+              <a 
+                href="https://zalo.me/0337854179" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-blue-400 hover:text-blue-300 transition-colors font-medium"
+              >
                 0337 854 179
+              </a>
+              <span className="text-gray-600">|</span>
+              <a 
+                href="mailto:vominhtan.contact@gmail.com" 
+                className="text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                vominhtan.contact@gmail.com
               </a>
             </div>
           </div>
