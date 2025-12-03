@@ -111,7 +111,7 @@ export default function Hero() {
   const offset = -(currentSlide * 100)
 
   return (
-    <section className="relative h-[70vh] md:h-[85vh] overflow-hidden">
+    <section className="relative w-full h-[50vh] sm:h-[60vh] md:h-[85vh] overflow-hidden">
       {/* Modern Background Pattern */}
       <div className="absolute inset-0 modern-industrial"></div>
 
@@ -140,7 +140,7 @@ export default function Hero() {
                     <img
                       src={slide.image}
                       alt={slide.imageAlt || slide.title}
-                      className="hero-image w-full h-full object-cover scale-105 transition-transform duration-[10s] ease-out"
+                      className="hero-image w-full h-full object-cover object-center transition-transform duration-[10s] ease-out"
                       onLoad={() => {
                         console.log('✅ Ảnh load thành công:', slide.image)
                       }}
@@ -235,10 +235,10 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Navigation Arrows */}
+      {/* Navigation Arrows - Hidden on mobile */}
       <button
         onClick={handlePrevious}
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all duration-200 hover-lift"
+        className="hidden md:flex absolute left-4 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full border border-white/20 items-center justify-center text-white hover:bg-white/20 transition-all duration-200 hover-lift"
         aria-label="Previous slide"
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -248,7 +248,7 @@ export default function Hero() {
       
       <button
         onClick={handleNext}
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all duration-200 hover-lift"
+        className="hidden md:flex absolute right-4 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full border border-white/20 items-center justify-center text-white hover:bg-white/20 transition-all duration-200 hover-lift"
         aria-label="Next slide"
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
