@@ -89,17 +89,17 @@ export default function Header() {
           </div>
 
           {/* Navigation Section */}
-          <nav className="hidden lg:flex items-center justify-center flex-1 min-w-0">
-            <div className="flex items-center space-x-2 xl:space-x-4 2xl:space-x-6 flex-nowrap">
+          <nav className="hidden lg:flex items-center justify-end flex-1 min-w-0 mr-8">
+            <div className="flex items-center gap-0 flex-nowrap">
               <Link
                 href="/"
-                className="px-3 xl:px-4 py-2 text-sm xl:text-base font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide whitespace-nowrap"
+                className="px-2 xl:px-3 py-2 text-sm xl:text-base font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide whitespace-nowrap"
               >
                 {t('home')}
               </Link>
               <Link
                 href="/gioi-thieu"
-                className="px-3 xl:px-4 py-2 text-sm xl:text-base font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide whitespace-nowrap"
+                className="px-2 xl:px-3 py-2 text-sm xl:text-base font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide whitespace-nowrap"
               >
                 {t('about')}
               </Link>
@@ -107,7 +107,7 @@ export default function Header() {
               {/* Products Dropdown */}
               <div className="relative" ref={productsDropdownRef}>
                 <button
-                  className="px-3 xl:px-4 py-2 text-sm xl:text-base font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide flex items-center space-x-1 group whitespace-nowrap"
+                  className="px-2 xl:px-3 py-2 text-sm xl:text-base font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide flex items-center space-x-1 group whitespace-nowrap"
                   onClick={() => setIsProductsDropdownOpen(!isProductsDropdownOpen)}
                 >
                   <span>{t('product')}</span>
@@ -155,7 +155,7 @@ export default function Header() {
               {/* Services Dropdown */}
               <div className="relative" ref={servicesDropdownRef}>
                 <button
-                  className="px-3 xl:px-4 py-2 text-sm xl:text-base font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide flex items-center space-x-1 group whitespace-nowrap"
+                  className="px-2 xl:px-3 py-2 text-sm xl:text-base font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide flex items-center space-x-1 group whitespace-nowrap"
                   onClick={() => setIsServicesDropdownOpen(!isServicesDropdownOpen)}
                 >
                   <span>{t('service')}</span>
@@ -202,13 +202,13 @@ export default function Header() {
 
               <Link
                 href="/tin-tuc"
-                className="px-3 xl:px-4 py-2 text-sm xl:text-base font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide whitespace-nowrap"
+                className="px-2 xl:px-3 py-2 text-sm xl:text-base font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide whitespace-nowrap"
               >
                 {t('news')}
               </Link>
               <Link
                 href="/lien-he"
-                className="px-3 xl:px-4 py-2 text-sm xl:text-base font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide whitespace-nowrap"
+                className="px-2 xl:px-3 py-2 text-sm xl:text-base font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 uppercase tracking-wide whitespace-nowrap"
               >
                 {t('contact')}
               </Link>
