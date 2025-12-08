@@ -41,36 +41,75 @@ export default function BannersManagement() {
     setIsAdding(false)
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!editingBanner) return
 
     console.log('💾 Đang lưu banner:', editingBanner)
 
+    let updatedBanners: BannerSlide[]
+    
     if (isAdding) {
+      updatedBanners = [...banners, editingBanner]
       addBanner(editingBanner)
       console.log('✅ Đã thêm banner mới')
-      showNotification('✅ Đã thêm banner mới thành công! Reload trang chủ để xem thay đổi.')
     } else {
+      updatedBanners = banners.map(b => b.id === editingBanner.id ? editingBanner : b)
       updateBanner(editingBanner.id, editingBanner)
       console.log('✅ Đã cập nhật banner')
-      showNotification('✅ Đã cập nhật banner thành công! Reload trang chủ để xem thay đổi.')
+    }
+
+    // Save directly to API
+    try {
+      showNotification('⏳ Đang lưu vào database...')
+      
+      const { authenticatedFetch } = await import('@/lib/auth-client')
+      const response = await authenticatedFetch('/api/banners', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedBanners)
+      })
+      
+      const data = await response.json()
+      if (data.success) {
+        showNotification('✅ Đã lưu thành công! Reload trang chủ để xem thay đổi.')
+      } else {
+        showNotification('❌ Lỗi: ' + (data.error || 'Không thể lưu'))
+      }
+    } catch (error) {
+      console.error('Save error:', error)
+      showNotification('❌ Lỗi khi lưu: ' + (error instanceof Error ? error.message : 'Unknown'))
     }
 
     setEditingBanner(null)
     setIsAdding(false)
-    
-    // Mở trang chủ trong tab mới sau 1 giây
-    // setTimeout(() => {
-    //   if (confirm('🔄 Mở trang chủ để xem thay đổi?')) {
-    //     window.open('/', '_blank')
-    //   }
-    // }, 1000)
   }
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     if (confirm('Bạn có chắc muốn xóa banner này?')) {
+      const updatedBanners = banners.filter(b => b.id !== id)
       deleteBanner(id)
-      showNotification('🗑️ Đã xóa banner thành công!')
+      
+      // Save directly to API
+      try {
+        showNotification('⏳ Đang xóa...')
+        
+        const { authenticatedFetch } = await import('@/lib/auth-client')
+        const response = await authenticatedFetch('/api/banners', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedBanners)
+        })
+        
+        const data = await response.json()
+        if (data.success) {
+          showNotification('🗑️ Đã xóa banner thành công!')
+        } else {
+          showNotification('❌ Lỗi: ' + (data.error || 'Không thể xóa'))
+        }
+      } catch (error) {
+        console.error('Delete error:', error)
+        showNotification('❌ Lỗi khi xóa: ' + (error instanceof Error ? error.message : 'Unknown'))
+      }
     }
   }
 

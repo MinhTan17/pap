@@ -184,15 +184,21 @@ export default function ProductsManagement() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                     <button
                       onClick={() => handleEdit(product)}
-                      className="text-blue-600 hover:text-blue-900"
+                      className="text-orange-600 hover:text-orange-900 bg-orange-50 px-2 py-1 rounded"
                     >
-                      Sửa
+                      ✎ Chỉnh sửa chi tiết
                     </button>
+                    <a
+                      href={`/admin/products/${product.id}`}
+                      className="text-green-600 hover:text-green-900 bg-green-50 px-2 py-1 rounded"
+                    >
+                      ✏️ Chỉnh sửa nhanh
+                    </a>
                     <button
                       onClick={() => handleDelete(product.id)}
                       className="text-red-600 hover:text-red-900"
                     >
-                      Xóa
+                      🗑️ Xóa
                     </button>
                   </td>
                 </tr>

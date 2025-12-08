@@ -52,7 +52,7 @@ export default function Partners() {
 
             return partner.website ? (
               <a
-                key={partner.id}
+                key={`partner-link-${partner.id}`}
                 href={partner.website}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -61,7 +61,7 @@ export default function Partners() {
                 {CardContent}
               </a>
             ) : (
-              <div key={partner.id}>
+              <div key={`partner-div-${partner.id}`}>
                 {CardContent}
               </div>
             )

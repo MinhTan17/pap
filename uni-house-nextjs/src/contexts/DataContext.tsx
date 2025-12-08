@@ -51,14 +51,16 @@ const DataContext = createContext<DataContextType | undefined>(undefined)
 
 export function DataProvider({ children }: { children: React.ReactNode }) {
   // Refs to track save operations and prevent infinite loops
-  const servicesSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const productsSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const bannersSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const newsSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const isSavingServicesRef = useRef(false)
   const isSavingProductsRef = useRef(false)
   const isSavingBannersRef = useRef(false)
   const isSavingNewsRef = useRef(false)
+  
+  // Flag to prevent auto-save during initial load
+  const isInitialLoadRef = useRef(true)
+  const hasLoadedRef = useRef(false)
   
   // Initialize state - load from API on mount
   const [services, setServices] = useState<ServiceItem[]>(initialServices)
@@ -129,16 +131,31 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
           const newsRes = await fetch('/api/news', { cache: 'no-store' })
           if (newsRes.ok) {
             const newsData = await newsRes.json()
-            if (newsData.articles) setNewsArticles(newsData.articles)
-            console.log('✅ Loaded news from API')
+            if (newsData.articles && Array.isArray(newsData.articles)) {
+              // Remove duplicates by ID - keep only first occurrence
+              const uniqueArticles = newsData.articles.filter(
+                (article: NewsItem, index: number, self: NewsItem[]) => 
+                  index === self.findIndex((a) => a.id === article.id)
+              )
+              setNewsArticles(uniqueArticles)
+              console.log('✅ Loaded news from API:', uniqueArticles.length, 'articles (deduplicated)')
+            }
           }
         } catch (newsError) {
           console.error('❌ News API error:', newsError)
         }
         
         console.log('✅ DataContext: Initial data load completed')
+        
+        // Mark initial load as complete after a delay to prevent auto-save
+        setTimeout(() => {
+          isInitialLoadRef.current = false
+          hasLoadedRef.current = true
+          console.log('✅ DataContext: Ready for auto-save')
+        }, 2000)
       } catch (error) {
         console.error('❌ DataContext: Critical error loading data from API:', error)
+        isInitialLoadRef.current = false
       }
     }
     
@@ -161,6 +178,12 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   }, [services])
 
   useEffect(() => {
+    // Skip auto-save during initial load
+    if (isInitialLoadRef.current || !hasLoadedRef.current) {
+      console.log('⏭️ Skipping products auto-save (initial load)')
+      return
+    }
+    
     // Clear existing timeout
     if (productsSaveTimeoutRef.current) {
       clearTimeout(productsSaveTimeoutRef.current)
@@ -199,6 +222,12 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   }, [categories])
 
   useEffect(() => {
+    // Skip auto-save during initial load
+    if (isInitialLoadRef.current || !hasLoadedRef.current) {
+      console.log('⏭️ Skipping news auto-save (initial load)')
+      return
+    }
+    
     // Clear existing timeout
     if (newsSaveTimeoutRef.current) {
       clearTimeout(newsSaveTimeoutRef.current)
@@ -232,6 +261,12 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   }, [newsArticles])
 
   useEffect(() => {
+    // Skip auto-save during initial load
+    if (isInitialLoadRef.current || !hasLoadedRef.current) {
+      console.log('⏭️ Skipping banners auto-save (initial load)')
+      return
+    }
+    
     // Clear existing timeout
     if (bannersSaveTimeoutRef.current) {
       clearTimeout(bannersSaveTimeoutRef.current)
@@ -388,8 +423,15 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       const newsRes = await fetch('/api/news', { cache: 'no-store' })
       if (newsRes.ok) {
         const newsData = await newsRes.json()
-        if (newsData.articles) setNewsArticles(newsData.articles)
-        console.log('🔄 Reloaded news from API')
+        if (newsData.articles && Array.isArray(newsData.articles)) {
+          // Remove duplicates by ID
+          const uniqueArticles = newsData.articles.filter(
+            (article: NewsItem, index: number, self: NewsItem[]) => 
+              index === self.findIndex((a) => a.id === article.id)
+          )
+          setNewsArticles(uniqueArticles)
+          console.log('🔄 Reloaded news from API:', uniqueArticles.length, 'articles')
+        }
       } else {
         console.error('❌ Failed to reload news:', newsRes.status)
       }

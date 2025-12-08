@@ -69,8 +69,8 @@ export default function NewsManagement() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {newsArticles.map((newsItem) => (
-                <tr key={newsItem.id}>
+              {newsArticles.map((newsItem, index) => (
+                <tr key={`news-admin-${newsItem.id}-${index}`}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {newsItem.id}
                   </td>

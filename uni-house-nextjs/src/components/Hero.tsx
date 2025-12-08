@@ -130,7 +130,7 @@ export default function Hero() {
         >
           {banners.map((slide, index) => (
             <div
-              key={`${slide.id}-${slide.image}`}
+              key={`slide-${index}-${slide.id}`}
               className="flex-shrink-0 w-full h-full"
             >
               <div className={`h-full relative overflow-hidden bg-gradient-to-br ${slide.gradient}`}>
@@ -220,9 +220,9 @@ export default function Hero() {
       {/* Modern Navigation Dots */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
         <div className="flex items-center space-x-3 bg-white/10 backdrop-blur-md rounded-full px-6 py-3 border border-white/20">
-          {banners.map((_, index) => (
+          {banners.map((banner, index) => (
             <button
-              key={index}
+              key={`dot-${index}-${banner.id}`}
               onClick={() => handleDotClick(index)}
               className={`transition-all duration-300 ${
                 index === currentSlide 

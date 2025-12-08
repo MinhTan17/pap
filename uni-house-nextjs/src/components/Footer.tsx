@@ -52,8 +52,8 @@ export default function Footer() {
                 { href: '/dich-vu/4', name: 'Xử lý nhiệt - Nhiệt luyện' },
                 { href: '/dich-vu/5', name: 'Gia công cắt Plasma' },
                 { href: '/dich-vu/6', name: 'Gia công Oxy Gas - CNC' },
-              ].map((service, index) => (
-                <li key={index}>
+              ].map((service) => (
+                <li key={service.href}>
                   <Link 
                     href={service.href} 
                     className="text-gray-400 hover:text-blue-400 text-sm transition-colors"
@@ -78,8 +78,8 @@ export default function Footer() {
                 'Thép chế tạo máy',
                 'Thép Carbon',
                 'Thép không rỉ',
-              ].map((product, index) => (
-                <li key={index}>
+              ].map((product) => (
+                <li key={`product-${product}`}>
                   <Link 
                     href="/san-pham" 
                     className="text-gray-400 hover:text-red-400 text-sm transition-colors"

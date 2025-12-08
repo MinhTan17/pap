@@ -36,7 +36,7 @@ export default function PartnersSection({
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
           {partners.map((partner, index) => (
             <div
-              key={partner.id}
+              key={`partner-${partner.id}-${index}`}
               className="group cursor-pointer precision-cut"
               style={{ animationDelay: `${index * 0.1}s` }}
             >

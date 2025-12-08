@@ -49,7 +49,7 @@ export default function PageHeader({
             <div className={`grid grid-cols-2 md:grid-cols-${Math.min(stats.length, 4)} gap-8 mt-16 animate-slide-in-up`} 
                  style={{ animationDelay: '0.4s' }}>
               {stats.map((stat, index) => (
-                <div key={index} className="text-center">
+                <div key={`stat-${index}-${stat.label}`} className="text-center">
                   <div className={`text-3xl font-bold mb-2 ${stat.color || 'text-blue-600'}`}>
                     {stat.value}
                   </div>

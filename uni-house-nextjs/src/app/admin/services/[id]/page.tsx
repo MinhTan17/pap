@@ -257,14 +257,120 @@ export default function ServiceDetailEditor() {
 
       {/* Service Info */}
       <div className="bg-white rounded-lg shadow p-6">
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <h2 className="text-xl font-bold mb-4">Thông tin dịch vụ</h2>
+        <div className="grid grid-cols-1 gap-4 mb-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Tên dịch vụ</label>
-            <p className="text-gray-900">{service.title}</p>
+            <input
+              type="text"
+              value={service.title}
+              onChange={(e) => setService({ ...service, title: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Nhập tên dịch vụ"
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Mô tả ngắn</label>
-            <p className="text-gray-600">{service.description}</p>
+            <textarea
+              value={service.description}
+              onChange={(e) => setService({ ...service, description: e.target.value })}
+              rows={3}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Nhập mô tả ngắn cho dịch vụ"
+            />
+          </div>
+        </div>
+        
+        {/* Nút lưu thông tin cơ bản */}
+        <button
+          onClick={async () => {
+            try {
+              setIsSaving(true)
+              const response = await fetch('/api/services', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(services.map(s => 
+                  s.id === service.id ? service : s
+                ))
+              })
+              
+              if (response.ok) {
+                updateService(service.id, service)
+                alert('✅ Đã lưu thông tin dịch vụ!')
+              } else {
+                alert('❌ Lỗi khi lưu')
+              }
+            } catch (error) {
+              console.error('Save error:', error)
+              alert('❌ Lỗi khi lưu')
+            } finally {
+              setIsSaving(false)
+            }
+          }}
+          disabled={isSaving}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+        >
+          {isSaving ? '⏳ Đang lưu...' : '💾 Lưu thông tin'}
+        </button>
+        
+        {/* Ảnh bìa */}
+        <div className="mt-4 pt-4 border-t">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Ảnh bìa (hiển thị trên trang chủ)</label>
+          <div className="flex items-start gap-4">
+            {service.image && (
+              <div className="relative">
+                <img 
+                  src={service.image} 
+                  alt={service.title}
+                  className="w-48 h-32 object-cover rounded-lg border"
+                />
+              </div>
+            )}
+            <div className="flex-1">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0]
+                  if (!file) return
+                  
+                  try {
+                    setIsSaving(true)
+                    const { uploadToCloudinary } = await import('@/lib/cloudinary-upload')
+                    const result = await uploadToCloudinary(file, 'services')
+                    
+                    if (result.success && result.url) {
+                      const updatedService = { ...service, image: result.url }
+                      
+                      // Save to API
+                      const response = await fetch('/api/services', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(services.map(s => 
+                          s.id === service.id ? updatedService : s
+                        ))
+                      })
+                      
+                      if (response.ok) {
+                        updateService(service.id, updatedService)
+                        setService(updatedService)
+                        alert('✅ Đã cập nhật ảnh bìa!')
+                      }
+                    } else {
+                      alert('❌ Lỗi upload: ' + result.error)
+                    }
+                  } catch (error) {
+                    console.error('Upload error:', error)
+                    alert('❌ Lỗi upload ảnh')
+                  } finally {
+                    setIsSaving(false)
+                  }
+                }}
+                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                disabled={isSaving}
+              />
+              <p className="text-xs text-gray-500 mt-1">Chọn ảnh mới để thay đổi ảnh bìa</p>
+            </div>
           </div>
         </div>
       </div>

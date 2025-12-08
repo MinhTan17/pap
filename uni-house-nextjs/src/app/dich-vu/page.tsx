@@ -90,7 +90,7 @@ export default function ServicesPage() {
                       </p>
                       <ul className="space-y-2 text-sm text-gray-600">
                         {(service.features || []).map((feature, idx) => (
-                          <li key={idx} className="flex items-center">
+                          <li key={`feature-${service.id}-${idx}`} className="flex items-center">
                             <svg className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
@@ -122,7 +122,7 @@ export default function ServicesPage() {
 
           <div className="grid md:grid-cols-4 gap-8">
             {processSteps.map((item, index) => (
-              <div key={index} className="text-center">
+              <div key={`process-${item.step}-${index}`} className="text-center">
                 <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
                   {item.step}
                 </div>

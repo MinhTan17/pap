@@ -39,12 +39,12 @@ export default function AdminLayout({
       <body suppressHydrationWarning className={inter.className}>
         <DataProvider>
           <ClientAuthCheck>
-            <div className="flex min-h-screen bg-gray-50">
+            <div className="flex min-h-screen bg-gray-100">
               <AdminSidebar />
               <div className="flex-1 flex flex-col min-w-0">
                 <AdminHeader />
-                <main className="p-6">
-                  <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
+                  <div className="max-w-7xl mx-auto">
                     {children}
                   </div>
                 </main>

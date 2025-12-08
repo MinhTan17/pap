@@ -146,7 +146,7 @@ export default function AboutPage() {
                 <>
                   {companyData.images.slice(1).map((image, index) => (
                     <img
-                      key={index + 1}
+                      key={`company-img-${index}-${image.url}`}
                       src={image.url}
                       alt={image.caption || `Company ${index + 2}`}
                       className="w-full aspect-video object-cover rounded-lg transition-transform duration-300 hover:scale-105"
@@ -199,7 +199,7 @@ export default function AboutPage() {
                 <>
                   {staffData.images.slice(1).map((image, index) => (
                     <img
-                      key={index + 1}
+                      key={`staff-img-${index}-${image.url}`}
                       src={image.url}
                       alt={image.caption || `Nhân viên ${index + 2}`}
                       className="w-full aspect-video object-cover rounded-lg transition-transform duration-300 hover:scale-105"
@@ -227,7 +227,7 @@ export default function AboutPage() {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-8">
               {staffData.gridImages.map((image, index) => (
                 <img
-                  key={index}
+                  key={`staff-grid-${index}-${image.url}`}
                   src={image.url}
                   alt={image.caption || `Nhân viên ${index + 1}`}
                   className="w-full aspect-video object-cover rounded-lg transition-transform duration-300 hover:scale-105"
@@ -237,7 +237,7 @@ export default function AboutPage() {
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-8">
               {Array.from({ length: 6 }).map((_, index) => (
-                <div key={index} className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
+                <div key={`staff-placeholder-${index}`} className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
                   <div className="text-center text-gray-600">
                     <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
                       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -305,7 +305,7 @@ export default function AboutPage() {
                 <>
                   {equipmentData.images.slice(1).map((image, index) => (
                     <img
-                      key={index + 1}
+                      key={`equip-img-${index}-${image.url}`}
                       src={image.url}
                       alt={image.caption || `Thiết bị ${index + 2}`}
                       className="w-full aspect-video object-cover rounded-lg transition-transform duration-300 hover:scale-105"
@@ -321,7 +321,7 @@ export default function AboutPage() {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-8">
               {equipmentData.gridImages.map((image, index) => (
                 <img
-                  key={index}
+                  key={`equip-grid-${index}-${image.url}`}
                   src={image.url}
                   alt={image.caption || `Thiết bị ${index + 1}`}
                   className="w-full aspect-video object-cover rounded-lg transition-transform duration-300 hover:scale-105"
@@ -331,7 +331,7 @@ export default function AboutPage() {
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-8">
               {Array.from({ length: 6 }).map((_, index) => (
-                <div key={index} className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
+                <div key={`equip-placeholder-${index}`} className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
                   <div className="text-center text-gray-600">
                     <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
                       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

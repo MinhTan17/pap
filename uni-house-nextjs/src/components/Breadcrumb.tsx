@@ -70,7 +70,7 @@ export default function Breadcrumb({ items, className = '' }: BreadcrumbProps) {
       style={{ wordBreak: 'keep-all', wordWrap: 'normal' }}
     >
       {breadcrumbItems.map((item, index) => (
-        <div key={index} className="flex items-center flex-shrink-0">
+        <div key={`breadcrumb-${index}-${item.label}`} className="flex items-center flex-shrink-0">
           {index > 0 && (
             <svg
               className={`w-3 h-3 sm:w-4 sm:h-4 mx-1 sm:mx-2 flex-shrink-0 ${isDarkContext ? 'text-white/60' : 'text-slate-400'}`}

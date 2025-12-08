@@ -50,7 +50,7 @@ export default function ProductsSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {products.map((product, index) => (
-            <div key={product.id} className="group cursor-pointer precision-cut" style={{ animationDelay: `${index * 0.1}s` }}>
+            <div key={`product-${product.id}-${index}`} className="group cursor-pointer precision-cut" style={{ animationDelay: `${index * 0.1}s` }}>
               <a href={`/san-pham/${product.id}`} className="block">
               <div className="relative overflow-hidden rounded-lg shadow-xl hover:shadow-2xl transition-all duration-500 steel-glow bg-white border border-gray-200">
                 {/* Product Image */}
