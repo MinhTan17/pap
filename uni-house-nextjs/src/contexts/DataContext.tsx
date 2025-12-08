@@ -131,7 +131,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
           const newsRes = await fetch('/api/news', { cache: 'no-store' })
           if (newsRes.ok) {
             const newsData = await newsRes.json()
-            if (newsData.articles && Array.isArray(newsData.articles)) {
+            if (newsData.articles && Array.isArray(newsData.articles) && newsData.articles.length > 0) {
               // Remove duplicates by ID - keep only first occurrence
               const uniqueArticles = newsData.articles.filter(
                 (article: NewsItem, index: number, self: NewsItem[]) => 
@@ -139,10 +139,14 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
               )
               setNewsArticles(uniqueArticles)
               console.log('✅ Loaded news from API:', uniqueArticles.length, 'articles (deduplicated)')
+            } else {
+              // Keep initial news if API returns empty
+              console.log('⚠️ News API returned empty, keeping initial data')
             }
           }
         } catch (newsError) {
           console.error('❌ News API error:', newsError)
+          // Keep initial news on error
         }
         
         console.log('✅ DataContext: Initial data load completed')
@@ -423,7 +427,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       const newsRes = await fetch('/api/news', { cache: 'no-store' })
       if (newsRes.ok) {
         const newsData = await newsRes.json()
-        if (newsData.articles && Array.isArray(newsData.articles)) {
+        if (newsData.articles && Array.isArray(newsData.articles) && newsData.articles.length > 0) {
           // Remove duplicates by ID
           const uniqueArticles = newsData.articles.filter(
             (article: NewsItem, index: number, self: NewsItem[]) => 
@@ -431,6 +435,8 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
           )
           setNewsArticles(uniqueArticles)
           console.log('🔄 Reloaded news from API:', uniqueArticles.length, 'articles')
+        } else {
+          console.log('⚠️ News API returned empty on reload, keeping current data')
         }
       } else {
         console.error('❌ Failed to reload news:', newsRes.status)

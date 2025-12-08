@@ -13,13 +13,27 @@ export async function GET() {
     const db = await getDatabase()
     const articles = await db.collection('news').find({}).toArray()
     
-    return NextResponse.json({ articles })
+    // If database is empty, return fallback data
+    if (!articles || articles.length === 0) {
+      console.log('[News API] Database empty, returning fallback data')
+      // Import fallback data dynamically
+      const { newsArticles } = await import('@/data/news')
+      return NextResponse.json({ articles: newsArticles, source: 'fallback' })
+    }
+    
+    return NextResponse.json({ articles, source: 'database' })
   } catch (error) {
     console.error('[News API] Error:', error)
-    return NextResponse.json({ 
-      error: 'Failed to fetch news', 
-      details: error instanceof Error ? error.message : 'Unknown error' 
-    }, { status: 500 })
+    // On error, try to return fallback data
+    try {
+      const { newsArticles } = await import('@/data/news')
+      return NextResponse.json({ articles: newsArticles, source: 'fallback-error' })
+    } catch {
+      return NextResponse.json({ 
+        error: 'Failed to fetch news', 
+        details: error instanceof Error ? error.message : 'Unknown error' 
+      }, { status: 500 })
+    }
   }
 }
 
