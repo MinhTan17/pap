@@ -12,24 +12,11 @@ export default function Hero() {
   const [imgErrorIds, setImgErrorIds] = useState<Set<number>>(new Set())
   const [isTransitioning, setIsTransitioning] = useState(false)
 
+  // Only reload once on mount - don't reload on focus/visibility to prevent banner disappearing
   useEffect(() => {
     reloadFromStorage()
-  }, [reloadFromStorage])
-
-  useEffect(() => {
-    const handleFocus = () => reloadFromStorage()
-    const handleVisibilityChange = () => {
-      if (!document.hidden) reloadFromStorage()
-    }
-
-    window.addEventListener('focus', handleFocus)
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-
-    return () => {
-      window.removeEventListener('focus', handleFocus)
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-    }
-  }, [reloadFromStorage])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Auto-slide every 3 seconds
   useEffect(() => {
