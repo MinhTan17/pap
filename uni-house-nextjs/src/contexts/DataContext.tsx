@@ -114,13 +114,18 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
           console.error('❌ Products API error:', productsError)
         }
         
-        // Load banners from API
+        // Load banners from API - only update if valid data
         try {
           const bannersRes = await fetch('/api/banners', { cache: 'no-store' })
           if (bannersRes.ok) {
             const bannersData = await bannersRes.json()
-            setBanners(bannersData)
-            console.log('✅ Loaded banners from API')
+            // Only update if we got valid banners with images
+            if (Array.isArray(bannersData) && bannersData.length > 0 && bannersData[0]?.image) {
+              setBanners(bannersData)
+              console.log('✅ Loaded banners from API:', bannersData.length, 'banners')
+            } else {
+              console.log('⚠️ Banners API returned empty/invalid, keeping initial data')
+            }
           }
         } catch (bannersError) {
           console.error('❌ Banners API error:', bannersError)
@@ -413,12 +418,17 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         console.error('❌ Failed to reload services:', servicesRes.status)
       }
       
-      // Load banners from API
+      // Load banners from API - only update if we get valid data
       const bannersRes = await fetch('/api/banners', { cache: 'no-store' })
       if (bannersRes.ok) {
         const bannersData = await bannersRes.json()
-        setBanners(bannersData)
-        console.log('🔄 Reloaded banners from API')
+        // Only update if we got valid banners with images
+        if (Array.isArray(bannersData) && bannersData.length > 0 && bannersData[0]?.image) {
+          setBanners(bannersData)
+          console.log('🔄 Reloaded banners from API:', bannersData.length, 'banners')
+        } else {
+          console.log('⚠️ Banners API returned empty/invalid, keeping current data')
+        }
       } else {
         console.error('❌ Failed to reload banners:', bannersRes.status)
       }

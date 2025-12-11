@@ -7,16 +7,10 @@ import { useSwipe } from '@/hooks/useSwipe'
 import { useDrag } from '@/hooks/useDrag'
 
 export default function Hero() {
-  const { banners, reloadFromStorage } = useData()
+  const { banners } = useData()
   const [currentSlide, setCurrentSlide] = useState(0)
   const [imgErrorIds, setImgErrorIds] = useState<Set<number>>(new Set())
   const [isTransitioning, setIsTransitioning] = useState(false)
-
-  // Only reload once on mount - don't reload on focus/visibility to prevent banner disappearing
-  useEffect(() => {
-    reloadFromStorage()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   // Auto-slide every 3 seconds
   useEffect(() => {
