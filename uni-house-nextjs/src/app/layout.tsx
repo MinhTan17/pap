@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getLocale } from 'next-intl/server';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import FloatingContactIcons from "@/components/FloatingContactIcons";
 import { DataProvider } from "@/contexts/DataContext";
 
@@ -43,6 +44,7 @@ export default async function RootLayout({
             <FloatingContactIcons />
           </DataProvider>
         </NextIntlClientProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
