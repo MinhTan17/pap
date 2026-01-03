@@ -4,7 +4,6 @@ import { Header, Footer } from '@/components'
 import Breadcrumb from '@/components/Breadcrumb'
 import { useData } from '@/contexts/DataContext'
 import { use } from 'react'
-import React from 'react'
 
 interface ServiceDetailProps {
   params: Promise<{ id: string }>
@@ -12,13 +11,10 @@ interface ServiceDetailProps {
 
 export default function ServiceDetailPage({ params }: ServiceDetailProps) {
   const resolvedParams = use(params)
-  const { services, reloadFromStorage } = useData()
+  const { services } = useData()
   const service = services.find(s => String(s.id) === resolvedParams.id)
 
-  // Force reload data when page loads
-  React.useEffect(() => {
-    reloadFromStorage()
-  }, [resolvedParams.id, reloadFromStorage])
+  // Data is already loaded by DataContext on mount - no need to reload here
 
   // Debug logging
   console.log('[Service Detail] ID:', resolvedParams.id)

@@ -102,13 +102,18 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
           setServices(initialServices) // Fallback to initial data
         }
         
-        // Load products from API
+        // Load products from API - only update if valid data
         try {
           const productsRes = await fetch('/api/products', { cache: 'no-store' })
           if (productsRes.ok) {
             const productsData = await productsRes.json()
-            setProducts(productsData)
-            console.log('✅ Loaded products from API')
+            // Only update if we got valid products
+            if (Array.isArray(productsData) && productsData.length > 0) {
+              setProducts(productsData)
+              console.log('✅ Loaded products from API:', productsData.length, 'products')
+            } else {
+              console.log('⚠️ Products API returned empty, keeping initial data')
+            }
           }
         } catch (productsError) {
           console.error('❌ Products API error:', productsError)
@@ -190,6 +195,12 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     // Skip auto-save during initial load
     if (isInitialLoadRef.current || !hasLoadedRef.current) {
       console.log('⏭️ Skipping products auto-save (initial load)')
+      return
+    }
+    
+    // IMPORTANT: Never auto-save empty products array - this prevents data loss
+    if (products.length === 0) {
+      console.log('⏭️ Skipping products auto-save (empty array - preventing data loss)')
       return
     }
     
