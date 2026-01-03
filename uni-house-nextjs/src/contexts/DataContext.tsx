@@ -398,12 +398,17 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     try {
       console.log('🔄 Starting reload from storage...')
       
-      // Load products from API
+      // Load products from API - only update if valid data
       const productsRes = await fetch('/api/products', { cache: 'no-store' })
       if (productsRes.ok) {
         const productsData = await productsRes.json()
-        setProducts(productsData)
-        console.log('🔄 Reloaded products from API')
+        // Only update if we got valid products
+        if (Array.isArray(productsData) && productsData.length > 0) {
+          setProducts(productsData)
+          console.log('🔄 Reloaded products from API:', productsData.length, 'products')
+        } else {
+          console.log('⚠️ Products API returned empty, keeping current data')
+        }
       } else {
         console.error('❌ Failed to reload products:', productsRes.status)
       }
